@@ -1,13 +1,13 @@
 Elm.Native = Elm.Native || {};
-Elm.Native.Browser = Elm.Native.Browser || {};
-Elm.Native.Browser.Number = Elm.Native.Browser.Number || {};
+Elm.Native.WebAPI = Elm.Native.WebAPI || {};
+Elm.Native.WebAPI.Number = Elm.Native.WebAPI.Number || {};
 
-Elm.Native.Browser.Number.make = function (localRuntime) {
+Elm.Native.WebAPI.Number.make = function (localRuntime) {
     localRuntime.Native = localRuntime.Native || {};
-    localRuntime.Native.Browser = localRuntime.Native.Browser || {};
-    localRuntime.Native.Browser.Number = localRuntime.Native.Browser.Number || {};
+    localRuntime.Native.WebAPI = localRuntime.Native.WebAPI || {};
+    localRuntime.Native.WebAPI.Number = localRuntime.Native.WebAPI.Number || {};
 
-    if (!localRuntime.Native.Browser.Number.values) {
+    if (!localRuntime.Native.WebAPI.Number.values) {
 	    var Result = Elm.Result.make(localRuntime);
         
         var toExponential = function (number) {
@@ -52,7 +52,7 @@ Elm.Native.Browser.Number.make = function (localRuntime) {
             }
         };
 
-        localRuntime.Native.Browser.Number.values = {
+        localRuntime.Native.WebAPI.Number.values = {
             maxValue: Number.MAX_VALUE,
             minValue: Number.MIN_VALUE,
             nan: Number.Nan,
@@ -67,5 +67,5 @@ Elm.Native.Browser.Number.make = function (localRuntime) {
         };
     }
     
-    return localRuntime.Native.Browser.Number.values;
+    return localRuntime.Native.WebAPI.Number.values;
 };

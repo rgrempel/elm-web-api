@@ -1,14 +1,14 @@
 {
     "version": "1.0.0",
-    "summary": "Expose facilities provided by the browser's Javascript runtime",
-    "repository": "https://github.com/rgrempel/elm-browser.git",
+    "summary": "Expose Web APIs provided by the browser's Javascript runtime",
+    "repository": "https://github.com/rgrempel/elm-web-api.git",
     "license": "BSD3",
     "source-directories": [
         "src"
     ],
     "exposed-modules": [
-        "Browser.Math",
-        "Browser.Number"
+        "WebAPI.Math",
+        "WebAPI.Number"
     ],
     "native-modules": true,
     "dependencies": {

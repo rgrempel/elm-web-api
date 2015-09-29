@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "summary": "Tests for the Browser module",
-    "repository": "https://github.com/rgrempel/elm-browser.git",
+    "summary": "Tests for the WebAPI module",
+    "repository": "https://github.com/rgrempel/elm-web-api.git",
     "license": "BSD3",
     "source-directories": [
         "src",

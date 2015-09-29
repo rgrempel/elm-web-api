@@ -1,24 +1,42 @@
-# elm-browser
+# elm-web-api
 
-The purpose of this package is to expose facilities provided by the Javascript
-runtime in web browsers for use in Elm.
+The purpose of this package is to expose various standard web APIs to Elm,
+or document where they are already exposed.
 
-In order for Elm to use facilities provided by the Javascript runtime in a web
-browser, it is necessary to write "native" code in Elm. Sometimes this has
-already been done for you, either in Elm's core libraries or in another
-package. However, sometimes it has not been done, so you would have to write
-the native code yourself. But, writing native code is a little tricky, and it's
-inefficient for people to have to do it themselves.
+By "web APIs" I basically mean the kind of things that are listed on
+Mozilla's various Web APIs pages, e.g.
 
-So, for each facility provided by a browser's Javascript runtime, this package
-either provides a wrapper in Elm "native" code, or indicates which package
-already does so.
+* https://developer.mozilla.org/en-US/docs/Web/API
+* https://developer.mozilla.org/en-US/docs/WebAPI
+* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
-The wrappers provided here are intentionally simplistic. The idea is to do as
-little as possible to make the facility available in Elm -- any additional
+Essentially, they are various facilities available in a Javascript web
+environment.
+
+In order for Elm to use such facilities, it is necessary to write "native"
+code.
+
+* If the Elm code for a Web API already exists, I document it below.
+* If it does not already exist, then I have either:
+    * implemented it;
+    * indicated why it should not be implemented;
+    * or, put it on my TODO list.
+
+The implementations provided here are intentionally simplistic. The idea is to
+do as little as possible to make the API available in Elm -- any additional
 logic or convenience can be supplied by other packages on top of this.
 
-## Browser.Global
+## WebAPI.Date
+
+Generally speaking, dates are dealt with by the
+[`Date` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Date)
+in elm-lang/core.
+
+TODO: Check if anything is missing.
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
+
+## WebAPI.Global
 
 See the Mozilla documentation for
 [function properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects#Function_properties).
@@ -29,30 +47,59 @@ See the Mozilla documentation for
 <dd>Not implemented, since it is an abomination.</dd>
 
 <dt>`isFinite`</dt>
-<dd>In elm-lang/core, as `Basics.isInfinite` (presumably with the sense reversed).</dd>
+<dd>In elm-lang/core, as 
+[`Basics.isInfinite`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isInfinite)
+(presumably with the sense reversed).</dd>
 
 <dt>`isNan`</dt>
-<dd>In elm-lang/core, as `Basics.isNan`</dd>
+<dd>In elm-lang/core, as
+[`Basics.isNan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isNaN)
+</dd>
 
 <dt>`parseFloat`</dt>
-<dd>In elm-lang/core, as `String.toFloat`</dd>
+<dd>In elm-lang/core, as
+[`String.toFloat`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toFloat)
+</dd>
 
 <dt>`parseInt`</dt>
-<dd>In elm-lang/core, as `String.toInt`</dd>
+<dd>In elm-lang/core, as
+[`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
+</dd>
 
 <dt>`decodeURI`</dt>
 <dd>Not implemented, since you will generally want `decodeURIComponent` instead.</dd>
 
 <dt>`decodeURIComponent`</dt>
-<dd>In evancz/elm-http, as `Http.uriDecode`</dd>
+<dd>In evancz/elm-http, as
+[`Http.uriDecode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriDecode)
+</dd>
 
 <dt>`encodeURI`</dt>
 <dd>Not implemented, since you will generally want `encodeURIComponent` instead.</dd>
 
 <dt>`encodeURIComponent`</dt>
-<dd>In evancz/elm-http, as `Http.uriEncode`</dd>
+<dd>In evancz/elm-http, as 
+[`Http.uriEncode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriEncode)
+</dd>
 
-## Browser.Math
+## WebAPI.Intl
+
+TODO.
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
+
+## WebAPI.JSON
+
+Generally speaking, JSON is handled by the
+[`Json.Decode`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Json-Decode) and
+[`Json.Encode`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Json-Encode)
+modules in elm-lang/core.
+
+TODO: Check if anything is missing.
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
+
+## WebAPI.Math
 
 See the Mozilla documentation for the
 [Math object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
@@ -63,7 +110,9 @@ Note that things marked "experimental" there have been omitted here.
 <dl>
 
 <dt>`E`</dt>
-<dd>In elm-lang/core, as `Basics.e`</dd>
+<dd>In elm-lang/core, as
+[`Basics.e`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#e)
+</dd>
 
 <dt>`ln2 : Float`</dt>
 <dd>Natural logarithm of 2, approximately 0.693.</dd>
@@ -78,7 +127,9 @@ Note that things marked "experimental" there have been omitted here.
 <dd>Base 10 logarithm of E, approximately 0.434</dd>
 
 <dt>`PI`</dt>
-<dd>In elm-lang/core, as `Basics.pi`</dd>
+<dd>In elm-lang/core, as
+[`Basics.pi`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#pi)
+</dd>
 
 <dt>`sqrt1_2 : Float`</dt>
 <dd>Square root of 1/2; equivalently, 1 over the square root of 2, approximately 0.707.</dd>
@@ -93,71 +144,102 @@ Note that things marked "experimental" there have been omitted here.
 <dl>
 
 <dt>`abs`</dt>
-<dd>In elm-lang/core, as `Basics.abs`</dd>
+<dd>In elm-lang/core, as
+[`Basics.abs`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#abs)
+</dd>
 
 <dt>`acos`</dt>
-<dd>In elm-lang/core, as `Basics.acos`</dd>
+<dd>In elm-lang/core, as
+[`Basics.acos`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#acos)
+</dd>
 
 <dt>`asin`</dt>
-<dd>In elm-lang/core, as `Basics.asin`</dd>
+<dd>In elm-lang/core, as
+[`Basics.asin`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#asin)
+</dd>
 
 <dt>`atan`</dt>
-<dd>In elm-lang/core, as `Basics.atan`</dd>
+<dd>In elm-lang/core, as
+[`Basics.atan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#atan)
+</dd>
 
 <dt>`atan2`</dt>
-<dd>In elm-lang/core, as `Basics.atan2`</dd>
+<dd>In elm-lang/core, as
+[`Basics.atan2`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#atan2)
+</dd>
 
 <dt>`ceil`</dt>
-<dd>In elm-lang/core, as `Basics.ceiling`</dd>
+<dd>In elm-lang/core, as
+[`Basics.ceiling`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#ceiling)
+</dd>
 
 <dt>`cos`</dt>
-<dd>In elm-lang/core, as `Basics.cos`</dd>
+<dd>In elm-lang/core, as
+[`Basics.cos`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#cos)
+</dd>
 
 <dt>`exp : number -> Float`</dt>
 <dd>Returns E to the power of x, where x is the argument, and E is Euler's
 constant (2.718…), the base of the natural logarithm.</dd>
 
 <dt>`floor`</dt>
-<dd>In elm-lang/core, as `Basics.floor`</dd>
+<dd>In elm-lang/core, as
+[`Basics.floor`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#floor)
+</dd>
 
 <dt>`log : number -> Float`</dt>
 <dd>Returns the natural logarithm (log e, also ln) of a number.</dd>
 
 <dt>`max`</dt>
-<dd>In elm-lang/core, as `List.maximum`</dd>
+<dd>In elm-lang/core, as
+[`List.maximum`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/List#maximum)
+</dd>
 
 <dt>`min`</dt>
-<dd>In elm-lang/core, as `List.minimum`</dd>
+<dd>In elm-lang/core, as
+[`List.minimum`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/List#minimum)
+</dd>
 
 <dt>`pow`</dt>
-<dd>In elm-lang/core, as `Basics.(^)`</dd>
+<dd>In elm-lang/core, as
+[`Basics.(^)`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#^)
+</dd>
 
 <dt>`random : Task x Float`</dt>
 <dd>Returns a pseudo-random number between 0 and 1.
 
-Note that there is a more sophisticated implementation of `Random` in
-elm-lang/core. However, this may sometimes be useful if you're in a `Task`
+Note that there is a more sophisticated implementation of 
+[`Random`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Random)
+in elm-lang/core. However, this may sometimes be useful if you're in a `Task`
 context anyway.</dd>
 
 <dt>`round`</dt>
-<dd>In elm-lang/core, as `Basics.round`</dd>
+<dd>In elm-lang/core, as
+[`Basics.round`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#round)
+</dd>
 
 <dt>`sin`</dt>
-<dd>In elm-lang/core, as `Basics.sin`</dd>
+<dd>In elm-lang/core, as
+[`Basics.sin`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#sin)
+</dd>
 
 <dt>`sqrt`</dt>
-<dd>In elm-lang/core, as `Basics.sqrt`</dd>
+<dd>In elm-lang/core, as
+[`Basics.sqrt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#sqrt)
+</dd>
 
 <dt>`tan`</dt>
-<dd>In elm-lang/core, as `Basics.tan`</dd>
+<dd>In elm-lang/core, as
+[`Basics.tan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#tan)
+</dd>
 
 </dl>
 
-## Browser.Number
+## WebAPI.Number
 
 See the Mozilla documentation for the
 [Number object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number).
-Note that things marked "experimental" have been omitted here.
+Note that things marked "experimental" there have been omitted here.
 
 ### Constants
 
@@ -219,45 +301,29 @@ is between 2 and 36.</dd>
 
 </dl>
 
-## Browser.Date
+## WebAPI.RegExp
 
-Generally speaking, dates are dealt with in elm-lang/core. I will make an
-itemized list later.
+Generally speaking, regular expressions are handled by the
+[`Regex` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Regex)
+in elm-lang/core.
 
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
-
-## Browser.String
-
-Generally speaking, strings are dealt with in elm-lang/core. I will make
-an itemized list later.
-
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
-
-## Browser.RegExp
-
-Generally speaking, regexp ...
+TODO: Check if anything is missing.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp).
 
-## Browser.JSON
+## WebAPI.String
 
-Generally speaking, ...
+Generally speaking, strings are dealt with by the
+[`String` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String)
+in elm-lang/core. 
 
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
+TODO: Check if anything is missing.
 
-## Browser.Intl
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
 
-Internationalization is ...
+## WebAPI.Window
 
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
-
-## Browser.Window
-
-...
+TODO.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window).
 
-## Browser.DOM
-
-Most DOM modifications are done by `main`. But, there are a few things one can usefully modify
-outside of the embedding.

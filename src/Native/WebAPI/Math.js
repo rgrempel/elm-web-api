@@ -1,16 +1,16 @@
 Elm.Native = Elm.Native || {};
-Elm.Native.Browser = Elm.Native.Browser || {};
-Elm.Native.Browser.Math = Elm.Native.Browser.Math || {};
+Elm.Native.WebAPI = Elm.Native.WebAPI || {};
+Elm.Native.WebAPI.Math = Elm.Native.WebAPI.Math || {};
 
-Elm.Native.Browser.Math.make = function (localRuntime) {
+Elm.Native.WebAPI.Math.make = function (localRuntime) {
     localRuntime.Native = localRuntime.Native || {};
-    localRuntime.Native.Browser = localRuntime.Native.Browser || {};
-    localRuntime.Native.Browser.Math = localRuntime.Native.Browser.Math || {};
+    localRuntime.Native.WebAPI = localRuntime.Native.WebAPI || {};
+    localRuntime.Native.WebAPI.Math = localRuntime.Native.WebAPI.Math || {};
 
-    if (!localRuntime.Native.Browser.Math.values) {
+    if (!localRuntime.Native.WebAPI.Math.values) {
         var Task = Elm.Native.Task.make(localRuntime);
     
-        localRuntime.Native.Browser.Math.values = {
+        localRuntime.Native.WebAPI.Math.values = {
             ln2: Math.LN2,
             ln10: Math.LN10,
             log2e: Math.LOG2E,
@@ -26,5 +26,5 @@ Elm.Native.Browser.Math.make = function (localRuntime) {
         };
     }
     
-    return localRuntime.Native.Browser.Math.values;
+    return localRuntime.Native.WebAPI.Math.values;
 };

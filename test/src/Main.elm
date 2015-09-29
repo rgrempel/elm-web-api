@@ -6,8 +6,8 @@ import Graphics.Element exposing (Element)
 import ElmTest.Test exposing (..)
 import ElmTest.Runner.Element exposing (runDisplay)
 
-import Browser.MathTest
-import Browser.NumberTest
+import WebAPI.MathTest
+import WebAPI.NumberTest
 
 
 main : Signal Element
@@ -23,8 +23,8 @@ tests =
 port task : Task x ()
 port task =
     sequence
-        [ Browser.MathTest.tests
-        , Browser.NumberTest.tests
+        [ WebAPI.MathTest.tests
+        , WebAPI.NumberTest.tests
         ]
     `andThen`
     (send tests.address << suite "Browser tests")
