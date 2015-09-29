@@ -26,6 +26,7 @@ The implementations provided here are intentionally simplistic. The idea is to
 do as little as possible to make the API available in Elm -- any additional
 logic or convenience can be supplied by other packages on top of this.
 
+
 ## WebAPI.Date
 
 Generally speaking, dates are dealt with by the
@@ -36,57 +37,53 @@ TODO: Check if anything is missing.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
 
+
 ## WebAPI.Global
 
 See the Mozilla documentation for
 [function properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects#Function_properties).
 
-<dl>
+*   `eval`
+    Not implemented, since it is an abomination.
 
-<dt>`eval`</dt>
-<dd>Not implemented, since it is an abomination.</dd>
+*   `isFinite`
+    In elm-lang/core, as 
+    [`Basics.isInfinite`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isInfinite)
+    (presumably with the sense reversed).
 
-<dt>`isFinite`</dt>
-<dd>In elm-lang/core, as 
-[`Basics.isInfinite`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isInfinite)
-(presumably with the sense reversed).</dd>
+*   `isNan`
+    In elm-lang/core, as
+    [`Basics.isNan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isNaN)
 
-<dt>`isNan`</dt>
-<dd>In elm-lang/core, as
-[`Basics.isNan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isNaN)
-</dd>
+*   `parseFloat`
+    In elm-lang/core, as
+    [`String.toFloat`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toFloat)
 
-<dt>`parseFloat`</dt>
-<dd>In elm-lang/core, as
-[`String.toFloat`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toFloat)
-</dd>
+*   `parseInt`
+    In elm-lang/core, as
+    [`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
 
-<dt>`parseInt`</dt>
-<dd>In elm-lang/core, as
-[`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
-</dd>
+*   `decodeURI`
+    Not implemented, since you will generally want `decodeURIComponent` instead.
 
-<dt>`decodeURI`</dt>
-<dd>Not implemented, since you will generally want `decodeURIComponent` instead.</dd>
+*   `decodeURIComponent`
+    In evancz/elm-http, as
+    [`Http.uriDecode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriDecode)
 
-<dt>`decodeURIComponent`</dt>
-<dd>In evancz/elm-http, as
-[`Http.uriDecode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriDecode)
-</dd>
+*   `encodeURI`
+    Not implemented, since you will generally want `encodeURIComponent` instead.
 
-<dt>`encodeURI`</dt>
-<dd>Not implemented, since you will generally want `encodeURIComponent` instead.</dd>
+*   `encodeURIComponent`
+    In evancz/elm-http, as 
+    [`Http.uriEncode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriEncode)
 
-<dt>`encodeURIComponent`</dt>
-<dd>In evancz/elm-http, as 
-[`Http.uriEncode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriEncode)
-</dd>
 
 ## WebAPI.Intl
 
 TODO.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
+
 
 ## WebAPI.JSON
 
@@ -99,6 +96,7 @@ TODO: Check if anything is missing.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
 
+
 ## WebAPI.Math
 
 See the Mozilla documentation for the
@@ -107,133 +105,119 @@ Note that things marked "experimental" there have been omitted here.
 
 ### Constants
 
-<dl>
+*   `E`
+    In elm-lang/core, as
+    [`Basics.e`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#e)
 
-<dt>`E`</dt>
-<dd>In elm-lang/core, as
-[`Basics.e`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#e)
-</dd>
+*   `ln2 : Float`
 
-<dt>`ln2 : Float`</dt>
-<dd>Natural logarithm of 2, approximately 0.693.</dd>
+    Natural logarithm of 2, approximately 0.693.
 
-<dt>`ln10 : Float`</dt>
-<dd>Natural logarithm of 2, approximately 2.303.</dd>
+*   `ln10 : Float`
 
-<dt>`log2e : Float`</dt>
-<dd>Base 2 logarithm of E, approximately 1.443</dd>
+    Natural logarithm of 2, approximately 2.303.
 
-<dt>`log10e : Float`</dt>
-<dd>Base 10 logarithm of E, approximately 0.434</dd>
+*   `log2e : Float`
 
-<dt>`PI`</dt>
-<dd>In elm-lang/core, as
-[`Basics.pi`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#pi)
-</dd>
+    Base 2 logarithm of E, approximately 1.443
 
-<dt>`sqrt1_2 : Float`</dt>
-<dd>Square root of 1/2; equivalently, 1 over the square root of 2, approximately 0.707.</dd>
+*   `log10e : Float`
 
-<dt>`sqrt2 : Float`</dd>
-<dd>Square root of 2, approximately 1.414.</dd>
+    Base 10 logarithm of E, approximately 0.434
 
-</dl>
+*   `PI`
+    In elm-lang/core, as
+    [`Basics.pi`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#pi)
+
+*   `sqrt1_2 : Float`
+
+    Square root of 1/2; equivalently, 1 over the square root of 2, approximately 0.707.
+
+*   `sqrt2 : Float`
+
+    Square root of 2, approximately 1.414.
 
 ### Functions
 
-<dl>
+*   `abs`
+    In elm-lang/core, as
+    [`Basics.abs`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#abs)
 
-<dt>`abs`</dt>
-<dd>In elm-lang/core, as
-[`Basics.abs`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#abs)
-</dd>
+*   `acos`
+    In elm-lang/core, as
+    [`Basics.acos`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#acos)
 
-<dt>`acos`</dt>
-<dd>In elm-lang/core, as
-[`Basics.acos`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#acos)
-</dd>
+*   `asin`
+    In elm-lang/core, as
+    [`Basics.asin`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#asin)
 
-<dt>`asin`</dt>
-<dd>In elm-lang/core, as
-[`Basics.asin`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#asin)
-</dd>
+*   `atan`
+    In elm-lang/core, as
+    [`Basics.atan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#atan)
 
-<dt>`atan`</dt>
-<dd>In elm-lang/core, as
-[`Basics.atan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#atan)
-</dd>
+*   `atan2`
+    In elm-lang/core, as
+    [`Basics.atan2`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#atan2)
 
-<dt>`atan2`</dt>
-<dd>In elm-lang/core, as
-[`Basics.atan2`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#atan2)
-</dd>
+*   `ceil`
+    In elm-lang/core, as
+    [`Basics.ceiling`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#ceiling)
 
-<dt>`ceil`</dt>
-<dd>In elm-lang/core, as
-[`Basics.ceiling`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#ceiling)
-</dd>
+*   `cos`
+    In elm-lang/core, as
+    [`Basics.cos`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#cos)
 
-<dt>`cos`</dt>
-<dd>In elm-lang/core, as
-[`Basics.cos`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#cos)
-</dd>
+*   `exp : number -> Float`
 
-<dt>`exp : number -> Float`</dt>
-<dd>Returns E to the power of x, where x is the argument, and E is Euler's
-constant (2.718…), the base of the natural logarithm.</dd>
+    Returns E to the power of x, where x is the argument, and E is Euler's
+    constant (2.718…), the base of the natural logarithm.
 
-<dt>`floor`</dt>
-<dd>In elm-lang/core, as
-[`Basics.floor`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#floor)
-</dd>
+*   `floor`
+    In elm-lang/core, as
+    [`Basics.floor`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#floor)
 
-<dt>`log : number -> Float`</dt>
-<dd>Returns the natural logarithm (log e, also ln) of a number.</dd>
 
-<dt>`max`</dt>
-<dd>In elm-lang/core, as
-[`List.maximum`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/List#maximum)
-</dd>
+*   `log : number -> Float`
 
-<dt>`min`</dt>
-<dd>In elm-lang/core, as
-[`List.minimum`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/List#minimum)
-</dd>
+    Returns the natural logarithm (log e, also ln) of a number.
 
-<dt>`pow`</dt>
-<dd>In elm-lang/core, as
-[`Basics.(^)`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#^)
-</dd>
+*   `max`
+    In elm-lang/core, as
+    [`List.maximum`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/List#maximum)
 
-<dt>`random : Task x Float`</dt>
-<dd>Returns a pseudo-random number between 0 and 1.
+*   `min`
+    In elm-lang/core, as
+    [`List.minimum`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/List#minimum)
 
-Note that there is a more sophisticated implementation of 
-[`Random`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Random)
-in elm-lang/core. However, this may sometimes be useful if you're in a `Task`
-context anyway.</dd>
+*   `pow`
+    In elm-lang/core, as
+    [`Basics.(^)`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#^)
 
-<dt>`round`</dt>
-<dd>In elm-lang/core, as
-[`Basics.round`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#round)
-</dd>
+*   `random : Task x Float`
 
-<dt>`sin`</dt>
-<dd>In elm-lang/core, as
-[`Basics.sin`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#sin)
-</dd>
+    Returns a pseudo-random number between 0 and 1.
 
-<dt>`sqrt`</dt>
-<dd>In elm-lang/core, as
-[`Basics.sqrt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#sqrt)
-</dd>
+    Note that there is a more sophisticated implementation of 
+    [`Random`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Random)
+    in elm-lang/core. However, this may sometimes be useful if you're in a `Task`
+    context anyway.
 
-<dt>`tan`</dt>
-<dd>In elm-lang/core, as
-[`Basics.tan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#tan)
-</dd>
+*   `round`
+    In elm-lang/core, as
+    [`Basics.round`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#round)
 
-</dl>
+*   `sin`
+    In elm-lang/core, as
+    [`Basics.sin`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#sin)
+
+*   `sqrt`
+    In elm-lang/core, as
+    [`Basics.sqrt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#sqrt)
+
+*   `tan`
+    In elm-lang/core, as
+    [`Basics.tan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#tan)
+
 
 ## WebAPI.Number
 
@@ -243,63 +227,68 @@ Note that things marked "experimental" there have been omitted here.
 
 ### Constants
 
-<dl>
+*   `maxValue : Float`
 
-<dt>`maxValue : Float`</dt>
-<dd>The largest positive representable number.</dd>
+    The largest positive representable number.
 
-<dt>`minValue : Float`</dt>
-<dd>The smallest positive representable number - that is, the positive number
-closest to zero (without actually being zero).</dd>
+*   `minValue : Float`
 
-<dt>`nan : Float`</dt>
-<dd>Special "not a number" value.</dd>
+    The smallest positive representable number - that is, the positive number
+    closest to zero (without actually being zero).
 
-<dt>`negativeInfinity : Float`</dt>
-<dd>Special value representing negative infinity; returned on overflow.</dd>
+*   `nan : Float`
 
-<dt>`positiveInfinity : Float`</dt>
-<dd>Special value representing infinity; returned on overflow.</dd>
+    Special "not a number" value.
 
-</dl>
+*   `negativeInfinity : Float`
+
+    Special value representing negative infinity; returned on overflow.
+
+*   `positiveInfinity : Float`
+
+    Special value representing infinity; returned on overflow.
 
 ### Functions
 
-<dl>
+*   `toExponential : number -> String`
 
-<dt>`toExponential : number -> String`</dt>
-<dd>A string representing the provided number in exponential notation.</dd>
+    A string representing the provided number in exponential notation.
 
-<dt>`toExponentialDigits : Int -> number -> Result String String`</dt>
-<dd>Either a string representing the second parameter in exponential notation,
-with the requested number of digits after the decimal point (first parameter),
-or an error. An error should not occur if the requested number of digits is
-between 0 and 20.</dd>
+*   `toExponentialDigits : Int -> number -> Result String String`
 
-<dt>`toFixed : number -> String`</dt>
-<dd>A string representing the provided number in fixed-point notation.</dd>
+    Either a string representing the second parameter in exponential notation,
+    with the requested number of digits after the decimal point (first parameter),
+    or an error. An error should not occur if the requested number of digits is
+    between 0 and 20.
 
-<dt>`toFixedDigits : Int -> number -> Result String String`</dt>
-<dd>Either a string representing the second parameter in fixed-point notation,
-with the requested number of digits after the decimal point (first parameter),
-or an error. An error should not occur if the requested number of digits is
-between 0 and 20.</dd>
+*   `toFixed : number -> String`
 
-<dt>`toLocaleString`</dt>
-<dd>Not implemented for the moment, since localization requires some thought.</dd>
+    A string representing the provided number in fixed-point notation.
 
-<dt>`toPrecisionDigits : Int -> number -> Result String String`</dt>
-<dd>Either a string representing the second parameter in fixed-point or
-exponential notation, rounded to the requested number of significant digits
-(first parameter), or an error. An error should not occur if the requested
-number of digits is between 0 and 20.</dd>
+*   `toFixedDigits : Int -> number -> Result String String`
 
-<dt>`toStringUsingBase : Int -> number -> Result String String`</dt>
-<dd>Either a string representing the second parameter using the requested base
-(first parameter), or an error. An error should not occur if the requested base
-is between 2 and 36.</dd>
+    Either a string representing the second parameter in fixed-point notation,
+    with the requested number of digits after the decimal point (first parameter),
+    or an error. An error should not occur if the requested number of digits is
+    between 0 and 20.
 
-</dl>
+*   `toLocaleString`
+
+    Not implemented for the moment, since localization requires some thought.
+
+*   `toPrecisionDigits : Int -> number -> Result String String`
+
+    Either a string representing the second parameter in fixed-point or
+    exponential notation, rounded to the requested number of significant digits
+    (first parameter), or an error. An error should not occur if the requested
+    number of digits is between 0 and 20.
+
+*   `toStringUsingBase : Int -> number -> Result String String`
+
+    Either a string representing the second parameter using the requested base
+    (first parameter), or an error. An error should not occur if the requested base
+    is between 2 and 36.
+
 
 ## WebAPI.RegExp
 
@@ -311,6 +300,7 @@ TODO: Check if anything is missing.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp).
 
+
 ## WebAPI.String
 
 Generally speaking, strings are dealt with by the
@@ -320,6 +310,7 @@ in elm-lang/core.
 TODO: Check if anything is missing.
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
+
 
 ## WebAPI.Window
 
