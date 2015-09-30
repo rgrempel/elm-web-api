@@ -40,44 +40,6 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## WebAPI.Global
 
-See the Mozilla documentation for
-[function properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects#Function_properties).
-
-*   `eval`
-    Not implemented, since it is an abomination.
-
-*   `isFinite`
-    In elm-lang/core, as 
-    [`Basics.isInfinite`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isInfinite)
-    (presumably with the sense reversed).
-
-*   `isNan`
-    In elm-lang/core, as
-    [`Basics.isNan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isNaN)
-
-*   `parseFloat`
-    In elm-lang/core, as
-    [`String.toFloat`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toFloat)
-
-*   `parseInt`
-    In elm-lang/core, as
-    [`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
-
-*   `decodeURI`
-    Not implemented, since you will generally want `decodeURIComponent` instead.
-
-*   `decodeURIComponent`
-    In evancz/elm-http, as
-    [`Http.uriDecode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriDecode)
-
-*   `encodeURI`
-    Not implemented, since you will generally want `encodeURIComponent` instead.
-
-*   `encodeURIComponent`
-    In evancz/elm-http, as 
-    [`Http.uriEncode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriEncode)
-
-
 ## WebAPI.Intl
 
 TODO.
@@ -389,12 +351,32 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## WebAPI.Window
 
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window).
+See Mozilla documentation for the 
+[`Window` object](https://developer.mozilla.org/en-US/docs/Web/API/Window),
+and for 
+[function properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects#Function_properties).
 
 Since the browser's `window` object has so many facilities attached, I've typically split
 them up into individual modules -- see below for the cross-references.
 
 TODO: Finish going through the `window` API.
+
+*   `decodeURI`
+    Not implemented, since you will generally want `decodeURIComponent` instead.
+
+*   `decodeURIComponent`
+    In evancz/elm-http, as
+    [`Http.uriDecode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriDecode)
+
+*   `encodeURI`
+    Not implemented, since you will generally want `encodeURIComponent` instead.
+
+*   `encodeURIComponent`
+    In evancz/elm-http, as 
+    [`Http.uriEncode`](http://package.elm-lang.org/packages/evancz/elm-http/2.0.0/Http#uriEncode)
+
+*   `eval`
+    Not implemented, since it is an abomination.
 
 *   `history`
     See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
@@ -403,11 +385,28 @@ TODO: Finish going through the `window` API.
     See [`Window.dimensions`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Window#dimensions)
     in elm-lang/core
 
+*   `isFinite`
+    In elm-lang/core, as 
+    [`Basics.isInfinite`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isInfinite)
+    (presumably with the sense reversed).
+
+*   `isNan`
+    In elm-lang/core, as
+    [`Basics.isNan`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Basics#isNaN)
+
 *   `localStorage`
     See `WebAPI.Storage.localStorage`
 
 *   `location`
     See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
+
+*   `parseFloat`
+    In elm-lang/core, as
+    [`String.toFloat`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toFloat)
+
+*   `parseInt`
+    In elm-lang/core, as
+    [`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
 
 *   `screen`
     See `WebAPI.Screen.screen`
