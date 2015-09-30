@@ -9,6 +9,7 @@ import ElmTest.Runner.Element exposing (runDisplay)
 import WebAPI.MathTest
 import WebAPI.NumberTest
 import WebAPI.StorageTest
+import WebAPI.ScreenTest
 
 
 main : Signal Element
@@ -27,6 +28,7 @@ port task =
         [ WebAPI.MathTest.tests
         , WebAPI.NumberTest.tests
         , WebAPI.StorageTest.tests
+        , WebAPI.ScreenTest.tests
         ]
     `andThen`
     (send tests.address << suite "Browser tests")

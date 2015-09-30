@@ -8,7 +8,9 @@
     ],
     "exposed-modules": [
         "WebAPI.Math",
-        "WebAPI.Number"
+        "WebAPI.Number",
+        "WebAPI.Screen",
+        "WebAPI.Storage"
     ],
     "native-modules": true,
     "dependencies": {

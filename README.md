@@ -341,6 +341,31 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Sto
     A task which, when executed, removes all items.
 
 
+## WebAPI.Screen
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Screen).
+
+```elm
+type alias Screen =
+    { availTop: Int
+    , availLeft: Int
+    , availHeight: Int
+    , availWidth: Int
+    , colorDepth: Int
+    , pixelDepth: Int
+    , height: Int
+    , width: Int
+    }
+``` 
+
+*   `screen : Task x Screen`
+
+    The browser's `window.screen` object.
+
+    This is a `Task` because in multi-monitor setups, the result depends on which screen
+    the browser window is in. So, it is not necessarily a constant.
+
+
 ## WebAPI.String
 
 Generally speaking, strings are dealt with by the
@@ -356,6 +381,10 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window).
 
+Since the browser's `window` object has so many facilities attached, I've typically split
+them up into individual modules -- see below for the cross-references.
+
+TODO: Finish going through the `window` API.
 
 *   `history`
     See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
@@ -369,6 +398,9 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Win
 
 *   `location`
     See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
+
+*   `screen`
+    See `WebAPI.Screen.screen`
 
 *   `sessionStorage`
     See `WebAPI.Storage.sessionStorage`
