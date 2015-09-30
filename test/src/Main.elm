@@ -8,6 +8,7 @@ import ElmTest.Runner.Element exposing (runDisplay)
 
 import WebAPI.MathTest
 import WebAPI.NumberTest
+import WebAPI.StorageTest
 
 
 main : Signal Element
@@ -20,11 +21,12 @@ tests =
     mailbox (suite "Not arrived yet" [])
 
 
-port task : Task x ()
+port task : Task () ()
 port task =
     sequence
         [ WebAPI.MathTest.tests
         , WebAPI.NumberTest.tests
+        , WebAPI.StorageTest.tests
         ]
     `andThen`
     (send tests.address << suite "Browser tests")

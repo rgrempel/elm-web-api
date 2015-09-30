@@ -301,6 +301,46 @@ TODO: Check if anything is missing.
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp).
 
 
+## WebAPI.Storage
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
+
+*   `localStorage : Storage`
+
+    The browser's `localStorage` object.
+
+*   `sessionStorage : Storage`
+
+    The browser's `sessionStorage` object.
+
+*   `length : Storage -> Task x Int`
+
+    A task which, when executed, determines the number of items stored in the
+    `Storage` object.
+
+*   `key : Storage -> Int -> Task x (Maybe String)`
+
+    A task which, when executed, determines the name of the key at the given
+    index (zero-based).
+
+*   `getItem : Storage -> String -> Task x (Maybe String)`
+
+    A task which, when executed, gets the value at the given key.
+
+*   `setItem : Storage -> String -> String -> Task String ()`
+
+    A task which, when executed, sets the value (third parameter)
+    at the given key (second parameter), or fails with an error message.
+
+*   `removeItem : Storage -> String -> Task x ()`
+
+    A task which, when executed, removes the item with the given key.
+
+*   `clear : Storage -> Task x ()`
+    
+    A task which, when executed, removes all items.
+
+
 ## WebAPI.String
 
 Generally speaking, strings are dealt with by the
@@ -314,7 +354,23 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## WebAPI.Window
 
-TODO.
-
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window).
+
+
+*   `history`
+    See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
+
+*   `innerHeight`, `innerWidth`
+    See [`Window.dimensions`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Window#dimensions)
+    in elm-lang/core
+
+*   `localStorage`
+    See `WebAPI.Storage.localStorage`
+
+*   `location`
+    See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
+
+*   `sessionStorage`
+    See `WebAPI.Storage.sessionStorage`
+
 
