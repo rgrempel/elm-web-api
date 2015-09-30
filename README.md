@@ -361,6 +361,16 @@ them up into individual modules -- see below for the cross-references.
 
 TODO: Finish going through the `window` API.
 
+*   `alert : String -> Task x ()`
+
+    The browser's `window.alert()` function.
+
+*   `confirm : String -> Task () ()`
+
+    The browser's `window.confirm()` function.
+
+    The task will succeed if the user confirms, and fail if the user cancels.
+
 *   `decodeURI`
     Not implemented, since you will generally want `decodeURIComponent` instead.
 
@@ -408,6 +418,16 @@ TODO: Finish going through the `window` API.
     In elm-lang/core, as
     [`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
 
+*   `prompt : String -> String -> Task () String`
+
+    The browser's `window.prompt()` function.
+
+    The first parameter is a message, and the second parameter is a default
+    response.
+
+    The task will succeed with the user's response, or fail if the user cancels
+    or enters blank text.
+
 *   `scroll`, `scrollBy`, `scrollTo`, `scrollX`, `scrollY`
     There are a few puzzles about how to best adapt these for Elm, so I'm not
     sure a simplistic approach would be best -- a module that thought through
@@ -416,7 +436,8 @@ TODO: Finish going through the `window` API.
 *   `screen`
     See `WebAPI.Screen.screen`
 
-*   `screenX`, `screenY` See `WebAPI.Screen.screenXY`
+*   `screenX`, `screenY`
+    See `WebAPI.Screen.screenXY`
 
 *   `sessionStorage`
     See `WebAPI.Storage.sessionStorage`

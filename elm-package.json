@@ -10,7 +10,8 @@
         "WebAPI.Math",
         "WebAPI.Number",
         "WebAPI.Screen",
-        "WebAPI.Storage"
+        "WebAPI.Storage",
+        "WebAPI.Window"
     ],
     "native-modules": true,
     "dependencies": {

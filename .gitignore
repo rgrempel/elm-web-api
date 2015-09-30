@@ -3,4 +3,6 @@ elm.js
 test/elm-stuff
 test/elm.html
 test/elm.js
+examples/elm.html
+examples/elm.js
 .*.swp
