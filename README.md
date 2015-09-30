@@ -428,6 +428,17 @@ TODO: Finish going through the `window` API.
     The task will succeed with the user's response, or fail if the user cancels
     or enters blank text.
 
+*   `setInterval`
+    Consider [`Time.fps`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Time#fps)
+    or its variants, or 
+    [`AnimationFrame.frame`](http://package.elm-lang.org/packages/jwmerrill/elm-animation-frame/1.0.3/AnimationFrame#frame)
+    or its variants, or
+    [`Effects.tick`](http://package.elm-lang.org/packages/evancz/elm-effects/2.0.0/Effects#tick).
+
+*   `setTimeout`
+    Use [`Task.sleep`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Task#sleep)
+    from elm-lang/core, and then apply an `andThen` to do something after sleeping.
+
 *   `scroll`, `scrollBy`, `scrollTo`, `scrollX`, `scrollY`
     There are a few puzzles about how to best adapt these for Elm, so I'm not
     sure a simplistic approach would be best -- a module that thought through
