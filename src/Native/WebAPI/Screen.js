@@ -24,6 +24,14 @@ Elm.Native.WebAPI.Screen.make = function (localRuntime) {
                         Utils.copy(window.screen)
                     )
                 );
+            }),
+
+            screenXY: Task.asyncFunction(function (callback) {
+                callback(
+                    Task.succeed(
+                        Utils.Tuple2(window.screenX, window.screenY)
+                    )
+                );
             })
         };
     }

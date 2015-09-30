@@ -26,10 +26,21 @@ screenTest =
                             ]
         )
 
+
+screenXYTest : Task () Test
+screenXYTest =
+    screenXY |>
+        Task.map (\(x, y) ->
+            test "screenXY" <|
+                assert (x >= 0 && y >= 0)
+        )
+
+
 tests : Task () Test
 tests =
-    Task.map (suite "Screen") <|
+    Task.map (suite "WebAPI.ScreenTest") <|
         sequence <|
             [ screenTest
+            , screenXYTest
             ]
 
