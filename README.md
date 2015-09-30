@@ -408,6 +408,11 @@ TODO: Finish going through the `window` API.
     In elm-lang/core, as
     [`String.toInt`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String#toInt)
 
+*   `scroll`, `scrollBy`, `scrollTo`, `scrollX`, `scrollY`
+    There are a few puzzles about how to best adapt these for Elm, so I'm not
+    sure a simplistic approach would be best -- a module that thought through
+    scrolling in an Elm context would probably be better.
+
 *   `screen`
     See `WebAPI.Screen.screen`
 
