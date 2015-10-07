@@ -39,14 +39,22 @@ tests =
                 , test "toExponentialDigits success" <| assertEqual (WebAPI.Number.toExponentialDigits 1 200.0) (Ok "2.0e+2")
                 , test "toExponentialDigits failure" <| assert <| isErr (WebAPI.Number.toExponentialDigits -10 200)
                 , test "toExponentialDigits integer" <| assertEqual (WebAPI.Number.toExponentialDigits 1 200) (Ok "2.0e+2")
+                , test "safeExponentialDigits success" <| assertEqual (WebAPI.Number.safeExponentialDigits 1 200.0) "2.0e+2"
+                , test "safeExponentialDigits failure" <| assertEqual (WebAPI.Number.safeExponentialDigits -10 200.0) "2e+2"
                 , test "toFixed" <| assertEqual (WebAPI.Number.toFixed 200.1) "200"
                 , test "toFixedDigits success" <| assertEqual (WebAPI.Number.toFixedDigits 2 200.1) (Ok "200.10")
                 , test "toFixedDigits failure" <| assert <| isErr (WebAPI.Number.toFixedDigits -10 200)
                 , test "toFixedDigits integer" <| assertEqual (WebAPI.Number.toFixedDigits 2 200) (Ok "200.00")
+                , test "safeFixedDigits success" <| assertEqual (WebAPI.Number.safeFixedDigits 2 200.1) "200.10"
+                , test "safeFixedDigits failure" <| assertEqual (WebAPI.Number.safeFixedDigits -10 200.1) "200"
                 , test "toPrecisionDigits success" <| assertEqual (WebAPI.Number.toPrecisionDigits 5 200.1) (Ok "200.10")
                 , test "toPrecisionDigits failure" <| assert <| isErr (WebAPI.Number.toPrecisionDigits -10 200)
                 , test "toPrecisionDigits integer" <| assertEqual (WebAPI.Number.toPrecisionDigits 2 223) (Ok "2.2e+2")
+                , test "safePrecisionDigits success" <| assertEqual (WebAPI.Number.safePrecisionDigits 5 200.1) "200.10"
+                , test "safePrecisionDigits failure" <| assertEqual (WebAPI.Number.safePrecisionDigits -10 200.1) "2e+2"
                 , test "toStringUsingBase success" <| assertEqual (WebAPI.Number.toStringUsingBase 16 32.0) (Ok "20")
                 , test "toStringUsingBase failure" <| assert <| isErr (WebAPI.Number.toStringUsingBase -10 200)
                 , test "toStringUsingBase integer" <| assertEqual (WebAPI.Number.toStringUsingBase 16 32) (Ok "20")
+                , test "safeStringUsingBase success" <| assertEqual (WebAPI.Number.safeStringUsingBase 16 32.0) "20"
+                , test "safeStringUsingBase failure" <| assertEqual (WebAPI.Number.safeStringUsingBase -10 32) "100000"
                 ]

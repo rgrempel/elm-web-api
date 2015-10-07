@@ -1,9 +1,9 @@
 module WebAPI.Number
     ( maxValue, minValue, nan, negativeInfinity, positiveInfinity
-    , toExponential, toExponentialDigits
-    , toFixed, toFixedDigits
-    , toPrecisionDigits
-    , toStringUsingBase
+    , toExponential, toExponentialDigits, safeExponentialDigits
+    , toFixed, toFixedDigits, safeFixedDigits
+    , toPrecisionDigits, safePrecisionDigits
+    , toStringUsingBase, safeStringUsingBase
     ) where
 
 
@@ -18,11 +18,15 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/Jav
 
 ## Functions
 
-@docs toExponential, toExponentialDigits, toFixed, toFixedDigits, toPrecisionDigits, toStringUsingBase
+@docs toExponential, toExponentialDigits, safeExponentialDigits
+@docs toFixed, toFixedDigits, safeFixedDigits
+@docs toPrecisionDigits, safePrecisionDigits
+@docs toStringUsingBase, safeStringUsingBase
 -}
 
 
 import Result exposing (Result)
+import Debug
 import Native.WebAPI.Number
 
 
@@ -67,6 +71,20 @@ toExponentialDigits : Int -> number -> Result String String
 toExponentialDigits = Native.WebAPI.Number.toExponentialDigits
 
 
+{-| A string representing the second parameter in exponential notation,
+with the requested number of digits after the decimal point (first parameter).
+The number of digits will be limited to between 0 and 20.
+-}
+safeExponentialDigits : Int -> number -> String
+safeExponentialDigits digits num =
+    case toExponentialDigits (clamp 0 20 digits) num of
+        Ok value ->
+            value
+
+        Err err ->
+            Debug.crash "Unexpected error: " ++ err
+    
+
 {-| A string representing the provided number in fixed-point notation. -}
 toFixed : number -> String
 toFixed = Native.WebAPI.Number.toFixed
@@ -81,18 +99,59 @@ toFixedDigits : Int -> number -> Result String String
 toFixedDigits = Native.WebAPI.Number.toFixedDigits
 
 
+{-| A string representing the second parameter in fixed-point notation,
+with the requested number of digits after the decimal point (first parameter).
+The number of digits will be limited to between 0 and 20.
+-}
+safeFixedDigits : Int -> number -> String
+safeFixedDigits digits num =
+    case toFixedDigits (clamp 0 20 digits) num of
+        Ok value ->
+            value
+
+        Err err ->
+            Debug.crash "Unexpected error: " ++ err
+
+
 {-| Either a string representing the second parameter in fixed-point or
 exponential notation, with the requested number of significant digits (first
 parameter), or an error. An error should not occur if the requested number of
-digits is between 0 and 20.
+digits is between 1 and 20.
 -}
 toPrecisionDigits : Int -> number -> Result String String
 toPrecisionDigits = Native.WebAPI.Number.toPrecisionDigits
 
 
-{-| Either a string representing the second parameter using the requested base
+{-| A string representing the second parameter in fixed-point or exponential
+notation, with the requested number of significant digits (first parameter).
+The number of digits will be limited to between 1 and 20.
+-}
+safePrecisionDigits : Int -> number -> String
+safePrecisionDigits digits num =
+    case toPrecisionDigits (clamp 1 20 digits) num of
+        Ok value ->
+            value
+
+        Err err ->
+            Debug.crash "Unexpected error: " ++ err
+
+
+{-| Either a string representing the second parameter, using the requested base
 (first parameter), or an error. An error should not occur if the requested base
 is between 2 and 36.
 -}
 toStringUsingBase : Int -> number -> Result String String
 toStringUsingBase = Native.WebAPI.Number.toStringUsingBase
+
+
+{-| A string representing the second parameter, using the requested base
+(first parameter).  The requested base will be limited to between 2 and 36.
+-}
+safeStringUsingBase : Int -> number -> String
+safeStringUsingBase base num =
+    case toStringUsingBase (clamp 2 36 base) num of
+        Ok value ->
+            value
+
+        Err err ->
+            Debug.crash "Unexpected error: " ++ err
