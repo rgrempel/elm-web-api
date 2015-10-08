@@ -11,6 +11,17 @@ Elm.Native.WebAPI.Screen.make = function (localRuntime) {
         var Task = Elm.Native.Task.make(localRuntime);
         var Utils = Elm.Native.Utils.make(localRuntime);
     
+        var copy;
+        if (Utils.copy) {
+            // In core before 3.0.0
+            copy = Utils.copy;
+        } else {
+            // In core from 3.0.0
+            copy = function (value) {
+                return Utils.update(value, {});
+            };
+        }
+
         localRuntime.Native.WebAPI.Screen.values = {
             // Note that this is a Task because in a multi-monitor setup, the
             // result depends on which monitor the browser window is being
@@ -21,7 +32,7 @@ Elm.Native.WebAPI.Screen.make = function (localRuntime) {
             screen: Task.asyncFunction(function (callback) {
                 callback(
                     Task.succeed(
-                        Utils.copy(window.screen)
+                        copy(window.screen)
                     )
                 );
             }),
