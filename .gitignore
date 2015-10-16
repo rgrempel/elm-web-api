@@ -1,8 +1,6 @@
-elm-stuff
-elm.js
-test/elm-stuff
-test/elm.html
-test/elm.js
-examples/elm.html
-examples/elm.js
+**/elm-stuff
+**/elm.js
+**/index.html
+**/elm.html
+**/node_modules
 .*.swp
