@@ -13,6 +13,9 @@ modules here. For instance:
 *   localStorage, sessionStorage
     See `WebAPI.Storage`
 
+*   location
+    See `WebAPI.Location`
+
 *   screen, screenX, screenY
     See `WebAPI.Screen`
 

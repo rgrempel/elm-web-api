@@ -59,6 +59,43 @@ TODO: Check if anything is missing.
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
 
 
+## WebAPI.Location
+
+See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Location).
+
+Note that there is a `Signal`-oriented library for location-related things at
+[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+
+```elm
+type alias Location =
+    { href: String
+    , protocol: String
+    , host: String
+    , hostname: String
+    , port': String
+    , pathname: String
+    , search: String
+    , hash: String
+    , origin: String
+    }
+```
+
+*   `assign`
+    Use `setPath` from
+    [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+
+*   `location -> Task x Location`
+    The browser's `window.location` object.
+
+*   `reload : Bool -> Task String ()`
+    Reloads the page from the current URL. The parameter controls whether to force the browser
+    to reload from the server (`True`), or allow the use of the cache (`False`).
+
+*   `replace`
+    Use `replacePath` from
+    [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+
+
 ## WebAPI.Math
 
 See the Mozilla documentation for the
@@ -408,7 +445,9 @@ TODO: Finish going through the `window` API.
     See `WebAPI.Storage.localStorage`
 
 *   `location`
-    See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
+    For a `Signal`-oriented approach to things you might do with `window.location`, see
+    [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+    For some additional `Task`-oriented approaches, see WebAPI.Location.
 
 *   `parseFloat`
     In elm-lang/core, as
