@@ -52,6 +52,8 @@ applying the following principles:
   if there is some overlap.
 
 
+## Contents
+
 * [WebAPI.Location](#webapilocation)
 * [WebAPI.Math](#webapimath)
 * [WebAPI.Number](#webapinumber)
