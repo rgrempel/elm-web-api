@@ -74,7 +74,8 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## WebAPI.Intl
 
-TODO.
+TODO. Note that Safari doesn't support this, so it would need a
+[polyfill](https://www.npmjs.com/package/intl).
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
 
