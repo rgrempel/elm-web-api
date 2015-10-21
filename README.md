@@ -72,6 +72,8 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 TODO: Not finished yet.
 
 ```elm
+module WebAPI.Date where
+
 {-| Get the current date, via the browser's `new Date()` -}
 current : Task x Date
 
