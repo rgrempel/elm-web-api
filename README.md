@@ -54,6 +54,7 @@ applying the following principles:
 
 ## Contents
 
+* [WebAPI.Date](#webapidate)
 * [WebAPI.Location](#webapilocation)
 * [WebAPI.Math](#webapimath)
 * [WebAPI.Number](#webapinumber)
@@ -63,13 +64,51 @@ applying the following principles:
 
 ## WebAPI.Date
 
-Generally speaking, dates are dealt with by the
-[`Date` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Date)
-in elm-lang/core.
-
-TODO: Check if anything is missing.
+Generally speaking, dates are dealt with by the `Date` and `Time` modules in
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
+
+TODO: Not finished yet.
+
+```elm
+{-| Get the current date, via the browser's `new Date()` -}
+current : Task x Date
+
+{-| Get the current time, via the browser's `Date.now()` -}
+now : Task x Time
+
+{-| The parts of a date, as a record. Note that, as in Javascript,
+the month is 0-based, with January = 0.
+-}
+type alias Parts =
+    { year : Int
+    , month : Int
+    , day : Int
+    , hour : Int
+    , minutes : Int
+    , seconds : Int
+    , milliseconds : Int
+    }
+
+{-| Construct a `Date` from the provided values, via the browser's
+`new Date(...)`
+-}
+fromParts : Parts -> Date
+
+{-| Construct a `Time` from the provided UTC values, via the browser's
+`Date.UTC()`
+-}
+utc : Parts -> Time
+```
+
+***See also***
+
+**`new Date(String)`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+For the browser's `new Date(String)`, use `Date.fromString` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
 
 ## WebAPI.Intl

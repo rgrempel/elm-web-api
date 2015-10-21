@@ -9,6 +9,7 @@ import WebAPI.NumberTest
 import WebAPI.StorageTest
 import WebAPI.ScreenTest
 import WebAPI.LocationTest
+import WebAPI.DateTest
 
 
 test : Task () Test
@@ -20,6 +21,7 @@ test =
             , WebAPI.StorageTest.tests
             , WebAPI.ScreenTest.tests
             , WebAPI.LocationTest.tests
+            , WebAPI.DateTest.tests
             ]
 
 
