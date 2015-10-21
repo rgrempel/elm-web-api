@@ -24,6 +24,34 @@ The implementations provided here are intentionally simplistic. The idea is to
 do as little as possible to make the API available in Elm -- any additional
 logic or convenience can be supplied by other packages on top of this.
 
+One question I haven't entirely settled on is how to account for the fact that
+some of these facilities might not always be available. For the moment, I'm
+applying the following principles:
+
+* For the moment, at least, I'm not implementing things at all unless they are
+  common to the 'evergreen' browsers.
+
+* Where the Javascript can throw exceptions in the normal course of events,
+  I'm accounting for that in the API (i.e. via using `Result`, `Maybe` or
+  `Task` to wrap the return value, as appropriate).
+
+* In principle, I could use the same mechanism to deal with whole facilities
+  that aren't present (e.g. returning a `Maybe Storage` in `WebAPI.Storage`
+  so that I can return `Nothing` if it's not present). However, that would
+  add some complexity for the client for possibly little gain.
+
+* Eventually, I'll set up testing via Travis and SauceLabs, so that I can
+  precisely define which browsers are supported. Then, if there are specific
+  facilities that are missing from some browsers I'd like to support, I can do
+  something fancy to account for that.
+
+* For the moment, I'm not thinking too hard about supporting node.js. That's a
+  somewhat larger issue for Elm (it requires some shimming even to get
+  elm-lang/core to work). Furthermore, it might make sense to have a separate
+  package to wrap node.js-oriented APIs (and provide appropriate shims), even
+  if there is some overlap.
+
+
 * [WebAPI.Location](#webapilocation)
 * [WebAPI.Math](#webapimath)
 * [WebAPI.Number](#webapinumber)
