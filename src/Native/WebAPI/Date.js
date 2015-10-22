@@ -50,6 +50,10 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
                     parts.seconds,
                     parts.milliseconds
                 );
+            },
+
+            timezoneOffsetInMinutes : function (date) {
+                return date.getTimezoneOffset();
             }
         };
     }

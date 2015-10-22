@@ -6,7 +6,7 @@ import Task exposing (Task, sequence, succeed, andThen)
 
 import WebAPI.Date exposing (..)
 import Date
-import Debug
+import Time
 
 
 testCurrent : Task x Test
@@ -59,7 +59,19 @@ testUtc =
 
     in
         test "utc" <|
-            assert (abs (time - 1422752461001) < 86400)
+            assert (abs (time - 1422752461001) < (12 * Time.hour))
+
+
+testTimezoneOffset : Test
+testTimezoneOffset =
+    let
+        date =
+            fromParts (Parts 2015 1 1 1 1 1 1)
+
+    in
+        test "timezoneOffset" <|
+            assert <|
+                (abs (timezoneOffset date)) < (12 * Time.hour)
 
 
 tests : Task () Test
@@ -73,5 +85,6 @@ tests =
             List.map Task.succeed
                 [ testFromParts
                 , testUtc
+                , testTimezoneOffset
                 ]
 

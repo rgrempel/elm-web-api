@@ -1,6 +1,7 @@
 module WebAPI.Date
     ( current, now
-    , Parts, fromParts, utc
+    , Parts, fromParts
+    , utc, timezoneOffset
     ) where
 
 
@@ -18,6 +19,8 @@ For the browser's `new Date(String)`, use `Date.fromString` from
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
 @docs Parts, fromParts, utc
+
+@docs timezoneOffset
 -}
 
 import Date exposing (Date)
@@ -58,10 +61,27 @@ fromParts : Parts -> Date
 fromParts = Native.WebAPI.Date.fromParts
 
 
-{-| Construct a `Time` from the provided UTC values, via
-the browser's `Date.UTC()`
+{-| Construct a `Time` from the provided UTC values, via the browser's
+`Date.UTC()`.
+
+TODO: Consider whether the implicitly applied UTC offset can be considered a
+constant.
 -}
 utc : Parts -> Time
 utc = Native.WebAPI.Date.utc
 
+
+{-| The difference between UTC and local time. Note that this is in units of
+`Time`, rather than "minutes" as in Javascript.
+
+TODO: Consider whether this is really a constant ... technically, it may need
+to be a `Task`, since in theory the `timezoneOffset` can change.
+-}
+timezoneOffset : Date -> Time
+timezoneOffset date =
+    (timezoneOffsetInMinutes date) * Time.minute
+
+
+timezoneOffsetInMinutes : Date -> Time
+timezoneOffsetInMinutes = Native.WebAPI.Date.timezoneOffsetInMinutes
 

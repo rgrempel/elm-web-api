@@ -98,10 +98,21 @@ type alias Parts =
 -}
 fromParts : Parts -> Date
 
-{-| Construct a `Time` from the provided UTC values, via the browser's
-`Date.UTC()`
+{-| Construct a `Time` from the provided UTC values, via
+the browser's `Date.UTC()`.
+
+TODO: Consider whether the implicitly applied UTC offset can be considered a
+constant.
 -}
 utc : Parts -> Time
+
+{-| The difference between UTC and local time. Note that this is in units of
+`Time`, rather than "minutes" as in Javascript.
+
+TODO: Consider whether this is really a constant ... technically, it may need
+to be a `Task`, since in theory the `timezoneOffset` can change.
+-}
+timezoneOffset : Date -> Time
 ```
 
 ***See also***
@@ -110,6 +121,60 @@ utc : Parts -> Time
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 For the browser's `new Date(String)`, use `Date.fromString` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getDate()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.day` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getDay()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.dayOfWeek` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getFullYear()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.year` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getHours()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.hour` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getMilliseconds`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.millisecond` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getMinutes()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.minute` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getMonth()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.month` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getSeconds()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.second` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`getTime()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.toTime` from
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
 
