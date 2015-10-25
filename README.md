@@ -545,7 +545,7 @@ exp : number -> Float
 {-| Natural logarithm of 2, approximately 0.693. -}
 ln2 : Float
 
-{-| Natural logarithm of 2, approximately 2.303. -}
+{-| Natural logarithm of 10, approximately 2.303. -}
 ln10 : Float
 
 {-| Returns the natural logarithm (log e, also ln) of a number. -}
