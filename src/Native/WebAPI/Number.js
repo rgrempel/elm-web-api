@@ -55,7 +55,7 @@ Elm.Native.WebAPI.Number.make = function (localRuntime) {
         localRuntime.Native.WebAPI.Number.values = {
             maxValue: Number.MAX_VALUE,
             minValue: Number.MIN_VALUE,
-            nan: Number.Nan,
+            nan: Number.NaN,
             negativeInfinity: Number.NEGATIVE_INFINITY,
             positiveInfinity: Number.POSITIVE_INFINITY,
             toExponential: toExponential,
