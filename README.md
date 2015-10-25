@@ -127,10 +127,20 @@ Generally speaking, dates are dealt with by the `Date` and `Time` modules in
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
 
-TODO: Not finished yet.
+Truly dealing with all the complexity of dates requires something that goes
+far beyond the Javascript API -- for instance, one could ideally think in terms
+of wrapping (or, even better, porting) the [moment.js](http://momentjs.com)
+library (or something even better).
+
+That isn't in scope for this module. Instead, this is intended merely to be a
+thin wrapper over the Javascript `Date` API, such as it is.
 
 ```elm
 module WebAPI.Date where
+
+{- --------------------------------- 
+   Getting the current date and time
+   --------------------------------- -}
 
 {-| Get the current date, via the browser's `new Date()` -}
 current : Task x Date
@@ -138,39 +148,185 @@ current : Task x Date
 {-| Get the current time, via the browser's `Date.now()` -}
 now : Task x Time
 
-{-| The parts of a date, as a record. Note that, as in Javascript,
-the month is 0-based, with January = 0.
+{- ---------
+   Timezones 
+   --------- -}
+
+{-| The Javascript API allows you to perform certain operations in terms of
+the "local" timezone, or in terms of UTC. So, where we wrap those APIs, we use
+this type to let you pick (rather than having separate functions). Of course,
+you can use partial application to create separate functions if you like.
+
+Note that this isn't the kind of support that a more sophisticated library
+would have for timezones -- it merely wraps what Javascript provides.
+-}
+type Timezone
+    = Local
+    | UTC
+
+{-| Javascript's `getTimezoneOffset()`.
+
+This represents what Javascript thinks is the offset between UTC and local time,
+for the specified date. It can differ from date to date depending on whether
+daylight savings time is in effect on that date.
+
+Note that this is in units of `Time`, so you can scale via `Time.inMinutes` etc.
+-}
+timezoneOffset : Date -> Time
+
+{- -------------------
+   The parts of a date 
+   ------------------- -}
+
+{-| The parts of a date.
+
+Note that (as in the Javascript APIs) the month is 0-based, with January = 0.
 -}
 type alias Parts =
     { year : Int
     , month : Int
     , day : Int
     , hour : Int
-    , minutes : Int
-    , seconds : Int
-    , milliseconds : Int
+    , minute : Int
+    , second : Int
+    , millisecond : Int
     }
 
-{-| Construct a `Date` from the provided values, via the browser's
-`new Date(...)`
+{-| Construct a `Date` from the provided parts, using the specified timezone.
+
+For `Local`, this uses `new Date(...)`.
+
+For `UTC`, this uses `new Date(Date.UTC(...))`.
 -}
-fromParts : Parts -> Date
+fromParts : Timezone -> Parts -> Date
 
-{-| Construct a `Time` from the provided UTC values, via
-the browser's `Date.UTC()`.
+{-| Break a `Date` up into its parts, using the specified timezone.
 
-TODO: Consider whether the implicitly applied UTC offset can be considered a
-constant.
+For `Local`, this uses `getFullYear()`, `getMonth()`, etc.
+
+For `UTC`, this uses `getFullYearUTC()`, `getMonthUTC()`, etc.
 -}
-utc : Parts -> Time
+toParts : Timezone -> Date -> Parts
 
-{-| The difference between UTC and local time. Note that this is in units of
-`Time`, rather than "minutes" as in Javascript.
+{-| Get the day of the week corresopnding to a `Date`.
 
-TODO: Consider whether this is really a constant ... technically, it may need
-to be a `Task`, since in theory the `timezoneOffset` can change.
+This is handled separately from `Parts` because it is not symmetrical --
+it makes no sense for there to be a constructor based on this.
 -}
-timezoneOffset : Date -> Time
+dayOfWeek : Timezone -> Date -> Date.Day
+
+{-| Converts from Javascript's 0-based months (where January = 0) to`Date.Month`. -}
+toMonth : Int -> Date.Month
+
+{-| Converts from `Date.Month` to Javascript's 0-based months (where January = 0). -}
+fromMonth : Date.Month -> Int
+
+{-| Converts from Javascript's 0-based days (where Sunday = 0) to`Date.Day`. -}
+toDay : Int -> Date.Day
+
+{-| Converts from `Date.Day` to Javascript's 0-based days (where Sunday = 0). -}
+fromDay : Date.Day -> Int
+
+{- ---------------
+   Date arithmetic
+   --------------- -}
+
+{-| Offset the `Date` by the supplied `Time` (i.e. positive values offset into
+the future, and negative values into the past).
+
+You can use `day`, `week`, `Time.minute`, etc. to scale. However, that won't
+always do what you actually want, since the values are treated as durations,
+rather than human-oriented intervals. For instance, `offsetTime (365 * day)
+date` will advance the date by 365 days. However, if a leap year is involved,
+the resulting date might be a different day of the year. If you actually want
+the same day in the next year, then use `offsetYear` instead.
+-}
+offsetTime : Time -> Date -> Date
+
+{-| Offset the `Date` by the specified number of years (forward or backward),
+using Javascript's `setYear` and `getYear` (or `getYearUTC` and `setYearUTC`).
+
+Leap years are handled by the underlying Javascript APIs as follows:
+
+* If the supplied date is February 29, and the target year has no February 29,
+  then you'll end up with March 1 in the target year. (Arguably, you might
+  prefer February 28, but I'm not sure there is a clearly correct answer).
+
+* If the supplied date is February 29, and the target year also has a February
+  29, then you'll end up with February 29.
+
+* The year is interpreted in terms of either the local timezone or UTC, according
+  to what you specify. I think the only case in which this could make a
+  difference is in determining whether it is February 29.
+
+* If the offset "crosses" a leap day, then you'll end up with the "same" day in
+  the target year ... for instance, `offsetYear 1` will sometimes move 365
+  days and sometimes 366 days, depending on whether a leap year is involved.
+
+A more sophisticated module might deal with these cases a little differently.
+-}
+offsetYear : Timezone -> Int -> Date -> Date
+
+{-| Offset the `Date` by the specified number of months (forward or backward),
+using Javascript's `setMonth` and `getMonth` (or `setMonthUTC` and `getMonthUTC()`).
+
+Here are a few notes about the underlying Javascript implementation:
+
+* Overflow and underflow basically do the right thing. That is, if you end up
+  with negative numbers, the year is decremented, and if you end up with
+  numbers past 11, the year is incremented. (Remember that Javascript months
+  are 0-based). And, in either case, the month is set to something between
+  0 and 11.
+
+* Dates at the beginning of the month are handled as you might expect. For
+  instance, adding 1 month to January 1 produces February 1, and adding 1 month
+  to February 1 produces March 1. Thus, the actual number of days added can vary,
+  depending on the length of the month.
+
+* However, dates at the end of the month are handled in a way that could seem
+  odd. For instance, adding 1 month to August 31 produces October 1 ... were
+  you expecting September 30? That would probably be more useful, and a more
+  sophisticated library might arrange for that.
+
+* Note that the date is interpreted according to either the local timezone or UTC,
+  as you specify. In some cases, that will affect whether the date is
+  considered to be the last day of the month, or the first day of the next
+  month, which will in turn affect whether the "end of month" anomaly is
+  triggered.
+-}
+offsetMonth : Timezone -> Int -> Date -> Date
+
+{- ---------------------------
+   Some additional time scales
+   --------------------------- -}
+
+{-| A convenience for arithmetic, analogous to `Time.hour`, `Time.minute`, etc. -}
+day : Time
+
+{-| A convenience for arithmetic, analogous to `Time.inHours`, `Time.inMinutes`, etc. -}
+inDays : Time -> Float
+
+{-| A convenience for arithmetic, analogous to `Time.hour`, `Time.minute`, etc. -}
+week : Time
+
+{-| A convenience for arithmetic, analogous to `Time.inHours`, `Time.inMinutes`, etc. -}
+inWeeks : Time -> Float
+
+{- ------------------
+   String conversions
+   ------------------ -}
+
+{-| The browser's `toDateString()` -}
+dateString : Date -> String
+
+{-| The browser's `toTimeString()` -}
+timeString : Date -> String
+
+{-| The browser's `toISOString()` -}
+isoString : Date -> String
+
+{-| The browser's `toUTCString()` -}
+utcString : Date -> String
 ```
 
 ***See also***
@@ -178,56 +334,70 @@ timezoneOffset : Date -> Time
 **`new Date(String)`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
-For the browser's `new Date(String)`, use `Date.fromString` from
+Use `Date.fromString` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`new Date(Number)`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.fromTime` from
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
 **`getDate()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.day` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .day`
 
 **`getDay()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.dayOfWeek` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `dayOfWeek Local`
 
 **`getFullYear()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.year` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .year`
 
 **`getHours()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.hour` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .hour`
 
-**`getMilliseconds`**
+**`getMilliseconds()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.millisecond` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .millisecond`
 
 **`getMinutes()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.minute` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .minute`
 
 **`getMonth()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.month` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .month`
 
 **`getSeconds()`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `Date.second` from
-[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest),
+or `toParts Local >> .second`
 
 **`getTime()`**
 
@@ -235,8 +405,57 @@ Use `Date.second` from
 Use `Date.toTime` from
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
+**`getUTCDate()`, `getUTCFullYear()`, `getUTCHours()`, `getUTCMilliseconds()`,
+`getUTCMinutes()`, `getUTCMonth()`, `getUTCSeconds()`**
 
-## WebAPI.Intl
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `toParts UTC`, and then pick out whichever things you need from the
+resulting `Parts`.
+
+**`getUTCDay()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `dayOfWeek UTC`
+
+**`parse()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use `Date.fromString` from
+[elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`setDate()`, `setDay()`, `setFullYear()`, `setHours()`, `setMilliseconds()`,
+`setMinutes()`, `setMonth()`, `setSeconds()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+What I would suggest is
+
+* Use `toParts Local`
+* Update whatever fields you with to update
+* Use `fromParts Local` to create a new `Date`
+
+Alternatively, in some scenarios you could use `offsetYear Local`, `offsetMonth Local` or `offsetTime`.
+
+**`setUTCDate()`, `setUTCDay()`, `setUTCFullYear()`, `setUTCHours()`, `setUTCMilliseconds()`,
+`setUTCMinutes()`, `setUTCMonth()`, `setUTCSeconds()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+What I would suggest is
+
+* Use `toParts UTC`
+* Update whatever fields you with to update
+* Use `fromParts UTC` to create a new `Date`
+
+Alternatively, in some scenarios you could use `offsetYear UTC`, `offsetMonth UTC` or `offsetTime`.
+
+**`toLocaleString()`, `toLocaleDateString()`, `toLocaleTimeString()`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+These aren't supported by Safari, so I've left them out for the moment.
+
+
+----------
+
+### WebAPI.Intl
 
 TODO. Note that Safari doesn't support this, so it would need a
 [polyfill](https://www.npmjs.com/package/intl).
