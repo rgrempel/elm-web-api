@@ -7,6 +7,8 @@
         "src"
     ],
     "exposed-modules": [
+        "WebAPI.Date",
+        "WebAPI.Location",
         "WebAPI.Math",
         "WebAPI.Number",
         "WebAPI.Screen",
