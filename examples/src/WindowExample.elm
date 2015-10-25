@@ -130,7 +130,7 @@ view address model =
             [ onClick address (Reload True) ]
             [ text "WebAPI.Location.reload True" ]
         , button
-            [ onClick address (Reload True) ]
+            [ onClick address (Reload False) ]
             [ text "WebAPI.Location.reload False" ]
         , h4 [] [ text "Message" ]
         , div [] [ text model ]
