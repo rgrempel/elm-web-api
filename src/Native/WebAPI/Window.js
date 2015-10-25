@@ -1,11 +1,11 @@
 Elm.Native = Elm.Native || {};
 Elm.Native.WebAPI = Elm.Native.WebAPI || {};
-Elm.Native.WebAPI.Window = Elm.Native.WebAPI.Storage || {};
+Elm.Native.WebAPI.Window = Elm.Native.WebAPI.Window || {};
 
 Elm.Native.WebAPI.Window.make = function (localRuntime) {
     localRuntime.Native = localRuntime.Native || {};
     localRuntime.Native.WebAPI = localRuntime.Native.WebAPI || {};
-    localRuntime.Native.WebAPI.Window = localRuntime.Native.WebAPI.Storage || {};
+    localRuntime.Native.WebAPI.Window = localRuntime.Native.WebAPI.Window || {};
 
     if (!localRuntime.Native.WebAPI.Window.values) {
         var Task = Elm.Native.Task.make(localRuntime);
