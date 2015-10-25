@@ -8,6 +8,9 @@ module WebAPI.Storage
 
 See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
 
+Note that there is a more sophisticated module for `Storage` at
+[TheSeamau5/elm-storage](https://github.com/TheSeamau5/elm-storage)
+
 ## Objects 
 
 @docs Storage, localStorage, sessionStorage

@@ -831,6 +831,9 @@ screenXY : Task x (Int, Int)
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
 
+There is a more sophisticated `Storage` module available at
+[TheSeamau5/elm-storage](https://github.com/TheSeamau5/elm-storage).
+
 Note that we're essentially assuming that `window.localStorage` and
 `window.sessionStorage` are, in fact, available. We could account for them
 possibly not being available by using a `Maybe` type.
