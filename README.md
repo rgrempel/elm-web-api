@@ -11,58 +11,116 @@ Mozilla's various Web APIs pages, e.g.
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 Essentially, they are various facilities available in a Javascript web
-environment. In order for Elm to use such facilities, it is necessary to write
-"native" code.
+environment. 
 
-* If the Elm code for a Web API already exists, I document it below.
-* If it does not already exist, then I have either:
-    * implemented it;
-    * indicated why it should not be implemented;
-    * or, put it on my TODO list.
+In order for Elm to use such facilities, it is necessary to write "native"
+code. So, I'm plugging away at it -- this is a work in progress.
 
-The implementations provided here are intentionally simplistic. The idea is to
-do as little as possible to make the API available in Elm -- any additional
-logic or convenience can be supplied by other packages on top of this.
+
+## Contents
+
+* [Supported browsers](#supportedbrowsers)
+* [Installation](#installation)
+* APIs
+    * [WebAPI.Date](#webapidate)
+    * [WebAPI.Location](#webapilocation)
+    * [WebAPI.Math](#webapimath)
+    * [WebAPI.Number](#webapinumber)
+    * [WebAPI.Screen](#webapiscreen)
+    * [WebAPI.Storage](#webapistorage)
+    * [WebAPI.Window](#webapiwindow)
+
+
+## Supported browsers
 
 One question I haven't entirely settled on is how to account for the fact that
 some of these facilities might not always be available. For the moment, I'm
 applying the following principles:
 
-* For the moment, at least, I'm not implementing things at all unless they are
-  common to the 'evergreen' browsers.
+*   For the moment, at least, I'm not implementing things at all unless they
+    are common to the 'evergreen' browsers.
 
-* Where the Javascript can throw exceptions in the normal course of events,
-  I'm accounting for that in the API (i.e. via using `Result`, `Maybe` or
-  `Task` to wrap the return value, as appropriate).
+*   Where the Javascript can throw exceptions in the normal course of events,
+    I'm accounting for that in the API (i.e. via using `Result`, `Maybe` or
+    `Task` to wrap the return value, as appropriate).
 
-* In principle, I could use the same mechanism to deal with whole facilities
-  that aren't present (e.g. returning a `Maybe Storage` in `WebAPI.Storage`
-  so that I can return `Nothing` if it's not present). However, that would
-  add some complexity for the client for possibly little gain.
+*   In principle, I could use the same mechanism to deal with whole facilities
+    that aren't present (e.g. returning a `Maybe Storage` in `WebAPI.Storage` so
+    that I can return `Nothing` if it's not present). However, that would
+    add some complexity for the client for possibly little gain.
 
-* Eventually, I'll set up testing via Travis and SauceLabs, so that I can
-  precisely define which browsers are supported. Then, if there are specific
-  facilities that are missing from some browsers I'd like to support, I can do
-  something fancy to account for that.
+*   Eventually, I'll set up testing via Travis and SauceLabs, so that I can
+    precisely define which browsers are supported. Then, if there are specific
+    facilities that are missing from some browsers I'd like to support, I can
+    do something fancy to account for that.
 
-* For the moment, I'm not thinking too hard about supporting node.js. That's a
-  somewhat larger issue for Elm (it requires some shimming even to get
-  elm-lang/core to work). Furthermore, it might make sense to have a separate
-  package to wrap node.js-oriented APIs (and provide appropriate shims), even
-  if there is some overlap.
+*   For the moment, I'm not thinking too hard about supporting node.js. That's
+    a somewhat larger issue for Elm (it requires some shimming even to get
+    elm-lang/core to work). Furthermore, it might make sense to have a separate
+    package to wrap node.js-oriented APIs (and provide appropriate shims), even
+    if there is some overlap.
 
 
-## Contents
+## Installation
 
-* [WebAPI.Date](#webapidate)
-* [WebAPI.Location](#webapilocation)
-* [WebAPI.Math](#webapimath)
-* [WebAPI.Number](#webapinumber)
-* [WebAPI.Screen](#webapiscreen)
-* [WebAPI.Storage](#webapistorage)
-* [WebAPI.Window](#webapiwindow)
+Because elm-web-api uses "native" modules, it requires approval before it can
+be included in the
+[Elm package repository](http://package.elm-lang.org/packages). For a variety of
+reasons, it's unlikely to get such approval. Thus, you cannot currently install
+it using `elm-package`.
 
-## WebAPI.Date
+However, you can still install it and use it via the following steps:
+
+*   Download this respository in one way or another. For instance, you might use:
+
+        git clone https://github.com/rgrempel/elm-web-api.git
+
+    Or, you might use git submodules, if you're adept at that. (I wouldn't suggest
+    trying it if you've never heard of them before).
+
+*   Modify your `elm-package.json` to refer to the `src` folder.
+
+    You can choose where you want to put the downloaded code, but wherever that
+    is, simply modify your `elm-package.json` file so that it can find the
+    `src` folder.  So, the "source-directories" entry in your
+    `elm-package.json` file might end up looking like this:
+
+        "source-directories": [
+            "src",
+            "elm-web-api/src"
+        ],
+
+    But, of course, that depends on where you've actually put it, and where the
+    rest of your code is.
+
+*   Modify your `elm-package.json` to indicate that you're using 'native' modules.
+    To do this, add the following entry to `elm-package.json`:
+
+        "native-modules": true,
+
+Now, doing this would have several implications which you should be aware of.
+
+*   You would, essentially, be trusting me (or looking to verify for yourself)
+    that the native code in this module is of high quality and will not cause
+    run-time errors or other problems.
+
+*   You would be relying on me to update that code when the mechanism for using
+    'native' modules in Elm changes, or when certain other internal details of Elm's
+    implementation change. Furthermore, you'd have to check here whenever the Elm
+    compiler's version changes, or the Elm core library's version changes, to see
+    whether an update is required.
+
+*   If you're using this as part of a module you'd like to publish yourself,
+    then you'll now also need approval before becoming available on the Elm
+    package repository.
+
+So, you may or may not really want to do this. But I thought it would be nice to
+let you know how.
+
+
+## APIs
+
+### WebAPI.Date
 
 Generally speaking, dates are dealt with by the `Date` and `Time` modules in
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
@@ -186,7 +244,9 @@ TODO. Note that Safari doesn't support this, so it would need a
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
 
 
-## WebAPI.JSON
+----------
+
+### WebAPI.JSON
 
 Generally speaking, JSON is handled by the
 [`Json.Decode`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Json-Decode) and
@@ -198,7 +258,9 @@ TODO: Check if anything is missing.
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
 
 
-## WebAPI.Location
+----------
+
+### WebAPI.Location
 
 See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Location).
 
@@ -245,7 +307,9 @@ Use `replacePath` from
 [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
 
 
-## WebAPI.Math
+----------
+
+### WebAPI.Math
 
 See the Mozilla documentation for the
 [Math object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
@@ -396,7 +460,9 @@ Use `Basics.tan` in
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
 
 
-## WebAPI.Number
+----------
+
+### WebAPI.Number
 
 See the Mozilla documentation for the
 [Number object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number).
@@ -488,7 +554,9 @@ safeStringUsingBase : Int -> number -> String
 Not implemented for the moment, since localization requires some thought.
 
 
-## WebAPI.RegExp
+----------
+
+### WebAPI.RegExp
 
 Generally speaking, regular expressions are handled by the
 [`Regex` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Regex)
@@ -499,7 +567,9 @@ TODO: Check if anything is missing.
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp).
 
 
-## WebAPI.Screen
+----------
+
+### WebAPI.Screen
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Screen).
 
@@ -536,7 +606,9 @@ screenXY : Task x (Int, Int)
 ```
 
 
-## WebAPI.Storage
+----------
+
+### WebAPI.Storage
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
 
@@ -578,7 +650,9 @@ clear : Storage -> Task x ()
 ```
 
 
-## WebAPI.String
+----------
+
+### WebAPI.String
 
 Generally speaking, strings are dealt with by the
 [`String` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String)
@@ -589,7 +663,9 @@ TODO: Check if anything is missing.
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
 
 
-## WebAPI.Window
+----------
+
+### WebAPI.Window
 
 See Mozilla documentation for the
 [`Window` object](https://developer.mozilla.org/en-US/docs/Web/API/Window),
