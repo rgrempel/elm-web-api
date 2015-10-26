@@ -1,4 +1,4 @@
-language: nodejs
+language: node_js
 
 node_js:
     - 0.10
@@ -6,11 +6,11 @@ node_js:
 sudo: false
 
 install:
-    - cd TEST_DIR && npm install
-    - cd TEST_DIR && ./node_modules/elm/bin/elm-package install --yes
+    - cd $TEST_DIR && npm install
+    - cd $TEST_DIR && ./node_modules/elm/bin/elm-package install --yes
 
 script:
-    - cd TEST_DIR && npm run ci
+    - cd $TEST_DIR && npm run ci
 
 env:
     matrix:
