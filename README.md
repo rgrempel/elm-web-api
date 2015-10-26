@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rgrempel/elm-web-api.svg)](https://travis-ci.org/rgrempel/elm-web-api)
+
 # elm-web-api
 
 The purpose of this package is to expose various standard web APIs to Elm,
