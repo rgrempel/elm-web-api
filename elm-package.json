@@ -8,6 +8,7 @@
     ],
     "exposed-modules": [
         "WebAPI.AnimationFrame",
+        "WebAPI.Cookie",
         "WebAPI.Date",
         "WebAPI.Location",
         "WebAPI.Math",

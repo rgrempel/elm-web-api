@@ -23,6 +23,8 @@ code. So, I'm plugging away at it -- this is a work in progress.
 * [Installation](#installation)
 * APIs
     * [WebAPI.AnimationFrame](#webapianimationframe)
+    * [WebAPI.Cookie](#webapicookie)
+    * [WebAPI.Document](#webapidocument)
     * [WebAPI.Date](#webapidate)
     * [WebAPI.Location](#webapilocation)
     * [WebAPI.Math](#webapimath)
@@ -170,6 +172,57 @@ type Request
 via `window.cancelAnimationFrame()`.
 -}
 cancel : Request -> Task x ()
+```
+
+
+-----------------
+
+### WebAPI.Cookie
+
+Wraps the browser's 
+[`document.cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+object.
+
+```elm
+module WebAPI.Cookie where
+
+{-| A `Task` which, when executed, will succeed with the cookies.
+
+In the resulting `Dict`, the keys and values are the key=value pairs parsed from
+Javascript's `document.cookie`. The keys and values will have been uriDecoded.
+-}
+get : Task x (Dict String String)
+
+{-| A task which will set a cookie using the provided key (first parameter)
+and value (second parameter).
+
+The key and value will both be uriEncoded.
+-}
+set : String -> String -> Task x ()
+
+{-| A task which will set a cookie using the provided options, key (second
+parameter), and value (third parameter).
+
+The key and value will be uriEncoded, as well as the path and domain options
+(if provided).
+-}
+setWith : Options -> String -> String -> Task x ()
+
+{-| Options which you can provide to setWith. -}
+type alias Options =
+    { path : Maybe String
+    , domain : Maybe String
+    , maxAge : Maybe Time
+    , expires : Maybe Date 
+    , secure : Maybe Bool
+    }
+
+{-| The default options, in which all options are set to `Nothing`.
+
+You can use this as a starting point for `setWith`, where you only want to
+specify some options.
+-}
+defaultOptions : Options
 ```
 
 -----------------
@@ -505,6 +558,26 @@ Alternatively, in some scenarios you could use `offsetYear UTC`, `offsetMonth UT
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 These aren't supported by Safari, so I've left them out for the moment.
+
+
+------------
+
+### WebAPI.Document
+
+See Mozilla documentation for the
+[`Document` object](https://developer.mozilla.org/en-US/docs/Web/API/Document).
+
+Since the browser's `document` object has so many facilities attached, I've typically split
+them up into individual modules -- see below for the cross-references.
+
+TODO: Finish going through the `document` API.
+
+***See also***
+
+**`cookie`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+See [WebAPI.Cookie](#webapicookie)
 
 
 ----------

@@ -13,6 +13,7 @@ import WebAPI.ScreenTest
 import WebAPI.LocationTest
 import WebAPI.DateTest
 import WebAPI.AnimationFrameTest
+import WebAPI.CookieTest
 
 
 test : Task () Test
@@ -26,6 +27,7 @@ test =
             , WebAPI.LocationTest.tests
             , WebAPI.DateTest.tests
             , WebAPI.AnimationFrameTest.tests
+            , WebAPI.CookieTest.tests
             ]
 
 
