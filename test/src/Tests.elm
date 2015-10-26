@@ -4,12 +4,15 @@ import Signal exposing (Signal, Mailbox, mailbox, constant, send)
 import Task exposing (Task, andThen, sequence)
 import ElmTest.Test exposing (Test, suite)
 
+import TestMailbox
+
 import WebAPI.MathTest
 import WebAPI.NumberTest
 import WebAPI.StorageTest
 import WebAPI.ScreenTest
 import WebAPI.LocationTest
 import WebAPI.DateTest
+import WebAPI.AnimationFrameTest
 
 
 test : Task () Test
@@ -22,6 +25,7 @@ test =
             , WebAPI.ScreenTest.tests
             , WebAPI.LocationTest.tests
             , WebAPI.DateTest.tests
+            , WebAPI.AnimationFrameTest.tests
             ]
 
 
@@ -31,7 +35,4 @@ task =
 
 
 tests : Mailbox Test
-tests =
-    mailbox (suite "Tests have not arrived yet" [])
-
-
+tests = TestMailbox.tests

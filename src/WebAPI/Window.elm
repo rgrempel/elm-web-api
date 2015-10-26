@@ -19,6 +19,9 @@ modules here. For instance:
 *   screen, screenX, screenY
     See `WebAPI.Screen`
 
+*   requestAnimationFrame, cancelAnimationFrame
+    See `WebAPI.AnimationFrame`
+
 @docs alert, confirm, prompt
 -}
 

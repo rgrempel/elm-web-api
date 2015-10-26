@@ -2,7 +2,7 @@ module Main where
 
 import Signal exposing (Signal, Mailbox, mailbox, constant, send)
 import Task exposing (Task, andThen, sequence)
-import Graphics.Element exposing (Element)
+import Graphics.Element exposing (Element, empty, flow, down)
 import ElmTest.Runner.Element exposing (runDisplay)
 import Tests
 
@@ -14,7 +14,15 @@ import WebAPI.ScreenTest
 
 main : Signal Element
 main =
-    Signal.map runDisplay (.signal Tests.tests)
+    let
+        update test element =
+            flow down
+                [ element
+                , runDisplay test
+                ]
+
+    in
+        Signal.foldp update empty (.signal Tests.tests)
 
 
 port task : Task () ()

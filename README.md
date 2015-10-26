@@ -22,6 +22,7 @@ code. So, I'm plugging away at it -- this is a work in progress.
 * [Supported browsers](#supportedbrowsers)
 * [Installation](#installation)
 * APIs
+    * [WebAPI.AnimationFrame](#webapianimationframe)
     * [WebAPI.Date](#webapidate)
     * [WebAPI.Location](#webapilocation)
     * [WebAPI.Math](#webapimath)
@@ -119,6 +120,59 @@ let you know how.
 
 
 ## APIs
+
+### WebAPI.AnimationFrame
+
+Bindings for 
+[`window.requestAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)
+and [`window.cancelAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame).
+
+Note that 
+[jwmerrill/elm-animation-frame](http://package.elm-lang.org/packages/jwmerrill/elm-animation-frame/latest)
+provides for a `Signal` of animation frames. So, this module merely provides a
+`Task`-oriented alternative.
+
+Other higher-level alternatives include 
+[evancz/elm-effects](http://package.elm-lang.org/packages/evancz/elm-effects/latest)
+and [rgrempel/elm-ticker](https://github.com/rgrempel/elm-ticker.git).
+
+```elm
+module WebAPI.AnimationFrame where
+
+{-| A task which, when executed, will call `window.requestAnimationFrame()`.
+The task will complete when `requestAnimationFrame()` fires its callback, and
+will pass along the value provided by the callback.
+
+So, to do something when the callback fires, just add an `andThen` to the task.
+-}
+task : Task x Time
+
+{-| A more complex implementation of `window.requestAnimationFrame()` which
+allows for cancelling the request.
+
+Returns a `Task` which, when executed, will call
+`window.requestAnimationFrame()`, and then immediately complete with the
+identifier returned by `requestAnimationFrame()`.  You can supply this
+identifier to `cancel` if you want to cancel the request.
+
+Assuming that you don't cancel the request, the following sequence of events will occur:
+
+* `window.requestAnimationFrame()` will eventually fire its callback, providing a timestamp
+* Your function will be called with that timestamp
+* The `Task` returned by your function will be immediately executed
+-}
+request : (Time -> Task x a) -> Task y Request
+
+{-| Opaque type which represents an animation frame request. -}
+type Request
+
+{-| Returns a task which, when executed, will cancel the supplied request
+via `window.cancelAnimationFrame()`.
+-}
+cancel : Request -> Task x ()
+```
+
+-----------------
 
 ### WebAPI.Date
 
@@ -924,6 +978,11 @@ prompt : String -> String -> Task () String
 
 ***See also***
 
+**`cancelAnimationFrame`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use [`WebAPI.AnimationFrame`](#webapianimationframe)
+
 **`decodeURI`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
@@ -999,6 +1058,11 @@ Use `String.toFloat` in
 &nbsp; &nbsp; &nbsp; &nbsp;
 Use `String.toInt` in
 [elm-lang/core](http://package.elm-lang.org/packages/elm-lang/core/latest).
+
+**`requestAnimationFrame`**
+
+&nbsp; &nbsp; &nbsp; &nbsp;
+Use [`WebAPI.AnimationFrame`](#webapianimationframe)
 
 **`setInterval`**
 
