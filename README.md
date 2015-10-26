@@ -543,6 +543,7 @@ Note that there is a `Signal`-oriented library for location-related things at
 ```elm
 module WebAPI.Location where
 
+{-| The parts of a location object. Note `port'`, since `port` is a reserved word. -}
 type alias Location =
     { href: String
     , protocol: String
@@ -558,11 +559,13 @@ type alias Location =
 {-| The browser's `window.location` object. -}
 location : Task x Location
 
-{-| Reloads the page from the current URL. The parameter controls whether to
-force the browser to reload from the server (`True`), or allow the use of the
-cache (`False`).
--}
-reload : Bool -> Task String ()
+{-| Reloads the page from the current URL. -}
+reload : Source -> Task String ()
+
+{-| Whether to force `reload` to use the server, or allow the cache. -}
+type Source
+    = ForceServer
+    | AllowCache
 ```
 
 ***See also***

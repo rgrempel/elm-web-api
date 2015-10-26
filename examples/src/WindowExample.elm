@@ -1,7 +1,7 @@
 module WindowExample where
 
 import WebAPI.Window exposing (alert, confirm, prompt)
-import WebAPI.Location exposing (reload)
+import WebAPI.Location exposing (reload, Source(..))
 
 import Effects exposing (Effects, Never)
 import StartApp exposing (App)
@@ -43,7 +43,7 @@ type Action
     | HandleConfirmResponse (Result () ())
     | ShowPrompt String String
     | HandlePromptResponse (Result () String)
-    | Reload Bool
+    | Reload Source
     | HandleReload (Result String ())
 
 
@@ -55,9 +55,9 @@ update action model =
             , Effects.none
             )
 
-        Reload forceServer ->
+        Reload source ->
             ( "About to reload"
-            , reload forceServer |>
+            , reload source |>
                 toResult |>
                     Task.map HandleReload |>
                         Effects.task
@@ -127,11 +127,11 @@ view address model =
             [ onClick address (ShowPrompt "What is your favourite colour?" "Blue") ]
             [ text "WebAPI.Window.prompt" ]
         , button
-            [ onClick address (Reload True) ]
-            [ text "WebAPI.Location.reload True" ]
+            [ onClick address (Reload ForceServer) ]
+            [ text "WebAPI.Location.reload ForceServer" ]
         , button
-            [ onClick address (Reload False) ]
-            [ text "WebAPI.Location.reload False" ]
+            [ onClick address (Reload AllowCache) ]
+            [ text "WebAPI.Location.reload AllowCache" ]
         , h4 [] [ text "Message" ]
         , div [] [ text model ]
         ]
