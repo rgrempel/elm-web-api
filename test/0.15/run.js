@@ -41,6 +41,12 @@ git.short(function (rev) {
     // If SauceLabs environment variables are present, set up SauceLabs browsers
     if (sauceUserName && sauceAccessKey) {
         config.webdriver.desiredCapabilities = [{
+            browserName: 'iphone',
+            platform: 'OS X 10.10',
+            version: '9.1',
+            deviceName: 'iPhone 6',
+            deviceOrientation: 'portrait'
+        },{
             browserName: 'safari',
             version: '6.0',
             platform: 'OS X 10.8',
