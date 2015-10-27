@@ -38,24 +38,42 @@ module.exports = function remote (rev) {
         version: '46.0',
         platform: 'Windows 10',
         build: rev,
-        name: 'Chrome Windows 10 46.0' + rev
+        name: 'Chrome Windows 10 46.0 ' + rev
     },{
         browserName: 'chrome',
         version: '45.0',
         platform: 'Windows 10',
         build: rev,
-        name: 'Chrome Windows 10 45.0' + rev
+        name: 'Chrome Windows 10 45.0 ' + rev
     },{
         browserName: 'chrome',
         version: '44.0',
         platform: 'Windows 10',
         build: rev,
-        name: 'Chrome Windows 10 44.0' + rev
+        name: 'Chrome Windows 10 44.0 ' + rev
     },{
         browserName: 'chrome',
         version: '43.0',
         platform: 'Windows 10',
         build: rev,
-        name: 'Chrome Windows 10 43.0' + rev
+        name: 'Chrome Windows 10 43.0 ' + rev
+    },{
+        browserName: 'firefox',
+        version: '41.0',
+        platform: 'Linux',
+        build: rev,
+        name: 'Firefox Linux 41.0 ' + rev
+    },{
+        browserName: 'firefox',
+        version: '40.0',
+        platform: 'Linux',
+        build: rev,
+        name: 'Firefox Linux 40.0 ' + rev
+    },{
+        browserName: 'firefox',
+        version: '39.0',
+        platform: 'Linux',
+        build: rev,
+        name: 'Firefox Linux 39.0 ' + rev
     }];
 };
