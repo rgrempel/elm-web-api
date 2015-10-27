@@ -14,23 +14,23 @@ locationTest =
         Task.map (\loc ->
             suite "location"
                 [ test "hash" <| assertEqual "" loc.hash
-                , test "host" <| assertEqual "" loc.host
-                , test "hostname" <| assertEqual "" loc.hostname
+                , test "host" <| assertEqual "localhost:8080" loc.host
+                , test "hostname" <| assertEqual "localhost" loc.hostname
                 , test "href" <|
                     assert <|
                         List.all identity
-                            [ String.startsWith "file://" loc.href
+                            [ String.startsWith "http://" loc.href
                             , String.endsWith "elm.html" loc.href
                             ]
-                , test "origin" <| assertEqual "file://" loc.origin
+                , test "origin" <| assertEqual "http://" loc.origin
                 , test "pathname" <|
                     assert <|
                         List.all identity
                             [ String.startsWith "/" loc.pathname
                             , String.endsWith "elm.html" loc.pathname
                             ]
-                , test "port'" <| assertEqual "" loc.port'
-                , test "protocol" <| assertEqual "file:" loc.protocol
+                , test "port'" <| assertEqual "8080" loc.port'
+                , test "protocol" <| assertEqual "http:" loc.protocol
                 , test "search" <| assertEqual "" loc.search
                 ]
         )
