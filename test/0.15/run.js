@@ -47,13 +47,17 @@ git.short(function (rev) {
             public: 'public',
             build: rev,
             name: rev
-        },*/{
+        },{
             browserName: 'firefox',
             version: '41',
             platform: 'Linux',
             public: 'public',
             build: rev,
             name: rev
+        },*/{
+            browserName: 'safari',
+            version: '9.0',
+            platform: 'OS X 10.11'
         }];
     } else {
         config.webdriver.desiredCapabilities = [{
@@ -64,9 +68,10 @@ git.short(function (rev) {
     // Loads the config file and invokes the callback once for each browser 
     new SeSauce(config, function (browser) {
         var title =
-            browser.desiredCapabilities.browserName + ": " +
-            browser.desiredCapabilities.version + ": " +
-            browser.desiredCapabilities.platform;
+            browser.desiredCapabilities.browserName + "-" +
+            browser.desiredCapabilities.version + "-" +
+            browser.desiredCapabilities.platform + " "
+            browser.desiredCapabilities.build;
         
         describe(title, function () {
             this.timeout(120000);

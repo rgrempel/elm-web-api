@@ -22,7 +22,7 @@ locationTest =
                             [ String.startsWith "http://" loc.href
                             , String.endsWith "elm.html" loc.href
                             ]
-                , test "origin" <| assertEqual "http://" loc.origin
+                , test "origin" <| assertEqual "http://localhost:8080" loc.origin
                 , test "pathname" <|
                     assert <|
                         List.all identity

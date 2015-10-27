@@ -6,11 +6,6 @@ import Graphics.Element exposing (Element, empty, flow, down)
 import ElmTest.Runner.Element exposing (runDisplay)
 import Tests
 
-import WebAPI.MathTest
-import WebAPI.NumberTest
-import WebAPI.StorageTest
-import WebAPI.ScreenTest
-
 
 main : Signal Element
 main =

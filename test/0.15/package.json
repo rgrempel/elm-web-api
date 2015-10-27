@@ -16,7 +16,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "elm-make ../src/Browser.elm --output elm.html && open elm.html;",
-    "ci": "elm-make ../src/Browser.elm --output elm.html && mocha --delay run.js;",
+    "ci": "elm-make ../src/CI.elm --output elm.html && mocha --delay run.js;",
     "console": "elm-make ../src/CommandLine.elm --output elm.js && cat ../src/shim.js >> elm.js && node elm.js;"
   },
   "repository": {
