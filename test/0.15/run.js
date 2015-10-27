@@ -40,24 +40,30 @@ var config = {
 git.short(function (rev) {
     // If SauceLabs environment variables are present, set up SauceLabs browsers
     if (sauceUserName && sauceAccessKey) {
-        config.webdriver.desiredCapabilities = [/*{
-            browserName: 'chrome',
-            version: '27',
-            platform: 'XP',
-            public: 'public',
+        config.webdriver.desiredCapabilities = [{
+            browserName: 'safari',
+            version: '6.0',
+            platform: 'OS X 10.8',
             build: rev,
-            name: rev
+            name: 'Safari Mountain Lion ' + rev
         },{
-            browserName: 'firefox',
-            version: '41',
-            platform: 'Linux',
-            public: 'public',
+            browserName: 'safari',
+            version: '7.0',
+            platform: 'OS X 10.9',
             build: rev,
-            name: rev
-        },*/{
+            name: 'Safari Mavericks ' + rev
+        },{
+            browserName: 'safari',
+            version: '8.0',
+            platform: 'OS X 10.10',
+            build: rev,
+            name: 'Safari El Yosemite ' + rev
+        },{
             browserName: 'safari',
             version: '9.0',
-            platform: 'OS X 10.11'
+            platform: 'OS X 10.11',
+            build: rev,
+            name: 'Safari El Capitan ' + rev
         }];
     } else {
         config.webdriver.desiredCapabilities = [{
