@@ -15,9 +15,10 @@ import Debug
 
 -- When testing on SauceLabs, this is really slow ... much faster locally ...
 -- not sure why. So, we allow an absurd amount of time for a frame here ...
--- when run locally, the frame rate is about right
+-- when run locally, the frame rate is about right. So, this is not really
+-- testing performance at the moment, just that it works at all.
 frame : Time
-frame = Time.second / 5
+frame = Time.second
 
 
 taskTest : Task () Test
