@@ -26,12 +26,36 @@ module.exports = function remote (rev) {
         version: '8.0',
         platform: 'OS X 10.10',
         build: rev,
-        name: 'Safari El Yosemite ' + rev
+        name: 'Safari Yosemite ' + rev
     },{
         browserName: 'safari',
         version: '9.0',
         platform: 'OS X 10.11',
         build: rev,
         name: 'Safari El Capitan ' + rev
+    },{
+        browserName: 'chrome',
+        version: '46.0',
+        platform: 'Windows 10',
+        build: rev,
+        name: 'Chrome Windows 10 46.0' + rev
+    },{
+        browserName: 'chrome',
+        version: '45.0',
+        platform: 'Windows 10',
+        build: rev,
+        name: 'Chrome Windows 10 45.0' + rev
+    },{
+        browserName: 'chrome',
+        version: '44.0',
+        platform: 'Windows 10',
+        build: rev,
+        name: 'Chrome Windows 10 44.0' + rev
+    },{
+        browserName: 'chrome',
+        version: '43.0',
+        platform: 'Windows 10',
+        build: rev,
+        name: 'Chrome Windows 10 43.0' + rev
     }];
 };
