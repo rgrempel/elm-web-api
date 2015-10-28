@@ -340,6 +340,9 @@ strings =
         date =
             fromParts UTC (Parts 2015 0 2 3 4 5 6)
 
+        utc =
+            utcString date
+
     in
         suite "Strings"
             -- For dateString and timeString, we'd have to do some calculation
@@ -347,7 +350,11 @@ strings =
             [ test "dateString" <| assert <| String.length (dateString date) > 6
             , test "timeString" <| assert <| String.length (timeString date) > 6
             , test "isoString" <| assertEqual "2015-01-02T03:04:05.006Z" (isoString date)
-            , test "utcString" <| assertEqual "Fri, 02 Jan 2015 03:04:05 GMT" (utcString date)
+            , test ("utcString " ++ utc)  <| 
+                assert <|
+                    "Fri, 02 Jan 2015 03:04:05 GMT" == utc ||
+                    -- This is from IE 10 
+                    "Fri, 2 Jan 2015 03:04:05 UTC" == utc
             ]
 
 

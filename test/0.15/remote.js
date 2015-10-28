@@ -81,5 +81,23 @@ module.exports = function remote (rev) {
         platform: 'Windows 10',
         build: rev,
         name: 'Internet Explorer 11.0 ' + rev
+    },{
+        browserName: 'internet explorer',
+        version: '10.0',
+        platform: 'Windows 8',
+        build: rev,
+        name: 'Internet Explorer 10.0 ' + rev
+/*    },{
+        browserName: 'internet explorer',
+        version: '9.0',
+        platform: 'Windows 7',
+        build: rev,
+        name: 'Internet Explorer 9.0 ' + rev
+    },{
+        browserName: 'internet explorer',
+        version: '8.0',
+        platform: 'Windows 7',
+        build: rev,
+        name: 'Internet Explorer 8.0 ' + rev */
     }];
 };
