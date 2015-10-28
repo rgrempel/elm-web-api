@@ -25,6 +25,19 @@ isErr result =
         Err _ -> True
 
 
+toFixedDigitsFailure : Test
+toFixedDigitsFailure =
+    let
+        result =
+            WebAPI.Number.toFixedDigits -10 200
+            
+    in
+        -- Firefox gives 0 for this, which I suppose is somewhat sensible
+        test ("toFixedDigits -10 200 should fail, or be 0: " ++ (toString result)) <|
+            assert <|
+                (isErr result) || result == (Ok "0") 
+
+
 tests : Task x Test
 tests =
     Task.map (suite "WebAPI.Number") <|
@@ -43,7 +56,7 @@ tests =
                 , test "safeExponentialDigits failure" <| assertEqual (WebAPI.Number.safeExponentialDigits -10 200.0) "2e+2"
                 , test "toFixed" <| assertEqual (WebAPI.Number.toFixed 200.1) "200"
                 , test "toFixedDigits success" <| assertEqual (WebAPI.Number.toFixedDigits 2 200.1) (Ok "200.10")
-                , test "toFixedDigits failure" <| assert <| isErr (WebAPI.Number.toFixedDigits -10 200)
+                , toFixedDigitsFailure 
                 , test "toFixedDigits integer" <| assertEqual (WebAPI.Number.toFixedDigits 2 200) (Ok "200.00")
                 , test "safeFixedDigits success" <| assertEqual (WebAPI.Number.safeFixedDigits 2 200.1) "200.10"
                 , test "safeFixedDigits failure" <| assertEqual (WebAPI.Number.safeFixedDigits -10 200.1) "200"

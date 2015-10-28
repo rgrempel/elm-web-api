@@ -89,24 +89,40 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
             offsetYearLocal : F2(function (offset, date) {
                 var copy = new Date(date);
                 copy.setFullYear(date.getFullYear() + offset);
+
+                // For some reason, Firefox loses the milliseconds otherwise
+                copy.setMilliseconds(date.getMilliseconds());
+                
                 return copy;
             }),
 
             offsetYearUTC : F2(function (offset, date) {
                 var copy = new Date(date);
                 copy.setUTCFullYear(date.getUTCFullYear() + offset);
+
+                // For some reason, Firefox loses the milliseconds otherwise
+                copy.setUTCMilliseconds(date.getUTCMilliseconds());
+                
                 return copy;
             }),
 
             offsetMonthLocal : F2(function (offset, date) {
                 var copy = new Date(date);
                 copy.setMonth(date.getMonth() + offset);
+
+                // For some reason, Firefox loses the milliseconds otherwise
+                copy.setMilliseconds(date.getMilliseconds());
+                
                 return copy;
             }),
 
             offsetMonthUTC : F2(function (offset, date) {
                 var copy = new Date(date);
                 copy.setUTCMonth(date.getUTCMonth() + offset);
+
+                // For some reason, Firefox loses the milliseconds otherwise
+                copy.setUTCMilliseconds(date.getUTCMilliseconds());
+                
                 return copy;
             }),
 
