@@ -864,6 +864,9 @@ toFixed : number -> String
 with the requested number of digits after the decimal point (first parameter),
 or an error. An error should not occur if the requested number of digits is
 between 0 and 20.
+
+Note that Firefox returns `Ok 0` rather than an `Error` for a negative number
+of requested digits.
 -}
 toFixedDigits : Int -> number -> Result String String
 
