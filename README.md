@@ -41,11 +41,7 @@ code. So, I'm plugging away at it -- this is a work in progress.
 ## Supported browsers
 
 One question I haven't entirely settled on is how to account for the fact that
-some of these facilities might not always be available. For the moment, I'm
-applying the following principles:
-
-*   For the moment, at least, I'm not implementing things at all unless they
-    are common to the 'evergreen' browsers.
+some of these facilities might not always be available. 
 
 *   Where the Javascript can throw exceptions in the normal course of events,
     I'm accounting for that in the API (i.e. via using `Result`, `Maybe` or
@@ -56,10 +52,14 @@ applying the following principles:
     that I can return `Nothing` if it's not present). However, that would
     add some complexity for the client for possibly little gain.
 
-*   Eventually, I'll set up testing via Travis and SauceLabs, so that I can
-    precisely define which browsers are supported. Then, if there are specific
-    facilities that are missing from some browsers I'd like to support, I can
-    do something fancy to account for that.
+*   I have now set up testing via Travis and SauceLabs, so that I can precisely
+    define which browsers are supported. In some cases, I have been doing just
+    a little bit of custom support for browser quirks.
+
+*   You can see the graphic for supported browsers at the top of this page.
+    Note that IE 9 and below are giving me strange errors in testing, which
+    I haven't been able to quickly understand. If anyone greatly cares about
+    IE 9 and below, let me know and I'll look into it with more energy.
 
 *   For the moment, I'm not thinking too hard about supporting node.js. That's
     a somewhat larger issue for Elm (it requires some shimming even to get

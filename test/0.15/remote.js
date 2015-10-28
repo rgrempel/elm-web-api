@@ -2,7 +2,8 @@
 
 module.exports = function remote (rev) {
     return [{
-/*        browserName: 'iphone',
+/* Something about the iPhone setup on SauceLabs isn't working for me
+        browserName: 'iphone',
         platform: 'OS X 10.10',
         version: '9.0',
         deviceName: 'iPhone 6',
@@ -87,7 +88,8 @@ module.exports = function remote (rev) {
         platform: 'Windows 8',
         build: rev,
         name: 'Internet Explorer 10.0 ' + rev
-/*    },{
+/*  IE 9 and IE 8 are giving me strange errors ... will leave them for now
+    },{
         browserName: 'internet explorer',
         version: '9.0',
         platform: 'Windows 7',
@@ -98,6 +100,14 @@ module.exports = function remote (rev) {
         version: '8.0',
         platform: 'Windows 7',
         build: rev,
-        name: 'Internet Explorer 8.0 ' + rev */
+        name: 'Internet Explorer 8.0 ' + rev
+    },{
+
+    Looks like webdriver support for Edge isn't complete yet
+        browserName: 'microsoftedge',
+        version: '20.10240',
+        platform: 'Windows 10',
+        build: rev,
+        name: 'MS Edge 20.10240 ' + rev */
     }];
 };
