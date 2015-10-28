@@ -28,6 +28,14 @@ Elm.Native.WebAPI.Location.make = function (localRuntime) {
                 // Deal with Elm reserved word
                 location["port$"] = location.port;
 
+                // Polyfill for IE
+                if (!location.origin) {
+                    location.origin = 
+                        location.protocol + "//" +
+                        location.hostname + 
+                        (location.port ? ':' + location.port: '');
+                }
+
                 callback(Task.succeed(location));
             }),
 

@@ -3,6 +3,7 @@ module WebAPI.ScreenTest where
 import ElmTest.Test exposing (..)
 import ElmTest.Assertion exposing (..)
 import Task exposing (Task, sequence, succeed, andThen)
+import String
 
 import WebAPI.Screen exposing (..)
 
@@ -31,8 +32,16 @@ screenXYTest : Task () Test
 screenXYTest =
     screenXY |>
         Task.map (\(x, y) ->
-            test "screenXY" <|
-                assert (x >= 0 && y >= 0)
+            test
+                (String.join ""
+                    [ "screenXY ("
+                    , toString x, ", "
+                    , toString y, ")"
+                    ]
+                ) <|
+                -- Note that in IE, you get (-8, -8), which I suppose actually
+                -- is meaningful.
+                assert (x >= -32 && y >= -32)
         )
 
 
