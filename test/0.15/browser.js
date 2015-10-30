@@ -12,12 +12,7 @@ module.exports = function (browser) {
     describe(title, function () {
         this.timeout(300000);
 
-        // We want to mark tht IE9 fails, but not fail the whole build for that reason
-        var wasIE9 =
-            browser.desiredCapabilities.browserName == "internet explorer" &&
-            browser.desiredCapabilities.version == "9.0";
-
-        var ie9passed = false;
+        var passed = true;
 
         // Before any tests run, initialize the browser and load the test page.
         // Then call `done()` when finished.
@@ -39,15 +34,11 @@ module.exports = function (browser) {
                     if (passedCount != 1 || failedCount != 0) {
                         console.log("Failed!\n");
                         console.log(htmlToText.fromString(html));
+                            
+                        passed = false;
                     }
 
-                    if (wasIE9) {
-                        // Keep track of whether ie9 passed, but don't fail the
-                        // whole build.
-                        ie9passed =
-                            passedCount == 1 &&
-                            failedCount == 0;
-                    } else {
+                    if (!browser.desiredCapabilities.dontFailBuild) {
                         // Actually fail the build if we failed.
                         expect(passedCount).to.equal(1);
                         expect(failedCount).to.equal(0);
@@ -59,8 +50,8 @@ module.exports = function (browser) {
         });
 
         after(function (done) {
-            if (wasIE9) {
-                browser.passed(ie9passed, done);
+            if (browser.desiredCapabilities.dontFailBuild) {
+                browser.passed(passed, done);
             } else {
                 browser.passed(this.currentTest.state === 'passed', done);
             }

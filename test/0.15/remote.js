@@ -101,15 +101,16 @@ module.exports = function remote (rev) {
         version: '9.0',
         platform: 'Windows 7',
         build: rev,
-        name: 'Internet Explorer 9.0 ' + rev
-/*  },{
+        name: 'Internet Explorer 9.0 ' + rev,
+        dontFailBuild: true
+    },{
         browserName: 'internet explorer',
         version: '8.0',
         platform: 'Windows 7',
         build: rev,
-        name: 'Internet Explorer 8.0 ' + rev
-    },{
-
+        name: 'Internet Explorer 8.0 ' + rev,
+        dontFailBuild: true
+/*  },{
     Looks like webdriver support for Edge isn't complete yet
         browserName: 'microsoftedge',
         version: '20.10240',
