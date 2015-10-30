@@ -1,6 +1,7 @@
 module WebAPI.Document
     ( ReadyState (Loading, Interactive, Complete)
     , readyState, getReadyState
+    , getTitle, setTitle
     ) where
 
 {-| See Mozilla documentation for the
@@ -47,3 +48,15 @@ readyState = Native.WebAPI.Document.readyState
 -}
 getReadyState : Task x ReadyState
 getReadyState = Native.WebAPI.Document.getReadyState
+
+
+{-| A task which, when executed, succeeds with the value of `document.title`. -}
+getTitle : Task x String
+getTitle = Native.WebAPI.Document.getTitle
+
+
+{-| A task which, when executed, sets the value of `document.title` to the
+supplied `String`.
+-}
+setTitle : String -> Task x () 
+setTitle = Native.WebAPI.Document.setTitle

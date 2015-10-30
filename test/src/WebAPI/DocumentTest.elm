@@ -47,10 +47,31 @@ readyStateTest =
         )
 
 
+getTitleTest : Task x Test
+getTitleTest =
+    getTitle >>> (\title ->
+        test "getTitle should be 'Main'" <|
+            assertEqual "Main" title
+    )
+
+
+setTitleTest : Task x Test
+setTitleTest =
+    setTitle "New title" >>+ (\setTitleResponse ->
+        getTitle >>> (\newTitle ->
+            test "setTitle should work" <|
+                assert <|
+                    setTitleResponse == () &&
+                    newTitle == "New title"
+        )
+    )
+
+
 tests : Task () Test
 tests =
     Task.map (suite "WebAPI.DocumentTest") <|
         sequence
             [ getReadyStateTest
             , readyStateTest
+            , getTitleTest, setTitleTest
             ]

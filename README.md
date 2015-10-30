@@ -592,6 +592,14 @@ readyState : Signal ReadyState
 `document.readyState`.
 -}
 getReadyState : Task x ReadyState
+
+{-| A task which, when executed, succeeds with the value of `document.title`. -}
+getTitle : Task x String
+
+{-| A task which, when executed, sets the value of `document.title` to the
+supplied `String`.
+-}
+setTitle : String -> Task x () 
 ```
 
 ***See also***

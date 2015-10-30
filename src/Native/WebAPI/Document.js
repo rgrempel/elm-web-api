@@ -39,7 +39,18 @@ Elm.Native.WebAPI.Document.make = function (localRuntime) {
 
             getReadyState: Task.asyncFunction(function (callback) {
                 callback(Task.succeed(getState()));
-            })
+            }),
+
+            getTitle : Task.asyncFunction(function (callback) {
+                callback(Task.succeed(document.title));
+            }),
+
+            setTitle : function (title) {
+                return Task.asyncFunction(function (cb) {
+                    document.title = title;
+                    cb(Task.succeed(Utils.Tuple0));
+                });
+            }
         };
     }
 
