@@ -10,8 +10,8 @@ module.exports = function remote (rev) {
         deviceOrientation: 'portrait',
         build: rev,
         name: 'iphone 6 ' + rev
-    },{ */
-        browserName: 'safari',
+    },{
+*/      browserName: 'safari',
         version: '6.0',
         platform: 'OS X 10.8',
         build: rev,
@@ -34,7 +34,15 @@ module.exports = function remote (rev) {
         platform: 'OS X 10.11',
         build: rev,
         name: 'Safari El Capitan ' + rev
-    },{
+/*  },{
+        browserName: 'android',
+        platform: 'Linux',
+        version: '5.1',
+        deviceName: 'Android Emulator',
+        deviceOrientation: 'portrait',
+        build: rev,
+        name: 'Android 5.1 ' + rev
+*/  },{
         browserName: 'chrome',
         version: '46.0',
         platform: 'Windows 10',
@@ -88,14 +96,13 @@ module.exports = function remote (rev) {
         platform: 'Windows 8',
         build: rev,
         name: 'Internet Explorer 10.0 ' + rev
-/*  IE 9 and IE 8 are giving me strange errors ... will leave them for now
     },{
         browserName: 'internet explorer',
         version: '9.0',
         platform: 'Windows 7',
         build: rev,
         name: 'Internet Explorer 9.0 ' + rev
-    },{
+/*  },{
         browserName: 'internet explorer',
         version: '8.0',
         platform: 'Windows 7',
@@ -108,6 +115,6 @@ module.exports = function remote (rev) {
         version: '20.10240',
         platform: 'Windows 10',
         build: rev,
-        name: 'MS Edge 20.10240 ' + rev */
-    }];
+        name: 'MS Edge 20.10240 ' + rev
+*/  }];
 };
