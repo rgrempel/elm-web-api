@@ -571,10 +571,28 @@ These aren't supported by Safari, so I've left them out for the moment.
 See Mozilla documentation for the
 [`Document` object](https://developer.mozilla.org/en-US/docs/Web/API/Document).
 
-Since the browser's `document` object has so many facilities attached, I've typically split
+Since the browser's `document` object has so many facilities attached, I've split some of
 them up into individual modules -- see below for the cross-references.
 
 TODO: Finish going through the `document` API.
+
+```elm
+module WebAPI.Document where
+
+{-| Possible values for the browser's `document.readyState` -}
+type ReadyState
+    = Loading
+    | Interactive
+    | Complete
+
+{-| A `Signal` of changes to the browser's `document.readyState` -}
+readyState : Signal ReadyState
+
+{-| A task which, when executed, succeeds with the value of the browser's
+`document.readyState`.
+-}
+getReadyState : Task x ReadyState
+```
 
 ***See also***
 

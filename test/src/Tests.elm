@@ -14,13 +14,15 @@ import WebAPI.LocationTest
 import WebAPI.DateTest
 import WebAPI.AnimationFrameTest
 import WebAPI.CookieTest
+import WebAPI.DocumentTest
 
 
 test : Task () Test
 test =
     Task.map (suite "WebAPI tests") <|
         sequence
-            [ WebAPI.MathTest.tests
+            [ WebAPI.DocumentTest.tests
+            , WebAPI.MathTest.tests
             , WebAPI.NumberTest.tests
             , WebAPI.StorageTest.tests
             , WebAPI.ScreenTest.tests
