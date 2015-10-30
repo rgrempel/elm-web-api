@@ -85,6 +85,12 @@ module.exports = function remote (rev) {
         build: rev,
         name: 'Firefox Linux 39.0 ' + rev
     },{
+        browserName: 'firefox',
+        version: '38.0',
+        platform: 'Linux',
+        build: rev,
+        name: 'Firefox Linux 38.0 ' + rev
+    },{
         browserName: 'internet explorer',
         version: '8.0',
         platform: 'Windows 7',
