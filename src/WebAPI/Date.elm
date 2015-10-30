@@ -30,7 +30,7 @@ more sophisticated library.
 
 # The parts of a date 
 
-@docs fromParts, toParts, dayOfWeek
+@docs Parts, fromParts, toParts, dayOfWeek
 @docs toMonth, fromMonth, toDay, fromDay
 
 # Date arithmetic
