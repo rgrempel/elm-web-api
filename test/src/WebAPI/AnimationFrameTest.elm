@@ -4,13 +4,13 @@ import ElmTest.Test exposing (..)
 import ElmTest.Assertion exposing (..)
 import Task exposing (Task, sequence, succeed, andThen)
 import Time exposing (Time)
+import Signal exposing (Signal, Mailbox, mailbox)
 import String
-
-import TestMailbox
 
 import WebAPI.AnimationFrame as AnimationFrame
 import WebAPI.Date
 import Debug
+import TestUtil exposing (sample)
 
 
 -- When testing on SauceLabs, this is really slow ... much faster locally ...
@@ -59,37 +59,46 @@ taskTest =
     ))))
 
 
+result : Mailbox Time
+result = mailbox 0
+
+
+delay : Time
+delay = 0.2 * Time.second
+
+
 requestTest : Task () Test
 requestTest =
     let
         task time =
-            Signal.send
-                (.address TestMailbox.tests) <|
-                    test "AnimationFrame.request" <|
-                        assert (time > 0)
-            
+            Signal.send result.address time
+
     in
-        AnimationFrame.request task
-            |> Task.map (always (suite "Deferred" []))
+        Task.map (\time ->
+            test ("request fired at " ++ (toString time)) <|
+                assert (time > 0)
+        ) <| Signal.send result.address 0
+            `andThen` always (AnimationFrame.request task)
+            `andThen` always (Task.sleep delay)
+            `andThen` always (sample result.signal)
 
 
 cancelTest : Task () Test
 cancelTest =
     let
         task time =
-            Signal.send
-                (.address TestMailbox.tests) <|
-                    test "AnimationFrame.cancel" <|
-                        -- The idea is that this should never actualy be sent,
-                        -- because we're going to cancel it. So, if it is
-                        -- sent, we want to fail.
-                        assert False
+            Signal.send result.address time
 
     in
-        AnimationFrame.request task `Task.andThen` (\request ->
-            AnimationFrame.cancel request
-        ) |> Task.map (always (suite "Deferred" []))
- 
+        Task.map (\time -> 
+            test "request should have been canceled" <|
+                assertEqual 0 time
+        ) <| Signal.send result.address 0
+            `andThen` always (AnimationFrame.request task)
+            `andThen` AnimationFrame.cancel
+            `andThen` always (Task.sleep delay) 
+            `andThen` always (sample result.signal)
+
 
 tests : Task () Test
 tests =

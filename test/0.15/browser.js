@@ -21,7 +21,7 @@ module.exports = function (browser) {
             });
         });
 
-        it('should succeed twice', function (done) {
+        it('The tests written in Elm should pass', function (done) {
             setTimeout(function () {
                 browser.getHTML("body", function (err, html) {
                     if (err) throw err;
