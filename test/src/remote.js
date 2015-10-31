@@ -34,7 +34,7 @@ module.exports = function remote (rev) {
         platform: 'OS X 10.11',
         build: rev,
         name: 'Safari El Capitan ' + rev
-/*  },{
+    },{
         browserName: 'android',
         platform: 'Linux',
         version: '5.1',
@@ -42,7 +42,7 @@ module.exports = function remote (rev) {
         deviceOrientation: 'portrait',
         build: rev,
         name: 'Android 5.1 ' + rev
-*/  },{
+*//*  },{
         browserName: 'chrome',
         version: '46.0',
         platform: 'Windows 10',

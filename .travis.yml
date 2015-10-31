@@ -5,9 +5,10 @@ node_js:
 
 sudo: false
 
-before_install: cd $TEST_DIR
-
 install:
+    - cd test
+    - npm install
+    - cd $TEST_DIR
     - npm install
     - ./node_modules/elm/bin/elm-package install --yes
 
@@ -16,4 +17,4 @@ script:
 
 env:
     matrix:
-        - TEST_DIR=test/0.15
+        - TEST_DIR=0.15

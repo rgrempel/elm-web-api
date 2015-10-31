@@ -4,8 +4,7 @@
     "repository": "https://github.com/rgrempel/elm-web-api.git",
     "license": "BSD3",
     "source-directories": [
-        "src",
-        "../src",
+        "../src/elm",
         "../../src",
         "../../examples/src"
     ],

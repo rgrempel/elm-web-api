@@ -3,7 +3,7 @@ var git = require('git-rev');
 
 var remote = require('./remote');
 var config = require('./config');
-var eachBrowser = require('./browser');
+var eachBrowser = require('./mocha/browser');
 
 git.short(function (rev) {
     // If SauceLabs environment variables are present, set up SauceLabs browsers
