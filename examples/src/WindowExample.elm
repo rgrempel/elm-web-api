@@ -4,6 +4,7 @@ import Effects exposing (Effects, Never)
 import StartApp exposing (App)
 import Task exposing (Task, toResult)
 import Html exposing (Html, h4, div, text, button)
+import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 import Signal exposing (Signal, Address)
 
@@ -102,15 +103,21 @@ view : Address Action -> Model -> Html
 view address model =
     div []
         [ button
-            [ onClick address (ShowAlert "Hello world!") ]
+            [ onClick address (ShowAlert "Hello world!")
+            , id "alert-button"
+            ]
             [ text "WebAPI.Window.alert" ]
         , button
-            [ onClick address (ShowConfirm "Do you agree?") ]
+            [ onClick address (ShowConfirm "Do you agree?")
+            , id "confirm-button"
+            ]
             [ text "WebAPI.Window.confirm" ]
         , button
-            [ onClick address (ShowPrompt "What is your favourite colour?" "Blue") ]
+            [ onClick address (ShowPrompt "What is your favourite colour?" "Blue")
+            , id "prompt-button"
+            ]
             [ text "WebAPI.Window.prompt" ]
         , h4 [] [ text "Message" ]
-        , div [] [ text model ]
+        , div [ id "message" ] [ text model ]
         ]
 

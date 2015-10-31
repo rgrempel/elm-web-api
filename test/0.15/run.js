@@ -1,4 +1,4 @@
-var SeSauce = require('selenium-sauce');
+var SeSauce = require('./selenium-sauce');
 var git = require('git-rev');
 
 var remote = require('./remote');
