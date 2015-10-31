@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/rgrempel/elm-web-api.svg)](https://travis-ci.org/rgrempel/elm-web-api)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/rgrempel.svg)](https://saucelabs.com/u/rgrempel)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/elm-web-api.svg)](https://saucelabs.com/u/elm-web-api)
 
 # elm-web-api
 
