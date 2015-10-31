@@ -35,14 +35,14 @@ module.exports = function remote (rev) {
         build: rev,
         name: 'Safari El Capitan ' + rev
     },{
-        browserName: 'android',
+/*      browserName: 'android',
         platform: 'Linux',
         version: '5.1',
         deviceName: 'Android Emulator',
         deviceOrientation: 'portrait',
         build: rev,
         name: 'Android 5.1 ' + rev
-*//*  },{
+*/  },{
         browserName: 'chrome',
         version: '46.0',
         platform: 'Windows 10',
