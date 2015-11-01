@@ -3,7 +3,8 @@ module LocationExample where
 import Effects exposing (Effects, Never)
 import StartApp exposing (App)
 import Task exposing (Task, toResult)
-import Html exposing (Html, h4, div, text, button)
+import Html exposing (Html, h4, div, text, button, input)
+import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 import Signal exposing (Signal, Address)
 
@@ -32,7 +33,7 @@ type alias Model = String
 
 
 init : (Model, Effects Action)
-init = ("", Effects.none)
+init = ("Initial state", Effects.none)
 
 
 type Action
@@ -61,12 +62,17 @@ view : Address Action -> Model -> Html
 view address model =
     div []
         [ button
-            [ onClick address (Reload ForceServer) ]
+            [ id "reload-force-button" 
+            , onClick address (Reload ForceServer)
+            ]
             [ text "WebAPI.Location.reload ForceServer" ]
         , button
-            [ onClick address (Reload AllowCache) ]
+            [ id "reload-cache-button" 
+            , onClick address (Reload AllowCache)
+            ]
             [ text "WebAPI.Location.reload AllowCache" ]
         , h4 [] [ text "Message" ]
-        , div [] [ text model ]
+        , div [ id "message" ] [ text model ]
+        , input [ id "input" ] []
         ]
 
