@@ -1,10 +1,11 @@
 #!/bin/sh
 
 # Abort on error ...
-set -e
+set -x
 
-elm-make ../src/elm/CI.elm --output elm.html
-elm-make ../../examples/src/WindowExample.elm --output window.html
-elm-make ../../examples/src/LocationExample.elm --output location.html
+elm-make ../src/elm/CI.elm --output elm.html || exit 1
+elm-make ../../examples/src/WindowExample.elm --output window.html || exit 1
+elm-make ../../examples/src/LocationExample.elm --output location.html || exit 1
 
-mocha --delay ../src/run.js
+# Always exit 0 if we get this far ... the SauceLabs matrix takes over
+mocha --delay ../src/run.js || exit 0
