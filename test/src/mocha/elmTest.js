@@ -10,7 +10,7 @@ module.exports = function (browser) {
                     return this.getText("#results").then(function (text) {
                         return text.indexOf("suites run") > 0;
                     });
-                }, 10000, 500)
+                }, 30000, 500)
                 .getText("#results")
                 .then(function (text) {
                     var failedCount = count(text, "FAILED");

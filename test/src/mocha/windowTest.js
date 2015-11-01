@@ -29,7 +29,7 @@ module.exports = function (browser) {
                     
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText().then(function (text) {
                         expect(text).to.equal("Hello world!");
@@ -46,7 +46,7 @@ module.exports = function (browser) {
 
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText().then(function (text) {
                         expect(text).to.equal("Do you agree?");
@@ -58,7 +58,7 @@ module.exports = function (browser) {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Pressed OK") >= 0;
                         });
-                    }, 8000, 200);
+                    }, 24000, 500);
             });
 
             it("should recognize rejection", function () {
@@ -67,7 +67,7 @@ module.exports = function (browser) {
                     
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText().then(function (text) {
                         expect(text).to.equal("Do you agree?");
@@ -79,7 +79,7 @@ module.exports = function (browser) {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Pressed cancel") >= 0;
                         });
-                    }, 8000, 200);
+                    }, 24000, 500);
             });
         });
 
@@ -90,7 +90,7 @@ module.exports = function (browser) {
 
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText().then(function (text) {
                         expect(text).to.equal("What is your favourite colour?");
@@ -102,7 +102,7 @@ module.exports = function (browser) {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("User canceled.") >= 0;
                         });
-                    }, 8000, 200);
+                    }, 24000, 500);
             });
             
             it("should return default when accepted", function () {
@@ -111,7 +111,7 @@ module.exports = function (browser) {
 
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText().then(function (text) {
                         expect(text).to.equal("What is your favourite colour?");
@@ -123,7 +123,7 @@ module.exports = function (browser) {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Got response: Blue") >= 0;
                         });
-                    }, 8000, 200);
+                    }, 24000, 500);
             });
             
             it("should interpret empty string as dismissal", function () {
@@ -132,7 +132,7 @@ module.exports = function (browser) {
                     
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText("")
                     .alertAccept()
@@ -141,7 +141,7 @@ module.exports = function (browser) {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("User canceled.") >= 0;
                         });
-                    }, 8000, 200);
+                    }, 24000, 500);
             });
             
             it("should return entered text if entered", function () {
@@ -150,7 +150,7 @@ module.exports = function (browser) {
                     
                     .waitUntil(function () {
                         return this.alertText().then(truthy, falsy);
-                    }, 8000, 200)
+                    }, 24000, 500)
                     
                     .alertText("Red")
                     .alertAccept()
@@ -159,7 +159,7 @@ module.exports = function (browser) {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Got response: Red") >= 0;
                         });
-                    }, 8000, 200);
+                    }, 24000, 500);
             });
         });
     });

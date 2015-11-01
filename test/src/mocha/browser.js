@@ -9,7 +9,7 @@ module.exports = function (browser) {
         browser.desiredCapabilities.build;
     
     describe(title, function () {
-        this.timeout(300000);
+        this.timeout(600000);
         this.slow(4000);
 
         // Before any tests run, initialize the browser.
