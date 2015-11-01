@@ -8,7 +8,7 @@ module.exports = function (browser) {
             return browser
                 .url('http://localhost:8080/elm.html')
                 .waitUntil(function () {
-                    return this.getHTML("body").then(function (html) {
+                    return this.getHTML("#results").then(function (html) {
                         var passedCount = count(html, "All tests passed");
                         var failedCount = count(html, "FAILED");
 
@@ -25,7 +25,7 @@ module.exports = function (browser) {
 
                         return false;
                     });
-                }, 3000, 250);
+                }, 3000, 500);
         });
     });
 };

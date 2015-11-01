@@ -5,6 +5,7 @@ import Task exposing (Task, andThen, sequence)
 import Graphics.Element exposing (Element, empty, flow, down, show)
 import ElmTest.Runner.String exposing (runDisplay)
 import Html exposing (Html, pre, text)
+import Html.Attributes exposing (id)
 import Tests
 
 
@@ -18,7 +19,7 @@ main =
             Signal.foldp update [] (.signal Tests.tests)
 
         view model =
-            pre [] <|
+            pre [id "results"] <|
                 List.map text model
 
     in
