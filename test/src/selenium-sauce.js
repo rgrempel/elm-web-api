@@ -162,19 +162,22 @@ extend(SeSauce.prototype, {
         else {
             this._log("No SauceLabs username/accessKey. Launching Selenium locally...");
 
-            this.selenium = selenium({stdio: 'pipe'}, this.options.selenium.args);
-
-            this.selenium.stderr.on('data', function (output) {
-                if (output.toString().indexOf('Started org.openqa.jetty.jetty.Server') != -1) {
-                    clearTimeout(self._localSeleniumLaunchTimer);
-                    self._log("Local Selenium server launched.");
-                    complete();
+            selenium.install({}, function (err) {
+                if (err) {
+                    self._doError(err, complete);
+                } else {
+                    selenium.start({
+                        seleniumArgs: self.options.selenium.args
+                    }, function (err, child) {
+                        if (err) {
+                            self._doError(err, complete);
+                        } else {
+                            self.selenium = child;
+                            complete();
+                        }
+                    });
                 }
             });
-
-            this._localSeleniumLaunchTimer = setTimeout(function () {
-                self._doError('Selenium web driver timed out while trying to connect to local Selenium server.', complete);
-            }, 5000);
         }
     },
 
