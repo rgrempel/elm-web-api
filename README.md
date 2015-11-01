@@ -315,7 +315,7 @@ fromParts : Timezone -> Parts -> Date
 
 For `Local`, this uses `getFullYear()`, `getMonth()`, etc.
 
-For `UTC`, this uses `getFullYearUTC()`, `getMonthUTC()`, etc.
+For `UTC`, this uses `getUTCFullYear()`, `getUTCMonth()`, etc.
 -}
 toParts : Timezone -> Date -> Parts
 
@@ -355,7 +355,8 @@ the same day in the next year, then use `offsetYear` instead.
 offsetTime : Time -> Date -> Date
 
 {-| Offset the `Date` by the specified number of years (forward or backward),
-using Javascript's `setYear` and `getYear` (or `getYearUTC` and `setYearUTC`).
+using Javascript's `setFullYear()` and `getFullYear()` (or `getUTCFullYear()`
+and `setUTCFullYear`).
 
 Leap years are handled by the underlying Javascript APIs as follows:
 
@@ -379,7 +380,8 @@ A more sophisticated module might deal with these cases a little differently.
 offsetYear : Timezone -> Int -> Date -> Date
 
 {-| Offset the `Date` by the specified number of months (forward or backward),
-using Javascript's `setMonth` and `getMonth` (or `setMonthUTC` and `getMonthUTC()`).
+using Javascript's `setMonth()` and `getMonth()` (or `setUTCMonth()` and
+`getUTCMonth()`).
 
 Here are a few notes about the underlying Javascript implementation:
 
