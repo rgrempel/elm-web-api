@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var count = require('count-substring');
-var htmlToText = require('html-to-text');
 
 module.exports = function (browser) {
     describe("The tests written in Elm", function () {
@@ -8,24 +7,16 @@ module.exports = function (browser) {
             return browser
                 .url('http://localhost:8080/elm.html')
                 .waitUntil(function () {
-                    return this.getHTML("#results").then(function (html) {
-                        var passedCount = count(html, "All tests passed");
-                        var failedCount = count(html, "FAILED");
-
-                        if (passedCount > 0) {
-                            return true;
-                        }
-
-                        if (failedCount > 0) {
-                            console.log("Failed!\n");
-                            console.log(htmlToText.fromString(html));
-
-                            throw "Failed tests written in Elm";
-                        }
-
-                        return false;
+                    return this.getText("#results").then(function (text) {
+                        return text.indexOf("suites run") > 0;
                     });
-                }, 10000, 500);
+                }, 10000, 500)
+                .getText("#results")
+                .then(function (text) {
+                    var failedCount = count(text, "FAILED");
+                    if (failedCount != 0) console.log(text);
+                    expect(failedCount).to.equal(0);
+                });
         });
     });
 };
