@@ -25,7 +25,7 @@ module.exports = function (browser) {
 
                         return false;
                     });
-                }, 3000, 500);
+                }, 10000, 500);
         });
     });
 };
