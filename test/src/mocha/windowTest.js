@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var Q = require('q');
 
 module.exports = function (browser) {
     describe("The Window example", function () {
@@ -12,15 +13,29 @@ module.exports = function (browser) {
             (browser.desiredCapabilities.browserName == 'safari')
                 ? describe.skip
                 : describe;
-                        
+                       
+        var truthy = function () {
+            return Q.when(true);
+        };
+
+        var falsy = function () {
+            return Q.when(false); 
+        };
+
         describeAlert("alert", function () {
             it("should open", function () {
                 return browser
                     .click("#alert-button")
-                    .pause(10)
+                    
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText().then(function (text) {
                         expect(text).to.equal("Hello world!");
-                    }).alertAccept();
+                    })
+                    
+                    .alertAccept();
             });
         });
             
@@ -28,29 +43,43 @@ module.exports = function (browser) {
             it("should recognize acceptance", function () {
                 return browser
                     .click("#confirm-button")
-                    .pause(10)
+
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText().then(function (text) {
                         expect(text).to.equal("Do you agree?");
-                    }).alertAccept()
+                    })
+                    
+                    .alertAccept()
+                    
                     .waitUntil(function () {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Pressed OK") >= 0;
                         });
-                    }, 1000, 100);
+                    }, 2000, 100);
             });
 
             it("should recognize rejection", function () {
                 return browser
                     .click("#confirm-button")
-                    .pause(10)
+                    
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText().then(function (text) {
                         expect(text).to.equal("Do you agree?");
-                    }).alertDismiss()
+                    })
+                    
+                    .alertDismiss()
+                    
                     .waitUntil(function () {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Pressed cancel") >= 0;
                         });
-                    }, 1000, 100);
+                    }, 2000, 100);
             });
         });
 
@@ -58,55 +87,79 @@ module.exports = function (browser) {
             it("should recognize dismissal", function () {
                 return browser
                     .click("#prompt-button")
-                    .pause(10)
+
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText().then(function (text) {
                         expect(text).to.equal("What is your favourite colour?");
-                    }).alertDismiss()
+                    })
+                    
+                    .alertDismiss()
+                    
                     .waitUntil(function () {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("User canceled.") >= 0;
                         });
-                    }, 1000, 100);
+                    }, 2000, 100);
             });
             
             it("should return default when accepted", function () {
                 return browser
                     .click("#prompt-button")
-                    .pause(10)
+
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText().then(function (text) {
                         expect(text).to.equal("What is your favourite colour?");
-                    }).alertAccept()
+                    })
+                    
+                    .alertAccept()
+                    
                     .waitUntil(function () {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Got response: Blue") >= 0;
                         });
-                    }, 1000, 100);
+                    }, 2000, 100);
             });
             
             it("should interpret empty string as dismissal", function () {
                 return browser
                     .click("#prompt-button")
-                    .pause(10)
+                    
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText("")
                     .alertAccept()
+                    
                     .waitUntil(function () {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("User canceled.") >= 0;
                         });
-                    }, 1000, 100);
+                    }, 2000, 100);
             });
             
             it("should return entered text if entered", function () {
                 return browser
                     .click("#prompt-button")
-                    .pause(10)
+                    
+                    .waitUntil(function () {
+                        return this.alertText().then(truthy, falsy);
+                    }, 2000, 100)
+                    
                     .alertText("Red")
                     .alertAccept()
+
                     .waitUntil(function () {
                         return this.getText("#message").then(function (text) {
                             return text.indexOf("Got response: Red") >= 0;
                         });
-                    }, 1000, 100);
+                    }, 2000, 100);
             });
         });
     });
