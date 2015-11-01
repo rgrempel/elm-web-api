@@ -12,6 +12,8 @@ module.exports = function (browser) {
         this.timeout(600000);
         this.slow(4000);
 
+        var allPassed = true;
+
         // Before any tests run, initialize the browser.
         before(function (done) {
             browser.init(function (err) {
@@ -23,9 +25,13 @@ module.exports = function (browser) {
         elmTest(browser);
         windowTest(browser);
 
+        afterEach(function() {
+            allPassed = allPassed && (this.currentTest.state === 'passed');
+        });
+
         after(function (done) {
-            var passed = this.currentTest.state === 'passed';
-            browser.passed(passed, done);
+            console.log(title + (allPassed ? " PASSED" : " FAILED"));
+            browser.passed(allPassed, done);
         });
     });
 };
