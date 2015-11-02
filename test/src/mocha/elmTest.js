@@ -13,8 +13,10 @@ module.exports = function (browser) {
                 }, 30000, 500)
                 .getText("#results")
                 .then(function (text) {
+                    // Always log the test results
+                    console.log(text);
+                    
                     var failedCount = count(text, "FAILED");
-                    if (failedCount != 0) console.log(text);
                     expect(failedCount).to.equal(0);
                 });
         });
