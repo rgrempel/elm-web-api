@@ -28,7 +28,7 @@ Elm.Native.WebAPI.Document.make = function (localRuntime) {
             }
         };
 
-        var readyState = NS.input('WebAPI.readyState', getState());
+        var readyState = NS.input('WebAPI.Document.readyState', getState());
 
         localRuntime.addListener([readyState.id], document, 'readystatechange', function () {
             localRuntime.notify(readyState.id, getState());
