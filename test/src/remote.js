@@ -96,14 +96,18 @@ module.exports = function remote (rev) {
         platform: 'Windows 7',
         build: rev,
         name: 'Internet Explorer 8.0 ' + rev,
-        dontFailBuild: true
     },{
 */      browserName: 'internet explorer',
         version: '9.0',
         platform: 'Windows 7',
         build: rev,
         name: 'Internet Explorer 9.0 ' + rev,
-        dontFailBuild: true
+    },{
+        browserName: 'opera',
+        version: '12.15',
+        platform: 'Linux',
+        build: rev,
+        name: 'Opera 12.15 ' + rev,
     },{
         browserName: 'internet explorer',
         version: '10.0',

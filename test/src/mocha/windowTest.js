@@ -9,10 +9,10 @@ module.exports = function (browser) {
 
         // Don't test alerts etc. under Safari, because Selenium can't
         // manage alerts with Safari.
-        var describeAlert = 
-            (browser.desiredCapabilities.browserName == 'safari')
-                ? describe.skip
-                : describe;
+        var describeAlert = (
+            browser.desiredCapabilities.browserName == 'safari' ||
+            browser.desiredCapabilities.browserName == 'opera'
+        ) ? describe.skip : describe;
                        
         var truthy = function () {
             return Q.when(true);
