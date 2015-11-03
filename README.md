@@ -56,17 +56,24 @@ there is some overlap.
 Because elm-web-api uses "native" modules, it requires approval before it can
 be included in the
 [Elm package repository](http://package.elm-lang.org/packages). For a variety of
-reasons, it's unlikely to get such approval. Thus, you cannot currently install
+reasons, it's unlikely to get such approval. Thus, you cannot install
 it using `elm-package`.
 
 However, you can still install it and use it via the following steps:
 
-*   Download this respository in one way or another. For instance, you might use:
+*   Download this respository in one way or another.
 
-        git clone https://github.com/rgrempel/elm-web-api.git
+    *   You can download specific releases from the
+        [releases page](https://github.com/rgrempel/elm-web-api/releases), or
+        just check there for the version history.
+    
+    *   You can clone from git, and then possibly checkout a specific tag:
 
-    Or, you might use git submodules, if you're adept at that. (I wouldn't suggest
-    trying it if you've never heard of them before).
+            git clone https://github.com/rgrempel/elm-web-api.git
+            git checkout 1.0     # If you want a specific release
+
+    *   Or, you might use git submodules, if you're adept at that. (I wouldn't
+        suggest trying it if you've never heard of them before).
 
 *   Modify your `elm-package.json` to refer to the `src` folder.
 
@@ -103,9 +110,6 @@ Now, doing this would have several implications which you should be aware of.
 *   If you're using this as part of a module you'd like to publish yourself,
     then you'll now also need approval before becoming available on the Elm
     package repository.
-
-So, you may or may not really want to do this. But I thought it would be nice to
-let you know how.
 
 
 ## APIs
