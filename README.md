@@ -40,32 +40,15 @@ code. So, I'm plugging away at it -- this is a work in progress.
 
 ## Supported browsers
 
-One question I haven't entirely settled on is how to account for the fact that
-some of these facilities might not always be available. 
+I have now set up testing via Travis and SauceLabs, and you can see at the top
+of this page a graphic that indicates which browsers I'm testing against.
+Let me know if you think I should try out some older verions as well.
 
-*   Where the Javascript can throw exceptions in the normal course of events,
-    I'm accounting for that in the API (i.e. via using `Result`, `Maybe` or
-    `Task` to wrap the return value, as appropriate).
-
-*   In principle, I could use the same mechanism to deal with whole facilities
-    that aren't present (e.g. returning a `Maybe Storage` in `WebAPI.Storage` so
-    that I can return `Nothing` if it's not present). However, that would
-    add some complexity for the client for possibly little gain.
-
-*   I have now set up testing via Travis and SauceLabs, so that I can precisely
-    define which browsers are supported. In some cases, I have been doing just
-    a little bit of custom support for browser quirks.
-
-*   You can see the graphic for supported browsers at the top of this page.
-    Note that IE 9 and below are giving me strange errors in testing, which
-    I haven't been able to quickly understand. If anyone greatly cares about
-    IE 9 and below, let me know and I'll look into it with more energy.
-
-*   For the moment, I'm not thinking too hard about supporting node.js. That's
-    a somewhat larger issue for Elm (it requires some shimming even to get
-    elm-lang/core to work). Furthermore, it might make sense to have a separate
-    package to wrap node.js-oriented APIs (and provide appropriate shims), even
-    if there is some overlap.
+For the moment, I'm not thinking too hard about supporting node.js as well.
+That's a somewhat larger issue for Elm (it requires some shimming even to get
+elm-lang/core to work). Furthermore, it might make sense to have a separate
+package to wrap node.js-oriented APIs (and provide appropriate shims), even if
+there is some overlap.
 
 
 ## Installation
