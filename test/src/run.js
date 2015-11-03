@@ -11,7 +11,7 @@ git.short(function (rev) {
         config.webdriver.desiredCapabilities = remote(rev);
     } else {
         config.webdriver.desiredCapabilities = [{
-            browserName: 'chrome'
+            browserName: 'firefox'
         }];
     };
 
