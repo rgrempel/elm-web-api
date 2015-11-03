@@ -7,13 +7,21 @@ module.exports = function (browser) {
             browser.url('http://localhost:8080/location.html', done);
         });
 
+        var falsy = function () {
+            return Q.when(false); 
+        };
+
         it("should reload from server", function () {
             return browser
                 .setValue("#input", "This goes away on reload")
                 .click("#reload-force-button")
 
                 // Wait for it not to have a value again
-                .waitForValue("#input", 12000, true);
+                .waitUntil(function () {
+                    return this.getValue("#input").then(function (value) {
+                        return value === "";
+                    }, falsy);
+                }, 6000, 250);
         });
         
         it("should reload from cache", function () {
@@ -22,7 +30,11 @@ module.exports = function (browser) {
                 .click("#reload-cache-button")
 
                 // Wait for it not to have a value again
-                .waitForValue("#input", 12000, true);
+                .waitUntil(function () {
+                    return this.getValue("#input").then(function (value) {
+                        return value === "";
+                    }, falsy);
+                }, 6000, 250);
         });
     });
 };
