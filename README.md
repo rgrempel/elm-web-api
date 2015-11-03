@@ -1105,8 +1105,6 @@ an `Event` unless we wrap it in a `Maybe`. So, you'll often want to use
 actions.
 -}
 events : Signal (Maybe Event)
-events =
-    Signal.map (Maybe.map nativeEvent2Event) nativeEvents
 ```
 
 
