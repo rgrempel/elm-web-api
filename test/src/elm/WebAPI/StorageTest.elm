@@ -17,7 +17,7 @@ length0Test storage =
 length1Test : Storage -> Task () Test
 length1Test storage =
     clear storage `andThen`
-    always (setItem storage "bob" "joe") `andThen`
+    always (set storage "bob" "joe") `andThen`
     always (length storage) |>
         Task.map (assertEqual 1 >> test "length") |>
             Task.mapError (always ())
@@ -26,7 +26,7 @@ length1Test storage =
 keyTestSuccess : Storage -> Task () Test
 keyTestSuccess storage =
     clear storage `andThen`
-    always (setItem storage "bob" "joe") `andThen`
+    always (set storage "bob" "joe") `andThen`
     always (key storage 0) |>
         Task.map (assertEqual (Just "bob") >> test "keySuccess") |>
             Task.mapError (always ())
@@ -35,7 +35,7 @@ keyTestSuccess storage =
 keyTestError : Storage -> Task () Test
 keyTestError storage =
     clear storage `andThen`
-    always (setItem storage "bob" "joe") `andThen`
+    always (set storage "bob" "joe") `andThen`
     always (key storage 5) |>
         Task.map (assertEqual Nothing >> test "keyError") |>
             Task.mapError (always ())
@@ -44,8 +44,8 @@ keyTestError storage =
 getItemTestSuccess : Storage -> Task () Test
 getItemTestSuccess storage =
     clear storage `andThen`
-    always (setItem storage "bob" "joe") `andThen`
-    always (getItem storage "bob") |>
+    always (set storage "bob" "joe") `andThen`
+    always (get storage "bob") |>
         Task.map (assertEqual (Just "joe") >> test "getItemSuccess") |>
             Task.mapError (always ())
 
@@ -53,8 +53,8 @@ getItemTestSuccess storage =
 getItemTestError : Storage -> Task () Test
 getItemTestError storage =
     clear storage `andThen`
-    always (setItem storage "bob" "joe") `andThen`
-    always (getItem storage "wrong") |>
+    always (set storage "bob" "joe") `andThen`
+    always (get storage "wrong") |>
         Task.map (assertEqual Nothing >> test "getItemError") |>
             Task.mapError (always ())
 
@@ -62,8 +62,8 @@ getItemTestError storage =
 removeItemTest : Storage -> Task () Test
 removeItemTest storage =
     clear storage `andThen`
-    always (setItem storage "bob" "joe") `andThen`
-    always (removeItem storage "bob") `andThen`
+    always (set storage "bob" "joe") `andThen`
+    always (remove storage "bob") `andThen`
     always (length storage) |>
         Task.map (assertEqual 0 >> test "removeItem") |>
             Task.mapError (always ())
@@ -74,8 +74,8 @@ tests =
     Task.map (suite "Storage") <|
         sequence <|
             List.map makeSuite
-                [ (localStorage, "localStorage")
-                , (sessionStorage, "sessionStorage")
+                [ (local, "localStorage")
+                , (session, "sessionStorage")
                 ]
 
 

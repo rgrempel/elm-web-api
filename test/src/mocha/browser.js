@@ -1,6 +1,7 @@
 var windowTest = require('./windowTest');
 var elmTest = require('./elmTest');
 var locationTest = require('./locationTest');
+var storageTest = require('./storageTest');
 
 module.exports = function (browser) {
     var title =
@@ -26,6 +27,7 @@ module.exports = function (browser) {
         elmTest(browser);
         windowTest(browser);
         locationTest(browser);
+        storageTest(browser);
 
         afterEach(function() {
             allPassed = allPassed && (this.currentTest.state === 'passed');

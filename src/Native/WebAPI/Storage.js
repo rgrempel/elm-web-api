@@ -10,8 +10,13 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
     if (!localRuntime.Native.WebAPI.Storage.values) {
         var Task = Elm.Native.Task.make(localRuntime);
         var Maybe = Elm.Maybe.make(localRuntime);
+        var NS = Elm.Native.Signal.make(localRuntime);
         var Utils = Elm.Native.Utils.make(localRuntime);
-    
+   
+        var toMaybe = function (obj) {
+            return obj == null ? Maybe.Nothing : Maybe.Just(obj); 
+        };
+
         var length = function (storage) {
             return Task.asyncFunction(function (callback) {
                 callback(Task.succeed(storage.length));
@@ -23,7 +28,7 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                 var result = storage.key(k);
                 callback(
                     Task.succeed(
-                        result == null ? Maybe.Nothing : Maybe.Just(result)
+                        toMaybe(result)
                     )
                 );
             });
@@ -34,7 +39,7 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                 var result = storage.getItem(k);
                 callback(
                     Task.succeed(
-                        result == null ? Maybe.Nothing : Maybe.Just(result)
+                        toMaybe(result)
                     )
                 );
             });
@@ -65,6 +70,20 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
             });
         };
 
+        var events = NS.input('WebAPI.Storage.nativeEvents', Maybe.Nothing);
+
+        localRuntime.addListener([events.id], window, "storage", function (event) {
+            var e = {
+                key: toMaybe(event.key),
+                oldValue: toMaybe(event.oldValue),
+                newValue: toMaybe(event.newValue),
+                url : event.url,
+                storageArea: event.storageArea
+            };
+            
+            localRuntime.notify(events.id, toMaybe(e));
+        });
+
         localRuntime.Native.WebAPI.Storage.values = {
             localStorage: window.localStorage,
             sessionStorage: window.sessionStorage,
@@ -74,7 +93,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
             getItem: F2(getItem),
             setItem: F3(setItem),
             removeItem: F2(removeItem),
-            clear: clear
+            clear: clear,
+
+            nativeEvents: events
         };
     }
     

@@ -994,7 +994,8 @@ screenXY : Task x (Int, Int)
 
 ### WebAPI.Storage
 
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage),
+and the [WhatWG documentation](https://html.spec.whatwg.org/multipage/webstorage.html).
 
 There is a more sophisticated `Storage` module available at
 [TheSeamau5/elm-storage](https://github.com/TheSeamau5/elm-storage).
@@ -1006,34 +1007,106 @@ possibly not being available by using a `Maybe` type.
 ```elm
 module WebAPI.Storage where
 
-{-| The browser's `localStorage` object. -}
-localStorage : Storage
+{- -----------------
+   Roles for Strings
+   ----------------- -}
 
-{-| The browser's `sessionStorage` object. -}
-sessionStorage : Storage
+{-| A key. -}
+type alias Key = String
+
+{-| An old value. -}
+type alias OldValue = String
+
+{-| A new value. -}
+type alias NewValue = String
+
+{-| A value. -}
+type alias Value = String
+
+{- -------------
+   Storage Areas 
+   ------------- -}
+
+{-| Represents the `localStorage` and `sessionStorage` areas. -}
+type Storage
+    = Local
+    | Session
+
+{-| The browser's `localStorage` area. -}
+local : Storage
+
+{-| The browser's `sessionStorage` area. -}
+session : Storage
+
+{- -----
+   Tasks
+   ----- -}
 
 {-| A task which, when executed, determines the number of items stored in the
-`Storage` object.
+storage area.
 -}
 length : Storage -> Task x Int
 
 {-| A task which, when executed, determines the name of the key at the given
 index (zero-based).
 -}
-key : Storage -> Int -> Task x (Maybe String)
+key : Storage -> Int -> Task x (Maybe Key)
 
 {-| A task which, when executed, gets the value at the given key. -}
-getItem : Storage -> String -> Task x (Maybe String)
+get : Storage -> Key -> Task x (Maybe Value)
 
-{-| A task which, when executed, sets the value (third parameter) at the given
-key (second parameter), or fails with an error message. -}
-setItem : Storage -> String -> String -> Task String ()`
+{-| A task which, when executed, sets the value at the given key, or fails with
+an error message.
+-}
+set : Storage -> Key -> NewValue -> Task String ()
 
 {-| A task which, when executed, removes the item with the given key. -}
-removeItem : Storage -> String -> Task x ()
+remove : Storage -> Key -> Task x ()
 
 {-| A task which, when executed, removes all items. -}
 clear : Storage -> Task x ()
+
+{- ------
+   Events
+   ------ -}
+
+{-| A storage event. -}
+type alias Event =
+    { area : Storage
+    , url : String
+    , change : Change
+    }
+
+{-| A change to a storage area. -}
+type Change
+    = Add Key NewValue
+    | Remove Key OldValue
+    | Modify Key OldValue NewValue
+    | Clear
+
+{-| A signal of storage events.
+
+Note that a storage event is not fired within the same document that made a
+storage change. Thus, you will only receive events for localStorage changes
+that occur in a **separate** tab or window.
+
+This behaviour reflects how Javascript does things ... let me know if you'd
+prefer to have *all* localStorage events go through this `Signal` -- it could
+be arranged.
+
+At least in Safari, sessionStorage is even more restrictive than localStorage
+-- it is isolated per-tab, so you will only get events on sessionStorage if
+using iframes.
+
+Note that this signal emits `Maybe Event` (rather than `Event`) because Elm
+signals must have an initial value -- and there is no natural initial value for
+an `Event` unless we wrap it in a `Maybe`. So, you'll often want to use
+`Signal.filterMap` when you're integrating this into your own signal of
+actions.
+-}
+events : Signal (Maybe Event)
+events =
+    Signal.map (Maybe.map nativeEvent2Event) nativeEvents
 ```
 
 
