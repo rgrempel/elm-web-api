@@ -69,6 +69,16 @@ removeItemTest storage =
             Task.mapError (always ())
 
 
+removeItemTestError : Storage -> Task () Test
+removeItemTestError storage =
+    clear storage `andThen`
+    always (set storage "bob" "joe") `andThen`
+    always (remove storage "not there") `andThen`
+    always (length storage) |>
+        Task.map (assertEqual 1 >> test "removeItem") |>
+            Task.mapError (always ())
+
+
 tests : Task () Test
 tests =
     Task.map (suite "Storage") <|
@@ -90,4 +100,5 @@ makeSuite (storage, label) =
             , getItemTestSuccess storage
             , getItemTestError storage
             , removeItemTest storage
+            , removeItemTestError storage
             ]

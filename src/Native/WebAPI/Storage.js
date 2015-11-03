@@ -25,7 +25,13 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
 
         var key = function (storage, k) {
             return Task.asyncFunction(function (callback) {
-                var result = storage.key(k);
+                var result = null;
+
+                // This check needed to avoid a problem in IE9
+                if (k >= 0 && k < storage.length) {
+                    result = storage.key(k);
+                }
+
                 callback(
                     Task.succeed(
                         toMaybe(result)
