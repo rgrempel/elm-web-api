@@ -7,7 +7,8 @@ module.exports = function (browser) {
     if (
         browser.desiredCapabilities.browserName == 'chrome' ||
         browser.desiredCapabilities.browserName == 'internet explorer' ||
-        browser.desiredCapabilities.browserName == 'opera'
+        browser.desiredCapabilities.browserName == 'opera' ||
+        browser.desiredCapabilities.browserName == 'iphone'
     ) {
         // Can't get the tab switching to work in these
         run = describe.skip;

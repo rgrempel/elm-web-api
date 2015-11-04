@@ -125,8 +125,11 @@ module.exports = function (browser) {
                         });
                     }, 30000, 500);
             });
-            
-            it("should interpret empty string as dismissal", function () {
+
+            // These don't work on iPhone because the alertText() isn't cleared
+            var run = browser.desiredCapabilities.browserName == 'iphone' ? it.skip : it;
+
+            run("should interpret empty string as dismissal", function () {
                 return browser
                     .click("#prompt-button")
                     
@@ -144,7 +147,7 @@ module.exports = function (browser) {
                     }, 30000, 500);
             });
             
-            it("should return entered text if entered", function () {
+            run("should return entered text if entered", function () {
                 return browser
                     .click("#prompt-button")
                     

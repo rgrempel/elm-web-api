@@ -2,16 +2,7 @@
 
 module.exports = function remote (rev) {
     return [{
-/* Something about the iPhone setup on SauceLabs isn't working for me
-        browserName: 'iphone',
-        platform: 'OS X 10.10',
-        version: '9.0',
-        deviceName: 'iPhone 6',
-        deviceOrientation: 'portrait',
-        build: rev,
-        name: 'iphone 6 ' + rev
-    },{
-*/      browserName: 'safari',
+        browserName: 'safari',
         version: '6.0',
         platform: 'OS X 10.8',
         build: rev,
@@ -35,15 +26,7 @@ module.exports = function remote (rev) {
         build: rev,
         name: 'Safari El Capitan ' + rev
     },{
-/*      browserName: 'android',
-        platform: 'Linux',
-        version: '5.1',
-        deviceName: 'Android Emulator',
-        deviceOrientation: 'portrait',
-        build: rev,
-        name: 'Android 5.1 ' + rev
-    },{
-*/      browserName: 'chrome',
+        browserName: 'chrome',
         version: '46.0',
         platform: 'Windows 10',
         build: rev,
@@ -120,8 +103,23 @@ module.exports = function remote (rev) {
         platform: 'Windows 10',
         build: rev,
         name: 'Internet Explorer 11.0 ' + rev
+    },{
+        browserName: 'iphone',
+        platform: 'OS X 10.10',
+        version: '9.1',
+        deviceName: 'iPhone Simulator',
+        deviceOrientation: 'portrait',
+        build: rev,
+        name: 'iOS 9.1 ' + rev
 /*  },{
-    Looks like webdriver support for Edge isn't complete yet
+        browserName: 'android',
+        platform: 'Linux',
+        version: '5.1',
+        deviceName: 'Android Emulator',
+        deviceOrientation: 'portrait',
+        build: rev,
+        name: 'Android 5.1 ' + rev
+    },{
         browserName: 'microsoftedge',
         version: '20.10240',
         platform: 'Windows 10',
