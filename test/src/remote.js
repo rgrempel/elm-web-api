@@ -113,11 +113,5 @@ module.exports = function remote (rev) {
         deviceOrientation: 'portrait',
         build: rev,
         name: 'iOS 8.4 ' + rev
-/*  },{
-        browserName: 'microsoftedge',
-        version: '20.10240',
-        platform: 'Windows 10',
-        build: rev,
-        name: 'MS Edge 20.10240 ' + rev
-*/  }];
+    }];
 };
