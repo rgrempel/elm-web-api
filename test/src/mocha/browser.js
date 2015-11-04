@@ -11,7 +11,7 @@ module.exports = function (browser) {
         browser.desiredCapabilities.build;
     
     describe(title, function () {
-        this.timeout(600000);
+        this.timeout(900000);
         this.slow(4000);
 
         var allPassed = true;
