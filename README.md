@@ -5,20 +5,17 @@
 # elm-web-api
 
 The purpose of this package is to expose various standard web APIs to Elm,
-or document where they are already exposed.
-
-By "web APIs" I basically mean the kind of things that are listed on
-Mozilla's various Web APIs pages, e.g.
+or document where they are already exposed. By "web APIs" I basically mean the
+kind of things that are listed on Mozilla's various Web APIs pages, e.g.
 
 * https://developer.mozilla.org/en-US/docs/Web/API
 * https://developer.mozilla.org/en-US/docs/WebAPI
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 Essentially, they are various facilities available in a Javascript web
-environment. 
-
-In order for Elm to use such facilities, it is necessary to write "native"
-code. So, I'm plugging away at it -- this is a work in progress.
+environment. In order for Elm to use such facilities, it is necessary to write
+"native" code. So, I'm plugging away at it -- this is a work in progress,
+but if it is useful to you, that would be great.
 
 
 ## Contents
@@ -40,7 +37,7 @@ code. So, I'm plugging away at it -- this is a work in progress.
 
 ## Supported browsers
 
-I have now set up testing via Travis and SauceLabs, and you can see at the top
+I have set up testing via Travis and SauceLabs -- you can see at the top
 of this page a graphic that indicates which browsers I'm testing against.
 Let me know if you think I should try out some older verions as well.
 
@@ -118,11 +115,11 @@ Now, doing this would have several implications which you should be aware of.
 
 Bindings for 
 [`window.requestAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)
-and [`window.cancelAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame).
+and [`window.cancelAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame).
 
 Note that 
 [jwmerrill/elm-animation-frame](http://package.elm-lang.org/packages/jwmerrill/elm-animation-frame/latest)
-provides for a `Signal` of animation frames. So, this module merely provides a
+provides for a `Signal` of animation frames. So, this module provides a
 `Task`-oriented alternative.
 
 Other higher-level alternatives include 
