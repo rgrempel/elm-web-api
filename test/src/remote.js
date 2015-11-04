@@ -105,15 +105,15 @@ module.exports = function remote (rev) {
         deviceOrientation: 'portrait',
         build: rev,
         name: 'iOS 9.1 ' + rev
-/*  },{
-        browserName: 'android',
-        platform: 'Linux',
-        version: '5.1',
-        deviceName: 'Android Emulator',
+    },{
+        browserName: 'iphone',
+        platform: 'OS X 10.10',
+        version: '8.4',
+        deviceName: 'iPhone Simulator',
         deviceOrientation: 'portrait',
         build: rev,
-        name: 'Android 5.1 ' + rev
-    },{
+        name: 'iOS 8.4 ' + rev
+/*  },{
         browserName: 'microsoftedge',
         version: '20.10240',
         platform: 'Windows 10',
