@@ -113,5 +113,13 @@ module.exports = function remote (rev) {
         deviceOrientation: 'portrait',
         build: rev,
         name: 'iOS 8.4 ' + rev
+    },{
+        browserName: 'iphone',
+        platform: 'OS X 10.10',
+        version: '7.1',
+        deviceName: 'iPhone Simulator',
+        deviceOrientation: 'portrait',
+        build: rev,
+        name: 'iOS 7.1 ' + rev
     }];
 };
