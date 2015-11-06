@@ -97,29 +97,5 @@ module.exports = function remote (rev) {
         platform: 'Windows 10',
         build: rev,
         name: 'Internet Explorer 11.0 ' + rev
-    },{
-        browserName: 'iphone',
-        platform: 'OS X 10.10',
-        version: '9.1',
-        deviceName: 'iPhone Simulator',
-        deviceOrientation: 'portrait',
-        build: rev,
-        name: 'iOS 9.1 ' + rev
-    },{
-        browserName: 'iphone',
-        platform: 'OS X 10.10',
-        version: '8.4',
-        deviceName: 'iPhone Simulator',
-        deviceOrientation: 'portrait',
-        build: rev,
-        name: 'iOS 8.4 ' + rev
-    },{
-        browserName: 'iphone',
-        platform: 'OS X 10.10',
-        version: '7.1',
-        deviceName: 'iPhone Simulator',
-        deviceOrientation: 'portrait',
-        build: rev,
-        name: 'iOS 7.1 ' + rev
     }];
 };
