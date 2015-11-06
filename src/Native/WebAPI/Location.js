@@ -55,6 +55,38 @@ Elm.Native.WebAPI.Location.make = function (localRuntime) {
                         );
                     }
                 });
+            },
+
+            assign: function (url) {
+                return Task.asyncFunction(function (callback) {
+                    try {
+                        window.location.assign(url);
+
+                        callback(
+                            Task.succeed(Utils.Tuple0)
+                        );
+                    } catch (ex) {
+                        callback(
+                            Task.fail(ex.toString())
+                        );
+                    }
+                });
+            },
+
+            replace: function (url) {
+                return Task.asyncFunction(function (callback) {
+                    try {
+                        window.location.replace(url);
+
+                        callback(
+                            Task.succeed(Utils.Tuple0)
+                        );
+                    } catch (ex) {
+                        callback(
+                            Task.fail(ex.toString())
+                        );
+                    }
+                });
             }
         };
     }

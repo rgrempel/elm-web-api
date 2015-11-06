@@ -655,6 +655,22 @@ reload : Source -> Task String ()
 type Source
     = ForceServer
     | AllowCache
+
+{-| A task which, when executed, loads the resource at the provided URL,
+or provides an error message upon failure.
+
+Also consider using `setPath` from
+[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+-}
+assign : String -> Task String ()
+
+{-| Like `assign`, loads the resource at the provided URL, but replaces the
+current page in the browser's history.
+
+Also consider using `replacePath` from
+[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+-}
+replace : String -> Task String ()
 ```
 
 ***See also***

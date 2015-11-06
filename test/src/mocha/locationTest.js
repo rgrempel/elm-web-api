@@ -36,5 +36,53 @@ module.exports = function (browser) {
                     }, falsy);
                 }, 6000, 250);
         });
+
+        describe("assign", function () {
+            it("should work with valid url", function () {
+                return browser
+                    .setValue("#input", "http://localhost:8080/window.html")
+                    .click("#assign-button")
+                    .waitUntil(function () {
+                        return this.url().then(function (url) {
+                            return url.value == "http://localhost:8080/window.html";
+                        });
+                    }, 6000, 250);
+            });
+            
+            it("should error with invalid url", function () {
+                return browser
+                    .setValue("#input", "http:// www.apple.com")
+                    .click("#assign-button")
+                    .waitUntil(function () {
+                        return this.getText("#message").then(function (message) {
+                            return message.indexOf("Got error:") >= 0;
+                        });
+                    }, 6000, 250);
+            });
+        });
+        
+        describe("replace", function () {
+            it("should work with valid url", function () {
+                return browser
+                    .setValue("#input", "http://localhost:8080/window.html")
+                    .click("#replace-button")
+                    .waitUntil(function () {
+                        return this.url().then(function (url) {
+                            return url.value == "http://localhost:8080/window.html";
+                        });
+                    }, 6000, 250);
+            });
+            
+            it("should error with invalid url", function () {
+                return browser
+                    .setValue("#input", "http:// www.apple.com")
+                    .click("#replace-button")
+                    .waitUntil(function () {
+                        return this.getText("#message").then(function (message) {
+                            return message.indexOf("Got error:") >= 0;
+                        });
+                    }, 6000, 250);
+            });
+        });
     });
 };

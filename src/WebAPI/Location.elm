@@ -1,6 +1,7 @@
 module WebAPI.Location
     ( Location, location
     , reload, Source(ForceServer, AllowCache)
+    , assign, replace
     ) where
 
 
@@ -11,13 +12,7 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API
 For a `Signal`-oriented version of things you might do with `window.location`, see
 [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
 
-For `assign`, use `setPath` from
-[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
-
-For `replace`, use `replacePath` from
-[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
-
-@docs Location, location, reload, Source
+@docs Location, location, reload, Source, assign, replace
 -}
 
 
@@ -61,3 +56,23 @@ nativeReload = Native.WebAPI.Location.reload
 type Source
     = ForceServer
     | AllowCache
+
+
+{-| A task which, when executed, loads the resource at the provided URL,
+or provides an error message upon failure.
+
+Also consider using `setPath` from
+[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+-}
+assign : String -> Task String ()
+assign = Native.WebAPI.Location.assign
+
+
+{-| Like `assign`, loads the resource at the provided URL, but replaces the
+current page in the browser's history.
+
+Also consider using `replacePath` from
+[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+-}
+replace : String -> Task String ()
+replace = Native.WebAPI.Location.replace
