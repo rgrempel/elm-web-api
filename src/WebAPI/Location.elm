@@ -61,6 +61,9 @@ type Source
 {-| A task which, when executed, loads the resource at the provided URL,
 or provides an error message upon failure.
 
+Note that only Firefox appears to reliably report an error -- other browsers
+silently fail if an invalid URL is provided.
+
 Also consider using `setPath` from
 [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
 -}
@@ -70,6 +73,9 @@ assign = Native.WebAPI.Location.assign
 
 {-| Like `assign`, loads the resource at the provided URL, but replaces the
 current page in the browser's history.
+
+Note that only Firefox appears to reliably report an error -- other browsers
+silently fail if an invalid URL is provided.
 
 Also consider using `replacePath` from
 [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).

@@ -37,6 +37,11 @@ module.exports = function (browser) {
                 }, 6000, 250);
         });
 
+        var runError =
+            browser.desiredCapabilities.browserName == "firefox"
+                ? it
+                : it.skip;
+
         describe("assign", function () {
             it("should work with valid url", function () {
                 return browser
@@ -49,7 +54,7 @@ module.exports = function (browser) {
                     }, 6000, 250);
             });
             
-            it("should error with invalid url", function () {
+            runError("should error with invalid url", function () {
                 return browser
                     .setValue("#input", "http:// www.apple.com")
                     .click("#assign-button")
@@ -73,7 +78,7 @@ module.exports = function (browser) {
                     }, 6000, 250);
             });
             
-            it("should error with invalid url", function () {
+            runError("should error with invalid url", function () {
                 return browser
                     .setValue("#input", "http:// www.apple.com")
                     .click("#replace-button")
