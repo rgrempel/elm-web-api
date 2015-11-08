@@ -24,7 +24,7 @@ Elm.Native.WebAPI.Document.make = function (localRuntime) {
                     return {ctor: "Complete"};
 
                 default:
-                    throw "Got unrecognized document.readyState: " + document.readyState;
+                    throw new Error("Got unrecognized document.readyState: " + document.readyState);
             }
         };
 
