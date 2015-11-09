@@ -409,9 +409,10 @@ type StorageResponse
     = HandleLength Int
     | HandleKey (Maybe Storage.Key)
     | HandleGet (Maybe Storage.Value)
-    | HandleSet (Result String ())
+    | HandleSet (Result Storage.Error ())
     | HandleRemove ()
     | HandleClear ()
+    | HandleError Storage.Error
 
 
 {-| A convenience function that takes a `StorageAction` and turns it into
@@ -419,32 +420,38 @@ a task that provides a `StorageResopnse`.
 -}
 storageAction2task : StorageAction -> Task x StorageResponse
 storageAction2task action =
-    case action.operation of
-        DoLength ->
-            Task.map HandleLength <|
-                Storage.length action.target
+    let
+        task =
+            case action.operation of
+                DoLength ->
+                    Task.map HandleLength <|
+                        Storage.length action.target
 
-        DoKey int ->
-            Task.map HandleKey <|
-                Storage.key action.target int
+                DoKey int ->
+                    Task.map HandleKey <|
+                        Storage.key action.target int
 
-        DoGet key ->
-            Task.map HandleGet <|
-                Storage.get action.target key
+                DoGet key ->
+                    Task.map HandleGet <|
+                        Storage.get action.target key
 
-        DoSet key value ->
-            Task.map HandleSet <|
-                Task.toResult <|
-                    Storage.set action.target key value
+                DoSet key value ->
+                    Task.map HandleSet <|
+                        Task.toResult <|
+                            Storage.set action.target key value
 
-        DoRemove key ->
-            Task.map HandleRemove <|
-                Storage.remove action.target key
+                DoRemove key ->
+                    Task.map HandleRemove <|
+                        Storage.remove action.target key
 
-        DoClear ->
-            Task.map HandleClear <|
-                Storage.clear action.target
+                DoClear ->
+                    Task.map HandleClear <|
+                        Storage.clear action.target
 
+    in
+        task `Task.onError`
+            (Task.succeed << HandleError)
+        
 
 {-| It's always nice to keep the actual text of the UI in one place. It also
 helps for matching the <select> operations in the UI with the actual types.
