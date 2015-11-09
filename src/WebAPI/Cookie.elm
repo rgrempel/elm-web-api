@@ -1,17 +1,24 @@
 module WebAPI.Cookie
     ( get, set
     , Options, setWith, defaultOptions
+    , Error(Error, Disabled), enabled
     ) where
 
 {-| Wrap the browser's 
 [`document.cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
 object.
 
-# Getting cookies 
+## Getting cookies
+
 @docs get
 
-# Setting cookies
+## Setting cookies
+
 @docs set, setWith, Options, defaultOptions
+
+## Errors
+
+@docs Error, enabled
 -}
 
 import Native.WebAPI.Cookie
@@ -24,17 +31,39 @@ import Date exposing (Date)
 import List
 
 
-{-| A `Task` which, when executed, will succeed with the cookies.
+{-| A name for a cookie. -}
+type alias Key = String
+
+
+{-| The value of a cookie. -}
+type alias Value = String
+
+
+{-| Tasks will fail with `Disabled` if the user has disabled cookies, or
+with `Error` for other errors.
+-}
+type Error
+    = Disabled
+    | Error String
+
+
+{-| Whether cookies are enabled, according to the browser's
+`navigator.cookieEnabled`. -}
+enabled : Task x Bool
+enabled = Native.WebAPI.Cookie.enabled
+
+
+{-| A `Task` which, when executed, will succeed with the cookies, or fail with an
+error message if (for instance) cookies have been disabled in the browser.
 
 In the resulting `Dict`, the keys and values are the key=value pairs parsed from
 Javascript's `document.cookie`. The keys and values will have been uriDecoded.
 -}
-get : Task x (Dict String String)
-get =
-    Task.map cookieString2Dict getString
+get : Task Error (Dict Key Value)
+get = Task.map cookieString2Dict getString
 
 
-getString : Task x String
+getString : Task Error String
 getString = Native.WebAPI.Cookie.getString
 
 
@@ -43,7 +72,7 @@ iterate over the cookies more then once.  Note that the uriDecode needs to
 happen after the split on ';' (to divide into key-value pairs) and the split on
 '=' (to divide the keys from the values).
 -}
-cookieString2Dict : String -> Dict String String
+cookieString2Dict : String -> Dict Key Value
 cookieString2Dict =
     let
         addCookieToDict =
@@ -58,12 +87,13 @@ cookieString2Dict =
         List.foldl addCookieToDict Dict.empty << split ";"
 
 
-{-| A task which will set a cookie using the provided key (first parameter)
-and value (second parameter).
+{-| A task which will set a cookie using the provided key and value. The key
+and value will both be uriEncoded.
 
-The key and value will both be uriEncoded.
+The task will fail with an error message if cookies have been disabled in the
+browser.
 -}
-set : String -> String -> Task x ()
+set : Key -> Value -> Task Error ()
 set = setWith defaultOptions
 
 
@@ -79,8 +109,8 @@ type alias Options =
 
 {-| The default options, in which all options are set to Nothing.
 
-You can use this as a starting point for setWith, where you only want to
-specify some options.
+You can use this as a starting point for `setWith`, in cases where you only
+want to specify some options.
 -}
 defaultOptions : Options
 defaultOptions =
@@ -92,13 +122,14 @@ defaultOptions =
     }
 
 
-{-| A task which will set a cookie using the provided options, key (second
-parameter), and value (third parameter).
-
+{-| A task which will set a cookie using the provided options, key, and value.
 The key and value will be uriEncoded, as well as the path and domain options
 (if provided).
+
+The task will fail with an error message if cookies have been disabled in
+the browser.
 -}
-setWith : Options -> String -> String -> Task x ()
+setWith : Options -> Key -> Value -> Task Error ()
 setWith options key value =
     let
         andThen =
@@ -120,7 +151,7 @@ setWith options key value =
         setString <| join ";" cookieStrings
 
 
-setString : String -> Task x ()
+setString : String -> Task Error ()
 setString =
     Native.WebAPI.Cookie.setString
 

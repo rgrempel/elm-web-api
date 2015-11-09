@@ -175,27 +175,46 @@ object.
 ```elm
 module WebAPI.Cookie where
 
-{-| A `Task` which, when executed, will succeed with the cookies.
+{-| A name for a cookie. -}
+type alias Key = String
+
+{-| The value of a cookie. -}
+type alias Value = String
+
+{-| Tasks will fail with `Disabled` if the user has disabled cookies, or
+with `Error` for other errors.
+-}
+type Error
+    = Disabled
+    | Error String
+
+{-| Whether cookies are enabled, according to the browser's `navigator.cookieEnabled`. -}
+enabled : Task x Bool
+
+{-| A `Task` which, when executed, will succeed with the cookies, or fail with an
+error message if (for instance) cookies have been disabled in the browser.
 
 In the resulting `Dict`, the keys and values are the key=value pairs parsed from
 Javascript's `document.cookie`. The keys and values will have been uriDecoded.
 -}
-get : Task x (Dict String String)
+get : Task Error (Dict Key Value)
 
-{-| A task which will set a cookie using the provided key (first parameter)
-and value (second parameter).
+{-| A task which will set a cookie using the provided key and value. The key
+and value will both be uriEncoded.
 
-The key and value will both be uriEncoded.
+The task will fail with an error message if cookies have been disabled in the
+browser.
 -}
-set : String -> String -> Task x ()
+set : Key -> Value -> Task Error ()
 
-{-| A task which will set a cookie using the provided options, key (second
-parameter), and value (third parameter).
-
+{-| A task which will set a cookie using the provided options, key, and value.
 The key and value will be uriEncoded, as well as the path and domain options
 (if provided).
+
+The task will fail with an error message if cookies have been disabled in
+the browser.
 -}
-setWith : Options -> String -> String -> Task x ()
+setWith : Options -> Key -> Value -> Task Error ()
 
 {-| Options which you can provide to setWith. -}
 type alias Options =
@@ -206,10 +225,10 @@ type alias Options =
     , secure : Maybe Bool
     }
 
-{-| The default options, in which all options are set to `Nothing`.
+{-| The default options, in which all options are set to Nothing.
 
-You can use this as a starting point for `setWith`, where you only want to
-specify some options.
+You can use this as a starting point for `setWith`, in cases where you only
+want to specify some options.
 -}
 defaultOptions : Options
 ```
