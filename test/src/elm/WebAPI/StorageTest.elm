@@ -7,79 +7,102 @@ import Task exposing (Task, sequence, succeed, andThen)
 import WebAPI.Storage exposing (..)
 
 
-length0Test : Storage -> Task () Test
+(>>>) = flip Task.map
+(>>+) = Task.andThen
+(>>!) = Task.onError
+
+
+(>>-) task func =
+    task `andThen` (always func)
+
+
+reportError : String -> Error -> Task x Test
+reportError name error =
+    Task.succeed <|
+        test (name ++ ": " ++ (toString error)) <|
+            assert False
+
+
+length0Test : Storage -> Task x Test
 length0Test storage =
-    clear storage `andThen`
-    always (length storage) |>
-        Task.map (assertEqual 0 >> test "length")
+    clear storage
+    >>- length storage
+    >>> (assertEqual 0 >> test "length0")
+    >>! reportError "length0"
 
 
-length1Test : Storage -> Task () Test
+length1Test : Storage -> Task x Test
 length1Test storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (length storage) |>
-        Task.map (assertEqual 1 >> test "length") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- length storage
+    >>> (assertEqual 1 >> test "length1")
+    >>! reportError "length1"
 
 
-keyTestSuccess : Storage -> Task () Test
+keyTestSuccess : Storage -> Task x Test
 keyTestSuccess storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (key storage 0) |>
-        Task.map (assertEqual (Just "bob") >> test "keySuccess") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- key storage 0
+    >>> (assertEqual (Just "bob") >> test "keySuccess")
+    >>! reportError "keySuccess"
 
 
-keyTestError : Storage -> Task () Test
+keyTestError : Storage -> Task x Test
 keyTestError storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (key storage 5) |>
-        Task.map (assertEqual Nothing >> test "keyError") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- key storage 5
+    >>> (assertEqual Nothing >> test "keyError")
+    >>! reportError "keyError"
 
 
-getItemTestSuccess : Storage -> Task () Test
+getItemTestSuccess : Storage -> Task x Test
 getItemTestSuccess storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (get storage "bob") |>
-        Task.map (assertEqual (Just "joe") >> test "getItemSuccess") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- get storage "bob"
+    >>> (assertEqual (Just "joe") >> test "getItemSuccess")
+    >>! reportError "getItemSuccess"
 
 
-getItemTestError : Storage -> Task () Test
+getItemTestError : Storage -> Task x Test
 getItemTestError storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (get storage "wrong") |>
-        Task.map (assertEqual Nothing >> test "getItemError") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- get storage "wrong"
+    >>> (assertEqual Nothing >> test "getItemError")
+    >>! reportError "getItemError"
 
 
-removeItemTest : Storage -> Task () Test
+removeItemTest : Storage -> Task x Test
 removeItemTest storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (remove storage "bob") `andThen`
-    always (length storage) |>
-        Task.map (assertEqual 0 >> test "removeItem") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- remove storage "bob"
+    >>- length storage
+    >>> (assertEqual 0 >> test "removeItem")
+    >>! reportError "removeItem"
 
 
-removeItemTestError : Storage -> Task () Test
+removeItemTestError : Storage -> Task x Test
 removeItemTestError storage =
-    clear storage `andThen`
-    always (set storage "bob" "joe") `andThen`
-    always (remove storage "not there") `andThen`
-    always (length storage) |>
-        Task.map (assertEqual 1 >> test "removeItem") |>
-            Task.mapError (always ())
+    clear storage
+    >>- set storage "bob" "joe"
+    >>- remove storage "not there"
+    >>- length storage
+    >>> (assertEqual 1 >> test "removeItemError")
+    >>! reportError "removeItemError"
 
 
-tests : Task () Test
+enabledTest : Task x Test
+enabledTest =
+    enabled
+    >>> (assert >> test "Enabled")
+
+
+tests : Task x Test
 tests =
     Task.map (suite "Storage") <|
         sequence <|
@@ -87,9 +110,11 @@ tests =
                 [ (local, "localStorage")
                 , (session, "sessionStorage")
                 ]
+            ++
+            [ enabledTest ]
 
 
-makeSuite : (Storage, String) -> Task () Test
+makeSuite : (Storage, String) -> Task x Test
 makeSuite (storage, label) =
     Task.map (suite label) <|
         sequence

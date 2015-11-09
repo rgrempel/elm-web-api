@@ -1006,15 +1006,13 @@ screenXY : Task x (Int, Int)
 
 ### WebAPI.Storage
 
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage),
-and the [WhatWG documentation](https://html.spec.whatwg.org/multipage/webstorage.html).
+Facilities from the browser's storage areas (`localStorage` and `sessionStorage`).
 
-There is a more sophisticated `Storage` module available at
+See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
+and [WhatWG documentation](https://html.spec.whatwg.org/multipage/webstorage.html).
+
+Note that there is a more sophisticated storage module available at
 [TheSeamau5/elm-storage](https://github.com/TheSeamau5/elm-storage).
-
-Note that we're essentially assuming that `window.localStorage` and
-`window.sessionStorage` are, in fact, available. We could account for them
-possibly not being available by using a `Maybe` type.
 
 ```elm
 module WebAPI.Storage where
@@ -1050,6 +1048,24 @@ local : Storage
 {-| The browser's `sessionStorage` area. -}
 session : Storage
 
+{- ------
+   Errors
+   ------ -}
+
+{-| Possible error conditions.
+
+* `Disabled` indicates that the user has disabled storage.
+* `QuotaExceeded` indicates that the storage quota has been exceeded.
+* `Error` indicates that some other kind of error occurred.
+-}
+type Error
+    = Disabled
+    | QuotaExceeded
+    | Error String
+
+{-| Indicates whether storage is enabled. (It can be disabled by the user). -}
+enabled : Task x Bool
+
 {- -----
    Tasks
    ----- -}
@@ -1057,26 +1073,31 @@ session : Storage
 {-| A task which, when executed, determines the number of items stored in the
 storage area.
 -}
-length : Storage -> Task x Int
+length : Storage -> Task Error Int
 
 {-| A task which, when executed, determines the name of the key at the given
 index (zero-based).
--}
-key : Storage -> Int -> Task x (Maybe Key)
 
-{-| A task which, when executed, gets the value at the given key. -}
-get : Storage -> Key -> Task x (Maybe Value)
+Succeeds with `Nothing` if the index is out of bounds.
+-}
+key : Storage -> Int -> Task Error (Maybe Key)
+
+{-| A task which, when executed, gets the value at the given key.
+
+Succeeds with `Nothing` if the key is not found.
+-}
+get : Storage -> Key -> Task Error (Maybe Value)
 
 {-| A task which, when executed, sets the value at the given key, or fails with
 an error message.
 -}
-set : Storage -> Key -> NewValue -> Task String ()
+set : Storage -> Key -> NewValue -> Task Error ()
 
 {-| A task which, when executed, removes the item with the given key. -}
-remove : Storage -> Key -> Task x ()
+remove : Storage -> Key -> Task Error ()
 
 {-| A task which, when executed, removes all items. -}
-clear : Storage -> Task x ()
+clear : Storage -> Task Error ()
 
 {- ------
    Events
@@ -1115,6 +1136,9 @@ signals must have an initial value -- and there is no natural initial value for
 an `Event` unless we wrap it in a `Maybe`. So, you'll often want to use
 `Signal.filterMap` when you're integrating this into your own signal of
 actions.
+
+If the user has disabled storage, then nothing will ever be emitted on the
+signal.
 -}
 events : Signal (Maybe Event)
 ```

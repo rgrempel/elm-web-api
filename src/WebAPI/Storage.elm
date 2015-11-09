@@ -3,15 +3,16 @@ module WebAPI.Storage
     , length, key, get, set, remove, clear
     , events, Event, Change(Add, Remove, Modify, Clear)
     , Key, OldValue, NewValue, Value
+    , Error(Disabled, QuotaExceeded, Error), enabled
     ) where
 
 
-{-| Facilities from the browser's `Storage` areas (`localStorage` and `sessionStorage`).
+{-| Facilities from the browser's storage areas (`localStorage` and `sessionStorage`).
 
 See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage),
 and the [WhatWG documentation](https://html.spec.whatwg.org/multipage/webstorage.html).
 
-Note that there is a more sophisticated module for `Storage` at
+Note that there is a more sophisticated module for storage at
 [TheSeamau5/elm-storage](https://github.com/TheSeamau5/elm-storage)
 
 ## Storage Areas
@@ -22,6 +23,10 @@ Note that there is a more sophisticated module for `Storage` at
 
 @docs Key, OldValue, NewValue, Value
 
+## Errors
+
+@docs Error, enabled
+
 ## Tasks 
 
 @docs length, key, get, set, remove, clear
@@ -29,7 +34,6 @@ Note that there is a more sophisticated module for `Storage` at
 ## Events 
 
 @docs events, Event, Change
-
 -}
 
 
@@ -79,33 +83,26 @@ session : Storage
 session = Session
 
 
--- We expose a union type (above), rather than the actual native storage objects,
--- so that what we expose can be pattern-matched against etc.
-type NativeStorage = NativeStorage
+{- ------
+   Errors
+   ------ -}
 
 
-nativeLocal : NativeStorage
-nativeLocal = Native.WebAPI.Storage.localStorage
+{-| Possible error conditions.
+
+* `Disabled` indicates that the user has disabled storage.
+* `QuotaExceeded` indicates that the storage quota has been exceeded.
+* `Error` indicates that some other kind of error occurred.
+-}
+type Error
+    = Disabled
+    | QuotaExceeded
+    | Error String
 
 
-nativeSession : NativeStorage
-nativeSession = Native.WebAPI.Storage.sessionStorage
-
-
-toNative : Storage -> NativeStorage
-toNative storage =
-    case storage of
-        Local -> nativeLocal
-        Session -> nativeSession
-
-
-fromNative : NativeStorage -> Storage
-fromNative native =
-    if native == nativeLocal
-        then Local
-    else if native == nativeSession
-        then Session
-    else Debug.crash "There shouldn't be another kind of NativeStorage"
+{-| Indicates whether storage is enabled. (It can be disabled by the user). -}
+enabled : Task x Bool
+enabled = Native.WebAPI.Storage.enabled
 
 
 {- -----
@@ -116,61 +113,42 @@ fromNative native =
 {-| A task which, when executed, determines the number of items stored in the
 storage area.
 -}
-length : Storage -> Task x Int
-length = nativeLength << toNative
-
-
-nativeLength : NativeStorage -> Task x Int
-nativeLength = Native.WebAPI.Storage.length
+length : Storage -> Task Error Int
+length = Native.WebAPI.Storage.length
 
 
 {-| A task which, when executed, determines the name of the key at the given
 index (zero-based).
+
+Succeeds with `Nothing` if the index is out of bounds.
 -}
-key : Storage -> Int -> Task x (Maybe Key)
-key storage = nativeKey (toNative storage)
+key : Storage -> Int -> Task Error (Maybe Key)
+key = Native.WebAPI.Storage.key
 
 
-nativeKey : NativeStorage -> Int -> Task x (Maybe Key)
-nativeKey = Native.WebAPI.Storage.key
+{-| A task which, when executed, gets the value at the given key.
 
-
-{-| A task which, when executed, gets the value at the given key. -}
-get : Storage -> Key -> Task x (Maybe Value)
-get storage = nativeGet (toNative storage)
-
-
-nativeGet : NativeStorage -> Key -> Task x (Maybe Value)
-nativeGet = Native.WebAPI.Storage.getItem
+Succeeds with `Nothing` if the key is not found.
+-}
+get : Storage -> Key -> Task Error (Maybe Value)
+get = Native.WebAPI.Storage.getItem
 
 
 {-| A task which, when executed, sets the value at the given key, or fails with
 an error message.
 -}
-set : Storage -> Key -> NewValue -> Task String ()
-set storage = nativeSet (toNative storage)
-
-
-nativeSet : NativeStorage -> Key -> NewValue -> Task String ()
-nativeSet = Native.WebAPI.Storage.setItem
+set : Storage -> Key -> NewValue -> Task Error ()
+set = Native.WebAPI.Storage.setItem
 
 
 {-| A task which, when executed, removes the item with the given key. -}
-remove : Storage -> Key -> Task x ()
-remove storage = nativeRemove (toNative storage)
-
-
-nativeRemove : NativeStorage -> Key -> Task x ()
-nativeRemove = Native.WebAPI.Storage.removeItem
+remove : Storage -> Key -> Task Error ()
+remove = Native.WebAPI.Storage.removeItem
 
 
 {-| A task which, when executed, removes all items. -}
-clear : Storage -> Task x ()
-clear = nativeClear << toNative
-
-
-nativeClear : NativeStorage -> Task x ()
-nativeClear = Native.WebAPI.Storage.clear
+clear : Storage -> Task Error ()
+clear = Native.WebAPI.Storage.clear
 
 
 {- ------
@@ -195,7 +173,7 @@ type alias NativeEvent =
     , oldValue : Maybe OldValue
     , newValue : Maybe NewValue
     , url : String
-    , storageArea : NativeStorage
+    , storageArea : Storage
     }
 
 
@@ -240,7 +218,7 @@ nativeEvent2Change native =
 
 nativeEvent2Event : NativeEvent -> Event
 nativeEvent2Event native =
-    { area = fromNative native.storageArea
+    { area = native.storageArea
     , url = native.url
     , change = nativeEvent2Change native
     }
@@ -265,6 +243,9 @@ signals must have an initial value -- and there is no natural initial value for
 an `Event` unless we wrap it in a `Maybe`. So, you'll often want to use
 `Signal.filterMap` when you're integrating this into your own signal of
 actions.
+
+If the user has disabled storage, then nothing will ever be emitted on the
+signal.
 -}
 events : Signal (Maybe Event)
 events =
