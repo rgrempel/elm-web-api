@@ -5,12 +5,13 @@
 # elm-web-api
 
 The purpose of this package is to expose various standard web APIs to Elm,
-or document where they are already exposed. By "web APIs" I basically mean the
-kind of things that are listed on Mozilla's various Web APIs pages, e.g.
+or document where they are already exposed. For reference, I have mostly
+relied on the following sources:
 
 * https://developer.mozilla.org/en-US/docs/Web/API
 * https://developer.mozilla.org/en-US/docs/WebAPI
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
+* https://developers.whatwg.org/
 
 Essentially, they are various facilities available in a Javascript web
 environment. In order for Elm to use such facilities, it is necessary to write
