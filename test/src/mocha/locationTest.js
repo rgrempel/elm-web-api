@@ -2,6 +2,9 @@ var expect = require('chai').expect;
 var Q = require('q');
 
 module.exports = function (browser) {
+    // Skip these if we're testing with webStorageDisabled
+    if (!browser.desiredCapabilities.webStorageEnabled) return;
+
     describe("The Location example", function () {
         beforeEach(function (done) {
             browser.url('http://localhost:8080/location.html', done);

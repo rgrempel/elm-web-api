@@ -11,7 +11,20 @@ git.short(function (rev) {
         config.webdriver.desiredCapabilities = remote(rev);
     } else {
         config.webdriver.desiredCapabilities = [{
-            browserName: 'firefox'
+            browserName: 'firefox',
+            webStorageEnabled: true
+        },{
+            browserName: 'firefox',
+            webStorageEnabled: false
+        },{
+            browserName: 'chrome',
+            webStorageEnabled: true
+        },{
+            browserName: 'chrome',
+            webStorageEnabled: false,
+            chromeOptions: {
+                args: ["--disable-local-storage"]
+            }
         }];
     };
 

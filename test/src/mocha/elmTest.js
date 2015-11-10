@@ -3,6 +3,14 @@ var count = require('count-substring');
 var Q = require('q');
 
 module.exports = function (browser) {
+    var url;
+
+    if (browser.desiredCapabilities.webStorageEnabled) {
+        url = 'http://localhost:8080/elm.html';
+    } else {
+        url = 'http://localhost:8080/elm-disable-storage.html';
+    }
+
     describe("The tests written in Elm", function () {
         var falsy = function () {
             return Q.when(false); 
@@ -10,7 +18,7 @@ module.exports = function (browser) {
 
         it('should pass', function () {
             return browser
-                .url('http://localhost:8080/elm.html')
+                .url(url)
                 .waitUntil(function () {
                     return this.getText("#results").then(function (text) {
                         return text.indexOf("suites run") > 0;

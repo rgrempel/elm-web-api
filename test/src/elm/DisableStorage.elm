@@ -27,5 +27,5 @@ main =
         
 
 port task : Task () ()
-port task = Tests.task False
+port task = Tests.task True
 

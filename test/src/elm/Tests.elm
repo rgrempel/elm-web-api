@@ -18,22 +18,33 @@ import WebAPI.CookieTest
 import WebAPI.DocumentTest
 
 
-test : Task x Test
-test =
+test : Bool -> Task x Test
+test disableStorage =
     let
         allTests =
             Task.map (suite "WebAPI tests") <|
-                sequence
-                    [ WebAPI.DocumentTest.tests
-                    , WebAPI.MathTest.tests
-                    , WebAPI.NumberTest.tests
-                    , WebAPI.StorageTest.tests
-                    , WebAPI.ScreenTest.tests
-                    , WebAPI.LocationTest.tests
-                    , WebAPI.DateTest.tests
-                    , WebAPI.AnimationFrameTest.tests
-                    , WebAPI.CookieTest.tests
-                    ]
+                sequence tests
+
+        tests =
+            if disableStorage
+                then testsWithStorageDisabled
+                else defaultTests
+
+        defaultTests =
+            [ WebAPI.DocumentTest.tests
+            , WebAPI.MathTest.tests
+            , WebAPI.NumberTest.tests
+            , WebAPI.StorageTest.tests False
+            , WebAPI.ScreenTest.tests
+            , WebAPI.LocationTest.tests
+            , WebAPI.DateTest.tests
+            , WebAPI.AnimationFrameTest.tests
+            , WebAPI.CookieTest.tests
+            ]
+
+        testsWithStorageDisabled =
+            [ WebAPI.StorageTest.tests True
+            ]
 
     in
         onError allTests <|
@@ -43,9 +54,10 @@ test =
                         assert False
 
 
-task : Task x ()
-task =
-    test `andThen` send tests.address
+task : Bool -> Task x ()
+task disableStorage =
+    test disableStorage 
+        `andThen` send tests.address
 
 
 tests : Mailbox Test

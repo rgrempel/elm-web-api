@@ -16,6 +16,11 @@ module.exports = function (browser) {
         run = describe;
     }
 
+    if (!browser.desiredCapabilities.webStorageEnabled) {
+        // Skip if we've disabled web storage
+        run = describe.skip;
+    }
+
     run("The Storage example", function () {
         var url = 'http://localhost:8080/storage.html';
         
