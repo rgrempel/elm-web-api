@@ -65,6 +65,7 @@ Elm.Native.WebAPI.Window.make = function (localRuntime) {
             alert: elmAlert,
             confirm: elmConfirm,
             prompt: F2(elmPrompt),
+            events: window,
             isOnline: isOnline,
             online: online
         };

@@ -28,6 +28,7 @@ but if it is useful to you, that would be great.
     * [WebAPI.Cookie](#webapicookie)
     * [WebAPI.Document](#webapidocument)
     * [WebAPI.Date](#webapidate)
+    * [WebAPI.Event](#webapievent)
     * [WebAPI.Location](#webapilocation)
     * [WebAPI.Math](#webapimath)
     * [WebAPI.Number](#webapinumber)
@@ -585,6 +586,10 @@ TODO: Finish going through the `document` API.
 ```elm
 module WebAPI.Document where
 
+{- -------
+   Loading
+   ------- -}
+
 {-| Possible values for the browser's `document.readyState` -}
 type ReadyState
     = Loading
@@ -599,13 +604,50 @@ readyState : Signal ReadyState
 -}
 getReadyState : Task x ReadyState
 
+{-| A task which succeeds when the `DOMContentLoaded` event fires. If that
+event has already fired, then this succeeds immediately.
+
+Also consider `readyState` and `getReadyState`.
+-}
+domContentLoaded : Task x ()
+
+{-| A task which succeeds when the `load` event fires. If that event has
+already fired, then this succeeds immediately.
+
+Also consider `readyState` and `getReadyState`.
+-}
+loaded : Task x ()
+
+{- ------
+   Titles
+   ------ -}
+
 {-| A task which, when executed, succeeds with the value of `document.title`. -}
 getTitle : Task x String
 
 {-| A task which, when executed, sets the value of `document.title` to the
 supplied `String`.
 -}
-setTitle : String -> Task x () 
+setTitle : String -> Task x ()
+
+{- ------
+   Events
+   ------ -}
+
+{-| A target for responding to events sent to the `document` object. Normally,
+it will be simpler to use `on`, but you may need this in some cases.
+-}
+events : WebAPI.Event.Target
+
+{-| A task which, when executed, uses Javascript's `addEventListener()` to
+respond to events specified by the string (e.g. "click").
+-}
+on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+
+{-| Like `on`, but only succeeds once the event occurs (with the value of the
+event object), and then stops listening.
+-}
+once : String -> Task x Json.Decode.Value
 ```
 
 ***See also***
@@ -614,6 +656,154 @@ setTitle : String -> Task x ()
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 See [WebAPI.Cookie](#webapicookie)
+
+
+----------
+
+### WebAPI.Event
+
+General support for handling Javascript events.
+
+This is a low-level module ...  normally, you will want to use more specific
+methods in other modules -- assuming that they do what you want :-)
+
+Furthermore, this is not really meant for targets that are within the `Html`
+that your `view` function produces. For those, use `Html.Events` to deal with
+events. Instead, this is meant for events on target that you don't set up in
+your `view` function, such as the `window` and `document` etc.
+
+See Mozilla documentation for the
+[`EventTarget` interface](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget).
+I also found this
+[list of events](http://www.w3schools.com/jsref/dom_obj_event.asp)
+helpful.
+
+
+```elm
+module WebAPI.Event where
+
+{- ---------------
+   Handling Events
+   --------------- -}
+
+{-| Opaque type which represents a Javascript object which can respond to
+Javascript's `addEventListener()` and `removeEventListener()`.
+
+To obtain a `Target`, see methods such as `WebAPI.Document.events` and
+`WebAPI.Window.events`.
+-}
+type Target
+
+{-| A task which, when executed, uses Javascript's `addEventListener()` to add
+a `Responder` to the `Target` for the event specified by the string (e.g. "click").
+
+Succeeds with a `Listener`, which you can supply to `removeListener` if you
+wish.
+-}
+addListener : Phase -> String -> Responder a b -> Target -> Task x Listener
+
+{-| Convenience method for the usual case in which you call `addListener`
+for the `Bubble` phase.
+-}
+on : String -> Responder a b -> Target -> Task x Listener
+
+{-| Like `addListener`, but only responds to the event once, and the resulting
+`Task` only succeeds when the event occurs (with the value of the event object).
+Thus, your `Responder` method might not need to do anything.
+-}
+addListenerOnce : Phase -> String -> Responder a b -> Target -> Task x Json.Decode.Value
+
+{-| Like `addListenerOnce`, but supplies the default `Phase` (`Bubble`), and a
+`Responder` that does nothing (so you merely chain the resulting `Task`).
+-}
+once : String -> Target -> Task x Json.Decode.Value
+
+{-| A task which will remove the supplied `Listener`.
+
+Alternatively, you can return `remove` from your `Responder` method, and the
+listener will be removed.
+-}
+removeListener : Listener -> Task x ()
+
+{-| The phase in which a `Responder` will be invoked. Typically, you will want `Bubble`. -}
+type Phase
+    = Capture
+    | Bubble
+
+{- ----------------------
+   Constructing Responses
+   ---------------------- -}
+
+{-| A function which will be called each time an event occurs, in order to
+determine how to respond to the event.
+
+* The `Json.Decode.Value` is the Javascript event object, which you might want
+to analyze further via a `Json.Decode.Decoder`.  There are decoders defined in
+the `Html.Events` module of
+[evancz/elm-html](http://package.elm-lang.org/packages/evancz/elm-html/latest)
+that you may find helpful for this.
+
+* The `Listener` is the listener which is responsible for this event.
+
+Your function should return a list of responses which you would like to make
+to the event.
+-}
+type alias Responder x a =
+    Json.Decode.Value -> Listener -> List (Response x a)
+
+{-| Represents a response which you would like to make to an event. -}
+type Response x a
+
+{-| Indicates that you would like to call `preventDefault()` on the event object. -}
+preventDefault : Response x a
+
+{-| Indicates that you would like to call `stopPropagation()` on the event object. -}
+stopPropagation : Response x a
+
+{-| Indicates that you would like to call `stopImmediatePropagation()` on the event object. -}
+stopImmediatePropagation : Response x a
+
+{-| Indicates that you would like to set a property on the event object with
+the specified key to the specified value.
+
+Normally, you should not need this. However, there are some events which need
+to be manipulated in this way -- for instance, setting the `returnValue` on the
+`beforeunload` event.
+-}
+set : String -> Json.Encode.Value -> Response x a
+
+{-| Indicates that you would like to send a message in response to the event. -}
+send : Signal.Message -> Response x a
+
+{-| Indicates that you would like to perform a `Task` in response to the event.
+
+If the task is to send a message via `Signal.send`, then you can use `send` as
+a convenience.
+-}
+performTask : Task x a -> Response x a
+
+{-| Indicates that no longer wish to listen for this event on this target. -}
+remove : Response x a
+
+{- ---------
+   Listeners
+   --------- -}
+
+{-| Opaque type representing an event handler. -}
+type Listener a b
+
+{-| The name of the listener's event. -}
+eventName : Listener a b -> String
+
+{-| The responder used by the listener. -}
+responder : Listener a b -> Responder a b
+
+{-| The listener's target. -}
+target : Listener a b -> Target
+
+{-| The listener's phase. -}
+phase : Listener a b -> Phase
+```
 
 
 ----------
@@ -1174,6 +1364,10 @@ TODO: Finish going through the `window` API.
 ```elm
 module WebAPI.Window where
 
+{- ------------------
+   Alerts and dialogs
+   ------------------ -}
+
 {-| The browser's `window.alert()` function. -}
 alert : String -> Task x ()
 
@@ -1188,16 +1382,86 @@ confirm : String -> Task () ()
 The first parameter is a message, and the second parameter is a default
 response.
 
-The task will succeed with the user's response, or fail if the user cancels or
-enters blank text.
+The task will succeed with the user's response, or fail if the user cancels
+or enters blank text.
 -}
 prompt : String -> String -> Task () String
+
+{- -------------
+   Online status
+   ------------- -}
 
 {-| Whether the browser is online, according to `navigator.onLine` -}
 isOnline : Task x Bool
 
 {-| A `Signal` indicating whether the browser is online, according to `navigator.onLine` -}
 online : Signal Bool
+
+{- ---------
+   Unloading
+   --------- -}
+
+{-| A task which, when executed, listens for the `BeforeUnload` event.
+
+To set up a confirmation dialog, have your responder return
+
+    WebAPI.Event.set "returnValue" (Json.Encode.encodeString "Your confimration message")
+
+as one of your responses. Or, for more convenience, use `confirmBeforeUnload`.
+-}
+beforeUnload : WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+
+{-| A task which, when executed, listens for the page to be unloaded, and
+requires confirmation to do so.
+
+In order to stop requiring confirmation, use `WebAPI.Event.removeListener` on
+the resulting listener.
+
+If you need to change the confirmation message, then you will need to use
+`WebAPI.Event.removeListener` to remove any existing listener, and then use
+this again to set up a new one.
+
+If you need to do anything more complex when `BeforeUnload` fires, then see
+`beforeUnload`.
+-}
+confirmUnload : String -> Task x WebAPI.Event.Listener
+
+{-| A task which, when executed, listens for the 'unload' event.
+
+Note that it is unclear how much you can actually accomplish within
+the Elm architecture before the page actually unloads. Thus, you should
+experiment with this if you use it, and see how well it works.
+-}
+onUnload : WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+
+{-| A task which, when executed, waits for the 'unload' event, and
+then succeeds. To do something at that time, just chain additional
+tasks.
+
+Note that it is unclear how much you can actually accomplish within
+the Elm architecture before the page actually unloads. Thus, you should
+experiment with this if you use it, and see how well it works.
+-}
+unload : Task x ()
+
+{- ------
+   Events
+   ------ -}
+
+{-| A target for responding to events sent to the `window` object. Normally,
+it will be simpler to use `on`, but you may need this in some cases.
+-}
+events : WebAPI.Event.Target
+
+{-| A task which, when executed, uses Javascript's `addEventListener()` to
+respond to events specified by the string (e.g. "click").
+-}
+on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+
+{-| Like `on`, but only succeeds once the event occurs (with the value of the
+event object), and then stops listening.
+-}
+once : String -> Task x Json.Decode.Value
 ```
 
 ***See also***

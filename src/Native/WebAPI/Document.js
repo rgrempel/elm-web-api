@@ -12,16 +12,20 @@ Elm.Native.WebAPI.Document.make = function (localRuntime) {
         var NS = Elm.Native.Signal.make(localRuntime);
         var Utils = Elm.Native.Utils.make(localRuntime);
 
+        var Loading = {ctor: 'Loading'};
+        var Interactive = {ctor: 'Interactive'};
+        var Complete = {ctor: 'Complete'};
+
         var getState = function () {
             switch (document.readyState) {
                 case "loading":
-                    return {ctor: "Loading"};
+                    return Loading;
 
                 case "interactive":
-                    return {ctor: "Interactive"};
+                    return Interactive;
 
                 case "complete":
-                    return {ctor: "Complete"};
+                    return Complete;
 
                 default:
                     throw new Error("Got unrecognized document.readyState: " + document.readyState);
@@ -50,7 +54,9 @@ Elm.Native.WebAPI.Document.make = function (localRuntime) {
                     document.title = title;
                     cb(Task.succeed(Utils.Tuple0));
                 });
-            }
+            },
+
+            events : document
         };
     }
 

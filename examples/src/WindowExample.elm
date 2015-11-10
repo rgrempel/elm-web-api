@@ -8,7 +8,8 @@ import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 import Signal exposing (Signal, Address)
 
-import WebAPI.Window exposing (alert, confirm, prompt, isOnline)
+import WebAPI.Event exposing (Listener, removeListener)
+import WebAPI.Window exposing (alert, confirm, prompt, isOnline, confirmUnload)
 
 
 app : App Model
@@ -31,11 +32,14 @@ port tasks : Signal (Task.Task Never ())
 port tasks = app.tasks
 
 
-type alias Model = String
+type alias Model =
+    { message : String
+    , confirmUnloadListener : Maybe Listener
+    }
 
 
 init : (Model, Effects Action)
-init = ("", Effects.none)
+init = (Model "" Nothing, Effects.none)
 
 
 type Action
@@ -48,6 +52,8 @@ type Action
     | CheckOnline
     | HandleOnlineResponse (Result () Bool)
     | HandleOnlineSignal Bool
+    | ConfirmUnload Bool
+    | SetConfirmUnloadListener (Maybe Listener)
 
 
 update : Action -> Model -> (Model, Effects Action)
@@ -61,7 +67,7 @@ update action model =
             )
 
         HandleAlertResponse ->
-            ( "Got alert response"
+            ( { model | message <- "Got alert response" }
             , Effects.none
             )
 
@@ -74,15 +80,15 @@ update action model =
             )
 
         HandleConfirmResponse result ->
-            ( case result of
-                Ok _ ->
-                    "Pressed OK"
-
-                Err _ ->
-                    "Pressed cancel"
-
-            , Effects.none
-            )
+            let
+                message =
+                    case result of
+                        Ok _ -> "Pressed OK"
+                        Err _ -> "Pressed cancel"
+            in
+                ( { model | message <- message }
+                , Effects.none
+                )
 
         ShowPrompt message default ->
             ( model
@@ -93,15 +99,16 @@ update action model =
             )
 
         HandlePromptResponse result ->
-            ( case result of
-                Ok response ->
-                    "Got response: " ++ response
+            let
+                message =
+                    case result of
+                        Ok response -> "Got response: " ++ response
+                        Err _ -> "User canceled."
 
-                Err _ ->
-                    "User canceled."
-
-            , Effects.none
-            )
+            in
+                ( { model | message <- message }
+                , Effects.none
+                )
 
         CheckOnline ->
             ( model
@@ -112,24 +119,54 @@ update action model =
             )
 
         HandleOnlineResponse result ->
-            ( case result of
-                Ok online ->
-                    "Am I online? " ++ (toString online)
+             let
+                 message =
+                    case result of
+                        Ok online ->
+                            "Am I online? " ++ (toString online)
 
-                Err _ ->
-                    "Got err ... shouldn't happen"
+                        Err _ ->
+                            "Got err ... shouldn't happen"
 
-            , Effects.none
-            )
+            in
+                ( { model | message <- message }
+                , Effects.none
+                )
 
         HandleOnlineSignal online ->
-            ( if online
-                then "I'm online now"
-                else "I'm offline now"
-
+            ( { model |
+                    message <-
+                        if online
+                            then "I'm online now"
+                            else "I'm offline now"
+              }
             , Effects.none
             )
 
+        ConfirmUnload enable ->
+            ( model
+            , case (enable, model.confirmUnloadListener) of
+                (True, Nothing) ->
+                    Effects.task <|
+                        Task.map
+                            (SetConfirmUnloadListener << Just)
+                            (confirmUnload "Are you sure you want to leave?")
+
+                (False, Just listener) ->
+                    Effects.task <|
+                        Task.map
+                            (always (SetConfirmUnloadListener Nothing))
+                            (removeListener listener)
+
+                (_, _) ->
+                    Effects.none
+            )
+
+        SetConfirmUnloadListener listener ->
+            ( { model | confirmUnloadListener <- listener }
+            , Effects.none
+            )
+            
 
 view : Address Action -> Model -> Html
 view address model =
@@ -154,7 +191,17 @@ view address model =
             , id "online-button"
             ]
             [ text "WebAPI.Window.isOnline" ]
+        , button
+            [ onClick address (ConfirmUnload True)
+            , id "enable-confirm-unload"
+            ]
+            [ text "Enable confirmUnload" ]
+        , button
+            [ onClick address (ConfirmUnload False)
+            , id "disable-confirm-unload"
+            ]
+            [ text "Disable confirmUnload" ]
         , h4 [] [ text "Message" ]
-        , div [ id "message" ] [ text model ]
+        , div [ id "message" ] [ text model.message ]
         ]
 
