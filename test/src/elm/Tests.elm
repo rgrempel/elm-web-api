@@ -16,6 +16,7 @@ import WebAPI.DateTest
 import WebAPI.AnimationFrameTest
 import WebAPI.CookieTest
 import WebAPI.DocumentTest
+import WebAPI.WindowTest
 
 
 test : Bool -> Task x Test
@@ -40,6 +41,7 @@ test disableStorage =
             , WebAPI.DateTest.tests
             , WebAPI.AnimationFrameTest.tests
             , WebAPI.CookieTest.tests
+            , WebAPI.WindowTest.tests
             ]
 
         testsWithStorageDisabled =

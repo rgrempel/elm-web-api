@@ -8,7 +8,7 @@ import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 import Signal exposing (Signal, Address)
 
-import WebAPI.Window exposing (alert, confirm, prompt)
+import WebAPI.Window exposing (alert, confirm, prompt, isOnline)
 
 
 app : App Model
@@ -17,7 +17,9 @@ app =
         { init = init
         , update = update
         , view = view
-        , inputs = []
+        , inputs =
+            [ Signal.map HandleOnlineSignal WebAPI.Window.online
+            ]
         }
 
 
@@ -43,6 +45,9 @@ type Action
     | HandleConfirmResponse (Result () ())
     | ShowPrompt String String
     | HandlePromptResponse (Result () String)
+    | CheckOnline
+    | HandleOnlineResponse (Result () Bool)
+    | HandleOnlineSignal Bool
 
 
 update : Action -> Model -> (Model, Effects Action)
@@ -98,6 +103,33 @@ update action model =
             , Effects.none
             )
 
+        CheckOnline ->
+            ( model
+            , isOnline |>
+                toResult |>
+                    Task.map HandleOnlineResponse |>
+                        Effects.task
+            )
+
+        HandleOnlineResponse result ->
+            ( case result of
+                Ok online ->
+                    "Am I online? " ++ (toString online)
+
+                Err _ ->
+                    "Got err ... shouldn't happen"
+
+            , Effects.none
+            )
+
+        HandleOnlineSignal online ->
+            ( if online
+                then "I'm online now"
+                else "I'm offline now"
+
+            , Effects.none
+            )
+
 
 view : Address Action -> Model -> Html
 view address model =
@@ -117,6 +149,11 @@ view address model =
             , id "prompt-button"
             ]
             [ text "WebAPI.Window.prompt" ]
+        , button
+            [ onClick address CheckOnline
+            , id "online-button"
+            ]
+            [ text "WebAPI.Window.isOnline" ]
         , h4 [] [ text "Message" ]
         , div [ id "message" ] [ text model ]
         ]

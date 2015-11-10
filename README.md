@@ -1192,6 +1192,12 @@ The task will succeed with the user's response, or fail if the user cancels or
 enters blank text.
 -}
 prompt : String -> String -> Task () String
+
+{-| Whether the browser is online, according to `navigator.onLine` -}
+isOnline : Task x Bool
+
+{-| A `Signal` indicating whether the browser is online, according to `navigator.onLine` -}
+online : Signal Bool
 ```
 
 ***See also***
