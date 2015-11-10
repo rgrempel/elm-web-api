@@ -5,10 +5,11 @@ var Q = require('q');
 module.exports = function (browser) {
     var url;
 
-    if (browser.desiredCapabilities.webStorageEnabled) {
-        url = 'http://localhost:8080/elm.html';
-    } else {
+    // Test for false, because null should default to true
+    if (browser.desiredCapabilities.webStorageEnabled == false) {
         url = 'http://localhost:8080/elm-disable-storage.html';
+    } else {
+        url = 'http://localhost:8080/elm.html';
     }
 
     describe("The tests written in Elm", function () {

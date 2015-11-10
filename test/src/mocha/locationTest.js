@@ -2,8 +2,8 @@ var expect = require('chai').expect;
 var Q = require('q');
 
 module.exports = function (browser) {
-    // Skip these if we're testing with webStorageDisabled
-    if (!browser.desiredCapabilities.webStorageEnabled) return;
+    // Test for false, because null should default to true
+    if (browser.desiredCapabilities.webStorageEnabled == false) return;
 
     describe("The Location example", function () {
         beforeEach(function (done) {
