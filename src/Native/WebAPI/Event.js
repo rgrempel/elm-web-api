@@ -18,6 +18,8 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
             this.responder = responder;
             this.target = target;
             this.callback = callback;
+
+            this.useCapture = (this.phase.ctor == 'Capture');
         }
 
         Listener.prototype.addEventListener = function () {
