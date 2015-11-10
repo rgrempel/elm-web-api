@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
+    "version": "2.0.0",
     "summary": "Expose Web APIs provided by the browser's Javascript runtime",
     "repository": "https://github.com/rgrempel/elm-web-api.git",
     "license": "BSD3",
