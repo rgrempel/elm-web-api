@@ -20,7 +20,6 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API
 import Task exposing (Task)
 import Json.Decode
 import Json.Encode
-import WebAPI.Event
 import Native.WebAPI.Window
 
 
