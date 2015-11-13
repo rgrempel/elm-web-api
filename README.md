@@ -13,7 +13,7 @@ relied on the following sources:
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 * https://developers.whatwg.org/
 
-Essentially, they are various facilities available in a Javascript web
+Essentially, these pages document the facilities available in a Javascript web
 environment. In order for Elm to use such facilities, it is necessary to write
 "native" code. So, I'm plugging away at it -- this is a work in progress,
 but if it is useful to you, that would be great.
