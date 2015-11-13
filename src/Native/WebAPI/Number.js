@@ -8,7 +8,7 @@ Elm.Native.WebAPI.Number.make = function (localRuntime) {
     localRuntime.Native.WebAPI.Number = localRuntime.Native.WebAPI.Number || {};
 
     if (!localRuntime.Native.WebAPI.Number.values) {
-	    var Result = Elm.Result.make(localRuntime);
+        var Result = Elm.Result.make(localRuntime);
         
         var toExponential = function (number) {
             // No try/catch needed because cannot throw exception
