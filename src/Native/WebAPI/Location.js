@@ -41,17 +41,17 @@ Elm.Native.WebAPI.Location.make = function (localRuntime) {
 
             reload: function (forceServer) {
                 return Task.asyncFunction(function (callback) {
-                    window.location.reload(forceServer);
-
-                    // Now, I suppose this won't really accomplish anything,
-                    // but let's do it anyway.
                     try {
+                        window.location.reload(forceServer);
+
+                        // Now, I suppose this won't really accomplish
+                        // anything, but let's do it anyway.
                         callback(
                             Task.succeed(Utils.Tuple0)
                         );
                     } catch (ex) {
                         callback(
-                            Task.fail(ex.message)
+                            Task.fail(ex.toString())
                         );
                     }
                 });
