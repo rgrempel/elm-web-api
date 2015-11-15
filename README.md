@@ -607,14 +607,16 @@ getReadyState : Task x ReadyState
 {-| A task which succeeds when the `DOMContentLoaded` event fires. If that
 event has already fired, then this succeeds immediately.
 
-Also consider `readyState` and `getReadyState`.
+Note that you won't usually need this in the typical Elm application in which
+it is Elm itself that generates most of the DOM. In that case, you'll just
+want to make some `Task` run when the app starts up. If you're using
+`StartApp`, then that would be accomplished by supplying an `Effects` as part
+of the `init` when you call `StartApp.start`.
 -}
 domContentLoaded : Task x ()
 
 {-| A task which succeeds when the `load` event fires. If that event has
 already fired, then this succeeds immediately.
-
-Also consider `readyState` and `getReadyState`.
 -}
 loaded : Task x ()
 
