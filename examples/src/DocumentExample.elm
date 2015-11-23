@@ -107,12 +107,12 @@ update action model =
             ( model, Effects.none )
 
         Write entry ->
-            ( { model | log <- entry :: model.log }
+            ( { model | log = entry :: model.log }
             , Effects.none
             )
 
         ListenForOneClick ->
-            ( { model | log <- ListeningForOneClick :: model.log }
+            ( { model | log = ListeningForOneClick :: model.log }
             , Effects.task <|
                 Task.map
                     (always (Write GotOneClick))
@@ -120,7 +120,7 @@ update action model =
             )
 
         TestRemove ->
-            ( { model | log <- TestingRemove :: model.log }
+            ( { model | log = TestingRemove :: model.log }
             , Effects.task <|
                 Task.map (always NoOp) <|
                     on "click" (\event listener ->
@@ -135,7 +135,7 @@ update action model =
         ListenForKeys start ->
             case (start, model.clickListener) of
                 (True, Nothing) ->
-                    ( { model | log <- ListeningForKeys True :: model.log }
+                    ( { model | log = ListeningForKeys True :: model.log }
                     , Effects.task <|
                         Task.map
                             (SetClickListener << Just) <|
@@ -155,7 +155,7 @@ update action model =
                     )
 
                 (False, Just listener) ->
-                    ( { model | log <- ListeningForKeys False :: model.log }
+                    ( { model | log = ListeningForKeys False :: model.log }
                     , Effects.task <|
                         Task.map
                             (always (SetClickListener Nothing))
@@ -166,7 +166,7 @@ update action model =
                     ( model, Effects.none )
 
         SetClickListener listener ->
-            ( { model | clickListener <- listener }
+            ( { model | clickListener = listener }
             , Effects.none
             )
 

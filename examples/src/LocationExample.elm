@@ -53,12 +53,12 @@ update : Action -> Model -> (Model, Effects Action)
 update action model =
     case action of
         HandleReload result ->
-            ( { model | message <- "Reloaded (but if this stays, then that's an error)" }
+            ( { model | message = "Reloaded (but if this stays, then that's an error)" }
             , Effects.none
             )
 
         Reload source ->
-            ( { model | message <- "About to reload" }
+            ( { model | message = "About to reload" }
             , reload source |>
                 toResult |>
                     Task.map HandleReload |>
@@ -66,7 +66,7 @@ update action model =
             )
 
         SetUrl url ->
-            ( { model | url <- url }
+            ( { model | url = url }
             , Effects.none
             )
 
@@ -80,12 +80,12 @@ update action model =
                         Err err ->
                             "Got error: " ++ err
             in
-                ( { model | message <- message }
+                ( { model | message = message }
                 , Effects.none
                 )
 
         DoAssign url ->
-            ( { model | message <- "About to assign" }
+            ( { model | message = "About to assign" }
             , assign url |>
                 toResult |>
                     Task.map HandleAssign |>
@@ -102,12 +102,12 @@ update action model =
                         Err err ->
                             "Got error: " ++ err
             in
-                ( { model | message <- message }
+                ( { model | message = message }
                 , Effects.none
                 )
 
         DoReplace url ->
-            ( { model | message <- "About to replace" }
+            ( { model | message = "About to replace" }
             , replace url |>
                 toResult |>
                     Task.map HandleReplace |>

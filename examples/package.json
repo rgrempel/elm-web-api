@@ -4,7 +4,7 @@
   "description": "Tests for elm-web-api",
   "main": "elm.js",
   "dependencies": {
-    "elm": "^2.0.0"
+    "elm": "0.16.0"
   },
   "devDependencies": {},
   "scripts": {

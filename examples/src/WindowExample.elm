@@ -67,7 +67,7 @@ update action model =
             )
 
         HandleAlertResponse ->
-            ( { model | message <- "Got alert response" }
+            ( { model | message = "Got alert response" }
             , Effects.none
             )
 
@@ -86,7 +86,7 @@ update action model =
                         Ok _ -> "Pressed OK"
                         Err _ -> "Pressed cancel"
             in
-                ( { model | message <- message }
+                ( { model | message = message }
                 , Effects.none
                 )
 
@@ -106,7 +106,7 @@ update action model =
                         Err _ -> "User canceled."
 
             in
-                ( { model | message <- message }
+                ( { model | message = message }
                 , Effects.none
                 )
 
@@ -129,13 +129,13 @@ update action model =
                             "Got err ... shouldn't happen"
 
             in
-                ( { model | message <- message }
+                ( { model | message = message }
                 , Effects.none
                 )
 
         HandleOnlineSignal online ->
             ( { model |
-                    message <-
+                    message =
                         if online
                             then "I'm online now"
                             else "I'm offline now"
@@ -163,7 +163,7 @@ update action model =
             )
 
         SetConfirmUnloadListener listener ->
-            ( { model | confirmUnloadListener <- listener }
+            ( { model | confirmUnloadListener = listener }
             , Effects.none
             )
             

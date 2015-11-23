@@ -48,8 +48,12 @@ module.exports = function (browser) {
         });
 
         it("first set should trigger add event", function () {
-            var expectedText = "LogEvent { area = Local, change = Add \"testKey\" \"testValue\", url = \"" + url + "\" }";
-
+            // These expecteText checks are a little lazy, since the actual
+            // order of the properties is not necessarily deterministic -- it
+            // changed between Elm 0.15 and 0.16, for instance. But, at least
+            // if it passes, I know it's good -- it's failure that might be
+            // mistaken.
+            var expectedText = "LogEvent { area = Local, url = \"" + url + "\", change = Add \"testKey\" \"testValue\" }";
             return browser
                 .switchTab("tab1")
                 .waitForExist("#select-area", 6000)
@@ -62,13 +66,14 @@ module.exports = function (browser) {
                 .switchTab("tab2")
                 .waitUntil(function () {
                     return this.getText("#log").then(function (text) {
+                        console.log(text);
                         return text.indexOf(expectedText) >= 0;
                     });
                 }, 8000, 250);
         });
         
         it("second set should trigger modify event", function () {
-            var expectedText = "LogEvent { area = Local, change = Modify \"testKey\" \"testValue\" \"testValue2\", url = \"" + url + "\" }";
+            var expectedText = "LogEvent { area = Local, url = \"" + url + "\", change = Modify \"testKey\" \"testValue\" \"testValue2\" }";
 
             return browser
                 .switchTab("tab1")
@@ -84,7 +89,7 @@ module.exports = function (browser) {
         });
         
         it("remove should trigger remove event", function () {
-            var expectedText = "LogEvent { area = Local, change = Remove \"testKey\" \"testValue2\", url = \"" + url + "\" }";
+            var expectedText = "LogEvent { area = Local, url = \"" + url + "\", change = Remove \"testKey\" \"testValue2\" }";
 
             return browser
                 .switchTab("tab1")
@@ -101,7 +106,7 @@ module.exports = function (browser) {
         });
         
         it("clear should trigger clear event", function () {
-            var expectedText = "LogEvent { area = Local, change = Clear, url = \"" + url + "\" }";
+            var expectedText = "LogEvent { area = Local, url = \"" + url + "\", change = Clear }";
 
             return browser
                 .switchTab("tab1")
