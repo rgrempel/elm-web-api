@@ -13,10 +13,14 @@ relied on the following sources:
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 * https://developers.whatwg.org/
 
-Essentially, these pages document the facilities available in a Javascript web
+Those pages document the various facilities available in a Javascript web
 environment. In order for Elm to use such facilities, it is necessary to write
 "native" code. So, I'm plugging away at it -- this is a work in progress,
 but if it is useful to you, that would be great.
+
+If there is some particular Javascript API that you'd like to see exposed here,
+feel free to create an issue (or, for that matter, a pull request). Otherwise,
+I'll continue my semi-random walk.
 
 
 ## Contents
