@@ -8,7 +8,7 @@ sudo: false
 install:
     - cd test
     - npm install
-    - ./node_modules/elm/bin/elm-package install --yes
+    - ./node_modules/.bin/elm-package install --yes
 
 script:
     - npm run ci
