@@ -6,6 +6,7 @@ import ElmTest.Test exposing (Test, suite)
 import ElmTest.Assertion exposing (assert)
 
 import TestMailbox
+import Variant exposing (Variant(..))
 
 import WebAPI.MathTest
 import WebAPI.NumberTest
@@ -17,19 +18,26 @@ import WebAPI.AnimationFrameTest
 import WebAPI.CookieTest
 import WebAPI.DocumentTest
 import WebAPI.WindowTest
+import WebAPI.FunctionTest
 
 
-test : Bool -> Task x Test
-test disableStorage =
+test : Variant -> Task x Test
+test variant =
     let
         allTests =
             Task.map (suite "WebAPI tests") <|
                 sequence tests
 
         tests =
-            if disableStorage
-                then testsWithStorageDisabled
-                else defaultTests
+            case variant of
+                AllTests ->
+                    defaultTests
+                
+                DisableStorage ->
+                    testsWithStorageDisabled
+                
+                DisableRequestAnimationFrame ->
+                    testsWithoutRequestAnimationFrame
 
         defaultTests =
             [ WebAPI.DocumentTest.tests
@@ -42,10 +50,15 @@ test disableStorage =
             , WebAPI.AnimationFrameTest.tests
             , WebAPI.CookieTest.tests
             , WebAPI.WindowTest.tests
+            , WebAPI.FunctionTest.tests
             ]
 
         testsWithStorageDisabled =
             [ WebAPI.StorageTest.tests True
+            ]
+        
+        testsWithoutRequestAnimationFrame =
+            [ WebAPI.AnimationFrameTest.tests
             ]
 
     in
@@ -56,9 +69,9 @@ test disableStorage =
                         assert False
 
 
-task : Bool -> Task x ()
-task disableStorage =
-    test disableStorage 
+task : Variant -> Task x ()
+task variant =
+    test variant 
         `andThen` send tests.address
 
 

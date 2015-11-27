@@ -7,6 +7,8 @@ import ElmTest.Runner.Element exposing (runDisplay)
 import Tests
 
 
+import Variant exposing (Variant(..))
+
 main : Signal Element
 main =
     let
@@ -21,5 +23,5 @@ main =
 
 
 port task : Task () ()
-port task = Tests.task False
+port task = Tests.task AllTests 
 

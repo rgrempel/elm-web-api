@@ -4,7 +4,10 @@ var coverage = require('../coverage');
 
 module.exports = function (browser) {
     // Test for false, because null should default to true
-    if (browser.desiredCapabilities.webStorageEnabled === false) return;
+    if (
+        browser.desiredCapabilities.webStorageEnabled === false ||
+        browser.desiredCapabilities.rafEnabled === false
+    ) return;
 
     describe("The Location example", function () {
         beforeEach(function (done) {

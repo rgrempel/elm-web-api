@@ -6,6 +6,10 @@ module.exports = function (browser) {
     var run;
 
     if (
+        browser.desiredCapabilities.rafEnabled === false
+    ) return;
+
+    if (
         browser.desiredCapabilities.browserName == 'chrome' ||
         browser.desiredCapabilities.browserName == 'internet explorer' ||
         browser.desiredCapabilities.browserName == 'opera' ||

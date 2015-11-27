@@ -8,6 +8,7 @@ import Html exposing (Html, pre, text)
 import Html.Attributes exposing (id)
 import Tests
 
+import Variant exposing (Variant(..))
 
 main : Signal Html
 main =
@@ -27,5 +28,5 @@ main =
         
 
 port task : Task () ()
-port task = Tests.task True
+port task = Tests.task DisableStorage
 

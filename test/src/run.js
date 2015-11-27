@@ -17,8 +17,14 @@ git.short(function (rev) {
             browserName: 'firefox',
             webStorageEnabled: false
         },{
+            browserName: 'firefox',
+            rafEnabled: false
+        },{
             browserName: 'chrome',
             webStorageEnabled: true
+        },{
+            browserName: 'chrome',
+            rafEnabled: false
         },{
             browserName: 'chrome',
             webStorageEnabled: false,

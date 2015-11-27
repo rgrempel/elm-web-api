@@ -1,5 +1,7 @@
 module Main where
 
+import Native.DisableRaf
+
 import Signal exposing (Signal, Mailbox, mailbox, constant, send)
 import Task exposing (Task, andThen, sequence)
 import Graphics.Element exposing (Element, empty, flow, down, show)
@@ -8,8 +10,9 @@ import Html exposing (Html, pre, text)
 import Html.Attributes exposing (id)
 import Tests
 
-import Variant exposing (Variant(..))
+import Native.EnableRaf
 
+import Variant exposing (Variant(..))
 
 main : Signal Html
 main =
@@ -29,5 +32,5 @@ main =
         
 
 port task : Task () ()
-port task = Tests.task AllTests 
+port task = Tests.task DisableRequestAnimationFrame
 
