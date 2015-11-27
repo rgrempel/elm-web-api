@@ -49,11 +49,11 @@ module.exports = function (browser) {
         describe("assign", function () {
             it("should work with valid url", function () {
                 return browser
-                    .setValue("#input", "http://localhost:8080/window.html")
+                    .setValue("#input", "http://localhost:8080/build/window.html")
                     .click("#assign-button")
                     .waitUntil(function () {
                         return this.url().then(function (url) {
-                            return url.value == "http://localhost:8080/window.html";
+                            return url.value == "http://localhost:8080/build/window.html";
                         });
                     }, 6000, 250);
             });
@@ -73,11 +73,11 @@ module.exports = function (browser) {
         describe("replace", function () {
             it("should work with valid url", function () {
                 return browser
-                    .setValue("#input", "http://localhost:8080/window.html")
+                    .setValue("#input", "http://localhost:8080/build/window.html")
                     .click("#replace-button")
                     .waitUntil(function () {
                         return this.url().then(function (url) {
-                            return url.value == "http://localhost:8080/window.html";
+                            return url.value == "http://localhost:8080/build/window.html";
                         });
                     }, 6000, 250);
             });
