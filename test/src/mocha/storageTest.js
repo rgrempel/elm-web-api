@@ -27,6 +27,10 @@ module.exports = function (browser) {
         run = describe.skip;
     }
 
+    var falsy = function () {
+        return Q.when(false); 
+    };
+
     run("The Storage example", function () {
         var url = 'http://localhost:8080/build/storage.html';
         
@@ -82,7 +86,6 @@ module.exports = function (browser) {
                 .switchTab("tab2")
                 .waitUntil(function () {
                     return this.getText("#log").then(function (text) {
-                        console.log(text);
                         return text.indexOf(expectedText) >= 0;
                     });
                 }, 8000, 250);
@@ -135,9 +138,9 @@ module.exports = function (browser) {
                 .click("#perform-action")
                 .switchTab("tab2")
                 .waitUntil(function () {
-                    return this.getText("#log").then(function (text) {
+                    return browser.getHTML("#log").then(function (text) {
                         return text.indexOf(expectedText) >= 0;
-                    });
+                    }, falsy);
                 }, 8000, 250);
         }); 
     });
