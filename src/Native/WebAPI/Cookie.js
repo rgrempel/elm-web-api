@@ -25,10 +25,10 @@ Elm.Native.WebAPI.Cookie.make = function (localRuntime) {
         localRuntime.Native.WebAPI.Cookie.values = {
             getString: Task.asyncFunction(function (callback) {
                 try {
-                    if (navigator.cookieEnabled == false) {
-                        callback(Task.fail(disabled));
-                    } else {
+                    if (navigator.cookieEnabled) {
                         callback(Task.succeed(document.cookie));
+                    } else {
+                        callback(Task.fail(disabled));
                     }
                 } catch (ex) {
                     callback(Task.fail(error(ex)));
@@ -38,11 +38,11 @@ Elm.Native.WebAPI.Cookie.make = function (localRuntime) {
             setString: function (cookie) {
                 return Task.asyncFunction(function (callback) {
                     try {
-                        if (navigator.cookieEnabled == false) {
-                            callback(Task.fail(disabled));
-                        } else {
+                        if (navigator.cookieEnabled) {
                             document.cookie = cookie;
                             callback(Task.succeed(Utils.Tuple0));
+                        } else {
+                            callback(Task.fail(disabled));
                         }
                     } catch (ex) {
                         callback(Task.fail(error(ex)));
@@ -63,7 +63,7 @@ Elm.Native.WebAPI.Cookie.make = function (localRuntime) {
             },
 
             enabled: Task.asyncFunction(function (callback) {
-                if (navigator.cookieEnabled == null) {
+                if (!('cookieEnabled' in navigator)) {
                     throw new Error("navigator.cookieEnabled was not defined");
                 } else {
                     callback(Task.succeed(navigator.cookieEnabled));

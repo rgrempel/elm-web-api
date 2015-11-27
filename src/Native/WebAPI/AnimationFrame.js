@@ -15,7 +15,7 @@ var caf = window.cancelAnimationFrame;
 if (!raf) {
     var tid = null, cbs = [], nb = 0, ts = 0;
 
-    function animate () {
+    var animate = function animate () {
         var i, clist = cbs, len = cbs.length;
         tid = null;
         ts = Date.now();
@@ -25,10 +25,10 @@ if (!raf) {
         for (i = 0; i < len; i++) {
             if (clist[i]) clist[i](ts);
         }
-    }
+    };
 
     raf = function (cb) {
-        if (tid == null) {
+        if (tid === null) {
             tid = setTimeout(animate, Math.max(0, 20 + ts - Date.now()));
         }
 

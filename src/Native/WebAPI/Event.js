@@ -12,7 +12,7 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
         var Utils = Elm.Native.Utils.make(localRuntime);
         var NS = Elm.Native.Signal.make(localRuntime);
 
-        function Listener (phase, eventName, responder, target, callback) {
+        var Listener = function Listener (phase, eventName, responder, target, callback) {
             this.phase = phase;
             this.eventName = eventName;
             this.responder = responder;
@@ -20,7 +20,7 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
             this.callback = callback;
 
             this.useCapture = (this.phase.ctor == 'Capture');
-        }
+        };
 
         Listener.prototype.addEventListener = function () {
             this.target.addEventListener(this.eventName, this, this.useCapture);
@@ -86,7 +86,7 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
                 default:
                     throw new Error("Incomplete pattern match in Native.WebAPI.Event");
             }
-        }
+        };
 
         localRuntime.Native.WebAPI.Event.values = {
             addListener: F4(function (phase, eventName, responder, target) {

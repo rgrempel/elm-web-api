@@ -26,7 +26,7 @@ Elm.Native.WebAPI.Location.make = function (localRuntime) {
                 var location = copy(window.location);
 
                 // Deal with Elm reserved word
-                location["port$"] = location.port;
+                location.port$ = location.port;
 
                 // Polyfill for IE
                 if (!location.origin) {

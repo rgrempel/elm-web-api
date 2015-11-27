@@ -23,9 +23,8 @@ Elm.Native.WebAPI.Window.make = function (localRuntime) {
             return Task.asyncFunction(function (callback) {
                 var result = window.confirm(message);
                 callback(
-                    result
-                        ? Task.succeed(Utils.Tuple0)
-                        : Task.fail(Utils.Tuple0)
+                    result ? Task.succeed(Utils.Tuple0)
+                           : Task.fail(Utils.Tuple0)
                 );
             });
         };
@@ -36,7 +35,8 @@ Elm.Native.WebAPI.Window.make = function (localRuntime) {
                 callback(
                     // Safari returns "" when you press cancel, so
                     // we need to check for that.
-                    result == null || result == ""
+                    /* jshint laxbreak: true */
+                    result === null || result === ""
                         ? Task.fail(Utils.Tuple0)
                         : Task.succeed(result)
                 );
@@ -44,7 +44,7 @@ Elm.Native.WebAPI.Window.make = function (localRuntime) {
         };
 
         var isOnline = Task.asyncFunction(function (callback) {
-            if (navigator.onLine == null) {
+            if (!('onLine' in navigator)) {
                 throw new Error("navigator.onLine was null");
             } else {
                 callback(Task.succeed(navigator.onLine));

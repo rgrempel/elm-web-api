@@ -26,7 +26,7 @@ git.short(function (rev) {
                 args: ["--disable-local-storage"]
             }
         }];
-    };
+    }
 
     new SeSauce(config, eachBrowser);
 

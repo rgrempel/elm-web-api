@@ -3,7 +3,7 @@ var Q = require('q');
 
 module.exports = function (browser) {
     // Test for false, because null should default to true
-    if (browser.desiredCapabilities.webStorageEnabled == false) return;
+    if (browser.desiredCapabilities.webStorageEnabled === false) return;
 
     describe("The Location example", function () {
         beforeEach(function (done) {
@@ -40,6 +40,7 @@ module.exports = function (browser) {
                 }, 6000, 250);
         });
 
+        /* jshint laxbreak: true */
         var runError =
             browser.desiredCapabilities.browserName == "firefox"
                 ? it

@@ -68,6 +68,37 @@ var SeSauce = function(options, doEachBrowser) {
 
     var self = this;
 
+    function init (complete) {
+        self._initOnce(function (err) {
+            if (err)
+                return complete(err);
+            this._oldInit(complete);
+        }.bind(this));
+    }
+
+    function end (complete) {
+        this._oldEnd(function () {
+            self.browsers.splice(self.browsers.indexOf(this), 1);
+            if (self.browsers.length === 0)
+                self._stop(complete);
+            else
+                complete();
+        }.bind(this));
+    }
+
+    function succeed (success, complete) {
+        this.updateJob({ passed: success }, function() {
+            this.end(complete);
+        }.bind(this));
+    }
+
+    function updateJob (data, complete) {
+        if (self.sauceLabs)
+            self.sauceLabs.updateJob(this.requestHandler.sessionID, data, complete);
+        else
+            complete();
+    }
+
     for (var i = 0, len = this.options.webdriver.desiredCapabilities.length; i < len; i++) {
         var wdOptions = extend({}, this.options.webdriver);
         wdOptions.desiredCapabilities = this.options.webdriver.desiredCapabilities[i];
@@ -75,41 +106,17 @@ var SeSauce = function(options, doEachBrowser) {
         this.browsers.push(browser);
 
         browser._oldInit = browser.init;
-        browser.init = function (complete) {
-            self._initOnce(function (err) {
-                if (err)
-                    return complete(err);
-                this._oldInit(complete);
-            }.bind(this));
-        }.bind(browser);
+        browser.init = init.bind(browser);
 
         browser._oldEnd = browser.end;
-        browser.end = function (complete) {
-            this._oldEnd(function () {
-                self.browsers.splice(self.browsers.indexOf(this), 1);
-                if (self.browsers.length == 0)
-                    self._stop(complete);
-                else
-                    complete();
-            }.bind(this));
-        }.bind(browser);
+        browser.end = end.bind(browser);
 
-        browser.passed = function(success, complete) {
-            this.updateJob({ passed: success }, function() {
-                this.end(complete);
-            }.bind(this));
-        }.bind(browser);
+        browser.passed = succeed.bind(browser);
 
-        browser.updateJob = function(data, complete) {
-            if (self.sauceLabs)
-                self.sauceLabs.updateJob(this.requestHandler.sessionID, data, complete);
-            else
-                complete();
-        }.bind(browser);
+        browser.updateJob = updateJob.bind(browser);
 
         doEachBrowser.call(this, browser);
     }
-
 };
 
 extend(SeSauce.prototype, {

@@ -17,7 +17,7 @@ module.exports = function (browser) {
     }
 
     // Test for false, because null should default to true
-    if (browser.desiredCapabilities.webStorageEnabled == false) {
+    if (browser.desiredCapabilities.webStorageEnabled === false) {
         // Skip if we've disabled web storage
         run = describe.skip;
     }

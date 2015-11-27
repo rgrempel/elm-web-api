@@ -3,6 +3,8 @@
 # Print commands as we go
 set -x
 
+npm run jshint || exit 1
+
 elm-make src/elm/CI.elm --output elm.html || exit 1
 elm-make src/elm/DisableStorage.elm --output elm-disable-storage.html || exit 1
 elm-make ../examples/src/WindowExample.elm --output window.html || exit 1

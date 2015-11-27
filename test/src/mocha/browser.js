@@ -7,7 +7,7 @@ module.exports = function (browser) {
     var title =
         browser.desiredCapabilities.browserName + "-" +
         browser.desiredCapabilities.version + "-" +
-        browser.desiredCapabilities.platform + " "
+        browser.desiredCapabilities.platform + " " +
         browser.desiredCapabilities.build;
     
     describe(title, function () {

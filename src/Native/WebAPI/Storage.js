@@ -19,15 +19,15 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
         var Disabled = {ctor: 'Disabled'};
         var QuotaExceeded = {ctor: 'QuotaExceeded'};
 
-        function toMaybe (obj) {
-            return obj == null ? Maybe.Nothing : Maybe.Just(obj); 
-        }
+        var toMaybe = function toMaybe (obj) {
+            return obj === null ? Maybe.Nothing : Maybe.Just(obj);
+        };
 
-        function quotaWasExceeded (e) {
+        var quotaWasExceeded = function quotaWasExceeded (e) {
             return e && (e.code == 22 || e.name === 'NS_ERROR_DOM_QUOTA_REACHED');
-        }
+        };
 
-        function hasStorage () {
+        var hasStorage = function hasStorage () {
             try {
                 // Return a boolean representing whether it's there or not.
                 // Will throw an exception if it's disabled.
@@ -35,9 +35,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
             } catch (e) {
                 return false;
             }
-        }
+        };
 
-        function toNative (storage) {
+        var toNative = function toNative (storage) {
             if (!hasStorage()) throw Disabled;
 
             switch (storage.ctor) {
@@ -50,9 +50,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                 default:
                     throw new Error("Incomplete pattern match in Storage.js.");
             }
-        }
+        };
 
-        function fromNative (storage) {
+        var fromNative = function fromNative (storage) {
             if (!hasStorage()) throw Disabled;
 
             if (storage == window.localStorage) {
@@ -62,9 +62,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
             } else {
                 throw new Error("Got unrecognized storage type in Storage.js");
             }
-        }
+        };
 
-        function handleException (ex, callback) {
+        var handleException = function handleException (ex, callback) {
             var error;
 
             if (ex == Disabled) {
@@ -75,13 +75,13 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                 error = {
                     ctor: 'Error',
                     _0: ex.toString()
-                }
+                };
             }
 
             callback(Task.fail(error));
-        }
+        };
 
-        function length (storage) {
+        var length = function length (storage) {
             return Task.asyncFunction(function (callback) {
                 try {
                     var s = toNative(storage);
@@ -90,9 +90,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                     handleException(ex, callback);
                 }
             });
-        }
+        };
 
-        function key (storage, k) {
+        var key = function key (storage, k) {
             return Task.asyncFunction(function (callback) {
                 try {
                     var result = null;
@@ -112,9 +112,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                     handleException(ex, callback);
                 }
             });
-        }
+        };
 
-        function getItem (storage, k) {
+        var getItem = function getItem (storage, k) {
             return Task.asyncFunction(function (callback) {
                 try {
                     var s = toNative(storage);
@@ -129,9 +129,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                     handleException(ex, callback);
                 }
             });
-        }
+        };
 
-        function setItem (storage, k, v) {
+        var setItem = function setItem (storage, k, v) {
             return Task.asyncFunction(function (callback) {
                 try {
                     var s = toNative(storage);
@@ -141,9 +141,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                     handleException(ex, callback);
                 }
             });
-        }
+        };
 
-        function removeItem (storage, k) {
+        var removeItem = function removeItem (storage, k) {
             return Task.asyncFunction(function (callback) {
                 try {
                     var s = toNative(storage);
@@ -153,9 +153,9 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                     handleException(ex, callback);
                 }
             });
-        }
+        };
 
-        function clear (storage) {
+        var clear = function clear (storage) {
             return Task.asyncFunction(function (callback) {
                 try {
                     var s = toNative(storage);
@@ -165,7 +165,7 @@ Elm.Native.WebAPI.Storage.make = function (localRuntime) {
                     handleException(ex, callback);
                 }
             });
-        }
+        };
 
         var enabled = Task.asyncFunction(function (callback) {
             callback(Task.succeed(hasStorage()));
