@@ -4,8 +4,8 @@
     "repository": "https://github.com/rgrempel/elm-web-api.git",
     "license": "BSD3",
     "source-directories": [
+        "build/instrumented",
         "src/elm",
-        "../src",
         "../examples/src"
     ],
     "exposed-modules": [],

@@ -3,11 +3,8 @@
 **/index.html
 **/elm.html
 **/node_modules
-**/location.html
-**/window.html
-**/document.html
-**/storage.html
-**/elm-disable-storage.html
 **/npm-debug.log
 **/elmclient.log
+test/build
+examples/*.html
 .*.swp

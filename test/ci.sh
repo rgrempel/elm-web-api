@@ -4,8 +4,7 @@
 set -x
 
 npm run jshint || exit 1
-
-mkdir -p build
+npm run instrument || exit 1
 
 elm-make src/elm/CI.elm --output build/elm.html || exit 1
 elm-make src/elm/DisableStorage.elm --output build/elm-disable-storage.html || exit 1

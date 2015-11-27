@@ -4,6 +4,7 @@ var webdriverio = require('webdriverio'),
     sauceConnectLauncher = require('sauce-connect-launcher'),
     extend = require('extend'),
     colors = require('colors'),
+    coverage = require('./coverage'),
     SauceLabs = require('saucelabs');
 
 /**
@@ -219,17 +220,19 @@ extend(SeSauce.prototype, {
             this._log("Local Selenium server stopped.");
         }
 
-        if (this.sauceConnect) {
-            var self = this;
-            this._log("Closing Sauce Connect...");
-            this.sauceConnect.close(function () {
-                self._log("Sauce Connect closed.");
-                if (complete)
-                    complete();
-            });
-        }
-        else if (complete)
-            complete();
+        coverage.report(function () {
+            if (this.sauceConnect) {
+                var self = this;
+                this._log("Closing Sauce Connect...");
+                this.sauceConnect.close(function () {
+                    self._log("Sauce Connect closed.");
+                    if (complete)
+                        complete();
+                });
+            }
+            else if (complete)
+                complete();
+        });
     },
 
     _log: function(str) {

@@ -12,6 +12,7 @@
     "git-rev": "^0.2.1",
     "html-to-text": "^1.3.2",
     "http-server": "^0.8.5",
+    "istanbul": "^0.4.1",
     "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "node-localstorage": "^0.6.0",
@@ -23,11 +24,11 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "npm run jshint && mkdir -p build && elm-make src/elm/Browser.elm --output build/elm.html && open build/elm.html;",
+    "test": "npm run jshint && npm run instrument && elm-make src/elm/Browser.elm --output build/elm.html && open build/elm.html;",
     "ci": "sh ci.sh",
     "local": "env GEB_SAUCE_LABS_USER= sh ci.sh",
     "jshint": "jshint -c jshint.json ../src/Native/WebAPI/*.js src/*.js src/mocha/*.js",
-    "console": "mkdir -p build && elm-make src/elm/CommandLine.elm --output build/elm.js && cat src/elm/shim.js >> build/elm.js && node build/elm.js;"
+    "instrument": "istanbul instrument --output build/instrumented --embed-source --complete-copy ../src"
   },
   "repository": {
     "type": "git",

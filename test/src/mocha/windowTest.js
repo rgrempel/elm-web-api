@@ -1,13 +1,18 @@
 var expect = require('chai').expect;
 var Q = require('q');
+var coverage = require('../coverage');
 
 module.exports = function (browser) {
     // Test for false, because null should default to true
     if (browser.desiredCapabilities.webStorageEnabled === false) return;
     
     describe("The Window example", function () {
-        beforeEach(function (done) {
-            browser.url('http://localhost:8080/build/window.html', done);
+        beforeEach(function () {
+            return browser.url('http://localhost:8080/build/window.html');
+        });
+
+        afterEach(function () {
+            return coverage.collect(browser);
         });
 
         // Don't test alerts etc. under Safari, because Selenium can't

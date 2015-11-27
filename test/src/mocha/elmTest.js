@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var count = require('count-substring');
 var Q = require('q');
+var coverage = require('../coverage');
 
 module.exports = function (browser) {
     var url;
@@ -33,6 +34,10 @@ module.exports = function (browser) {
                     var failedCount = count(text, "FAILED");
                     expect(failedCount).to.equal(0);
                 });
+        });
+
+        afterEach(function () {
+            return coverage.collect(browser);
         });
     });
 };

@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
 var Q = require('q');
+var coverage = require('../coverage');
 
 module.exports = function (browser) {
     var run;
@@ -42,9 +43,20 @@ module.exports = function (browser) {
         after(function () {
             return browser
                 .switchTab("tab1")
-                .close()
-                .switchTab("tab2")
-                .close();
+                .then(function () {
+                    return coverage.collect(browser);
+                })
+                .then(function () {
+                    return browser
+                        .close()
+                        .switchTab("tab2")
+                        .then(function () {
+                            return coverage.collect(browser);
+                        })
+                        .then(function () {
+                            return browser.close();
+                        });
+                });
         });
 
         it("first set should trigger add event", function () {

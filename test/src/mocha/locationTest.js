@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
 var Q = require('q');
+var coverage = require('../coverage');
 
 module.exports = function (browser) {
     // Test for false, because null should default to true
@@ -8,6 +9,11 @@ module.exports = function (browser) {
     describe("The Location example", function () {
         beforeEach(function (done) {
             browser.url('http://localhost:8080/build/location.html', done);
+        });
+
+        // This won't really work, because we've reloaded ...
+        afterEach(function () {
+            return coverage.collect(browser);
         });
 
         var falsy = function () {
