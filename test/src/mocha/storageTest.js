@@ -23,7 +23,7 @@ module.exports = function (browser) {
     }
 
     run("The Storage example", function () {
-        var url = 'http://localhost:8080/storage.html';
+        var url = 'http://localhost:8080/build/storage.html';
         
         before(function () {
             return browser

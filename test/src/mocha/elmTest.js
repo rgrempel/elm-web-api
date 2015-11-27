@@ -7,9 +7,9 @@ module.exports = function (browser) {
 
     // Test for false, because null should default to true
     if (browser.desiredCapabilities.webStorageEnabled === false) {
-        url = 'http://localhost:8080/elm-disable-storage.html';
+        url = 'http://localhost:8080/build/elm-disable-storage.html';
     } else {
-        url = 'http://localhost:8080/elm.html';
+        url = 'http://localhost:8080/build/elm.html';
     }
 
     describe("The tests written in Elm", function () {

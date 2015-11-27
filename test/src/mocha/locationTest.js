@@ -7,7 +7,7 @@ module.exports = function (browser) {
 
     describe("The Location example", function () {
         beforeEach(function (done) {
-            browser.url('http://localhost:8080/location.html', done);
+            browser.url('http://localhost:8080/build/location.html', done);
         });
 
         var falsy = function () {

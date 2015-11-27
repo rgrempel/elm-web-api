@@ -23,11 +23,11 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "npm run jshint && elm-make src/elm/Browser.elm --output elm.html && open elm.html;",
+    "test": "npm run jshint && mkdir -p build && elm-make src/elm/Browser.elm --output build/elm.html && open build/elm.html;",
     "ci": "sh ci.sh",
     "local": "env GEB_SAUCE_LABS_USER= sh ci.sh",
     "jshint": "jshint -c jshint.json ../src/Native/WebAPI/*.js src/*.js src/mocha/*.js",
-    "console": "elm-make src/elm/CommandLine.elm --output elm.js && cat src/elm/shim.js >> elm.js && node elm.js;"
+    "console": "mkdir -p build && elm-make src/elm/CommandLine.elm --output build/elm.js && cat src/elm/shim.js >> build/elm.js && node build/elm.js;"
   },
   "repository": {
     "type": "git",

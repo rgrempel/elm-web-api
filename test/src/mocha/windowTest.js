@@ -7,7 +7,7 @@ module.exports = function (browser) {
     
     describe("The Window example", function () {
         beforeEach(function (done) {
-            browser.url('http://localhost:8080/window.html', done);
+            browser.url('http://localhost:8080/build/window.html', done);
         });
 
         // Don't test alerts etc. under Safari, because Selenium can't
