@@ -4,6 +4,7 @@ module WebAPI.Window
     , onUnload, unload
     , on, once, events
     , isOnline, online
+    , value
     ) where
 
 {-| Facilities from the browser's `window` object.
@@ -25,6 +26,10 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API
 ## Events
 
 @docs on, once, events
+
+## JSON
+
+@docs value
 -}
 
 
@@ -170,3 +175,12 @@ event object), and then stops listening.
 once : String -> Task x Json.Decode.Value
 once eventName =
     WebAPI.Event.once eventName events
+
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Access the Javascript `window` object via `Json.Decode`. -}
+value : Json.Decode.Value
+value = Native.WebAPI.Window.events
