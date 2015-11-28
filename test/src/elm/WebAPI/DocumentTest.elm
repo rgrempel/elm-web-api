@@ -7,6 +7,7 @@ import ElmTest.Test exposing (..)
 import Task exposing (Task, andThen, sequence, map)
 import TestUtil exposing (sample)
 import Signal.Extra exposing (foldp')
+import Json.Decode as JD
 import Time
 
 import WebAPI.Document exposing (..)
@@ -67,11 +68,29 @@ setTitleTest =
     )
 
 
+testValue : Task x Test
+testValue =
+    let
+        titleDecoder =
+            JD.at ["title"] JD.string
+
+    in
+        Task.succeed <|
+            test "Should be able to decode the document object" <|
+                case JD.decodeValue titleDecoder value of
+                    Ok string ->
+                        assertEqual "Main" string
+
+                    Err _ ->
+                        assert False
+
+
 tests : Task () Test
 tests =
     Task.map (suite "WebAPI.DocumentTest") <|
         sequence
             [ getReadyStateTest
             , readyStateTest
+            , testValue
             , getTitleTest, setTitleTest
             ]

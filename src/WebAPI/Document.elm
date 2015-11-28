@@ -4,6 +4,7 @@ module WebAPI.Document
     , domContentLoaded, loaded
     , getTitle, setTitle
     , events, on, once
+    , value
     ) where
 
 {-| See Mozilla documentation for the
@@ -21,12 +22,17 @@ module WebAPI.Document
 ## Events
 
 @docs on, once, events
+
+## JSON
+
+@docs value
 -}
 
 
 import Signal exposing (Signal)
 import Task exposing (Task, andThen)
 import Json.Decode
+import Json.Encode
 import WebAPI.Event
 import Native.WebAPI.Document
 
@@ -141,3 +147,12 @@ event object), and then stops listening.
 once : String -> Task x Json.Decode.Value
 once eventName =
     WebAPI.Event.once eventName events
+
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Access the Javascript `document` object via `Json.Decode`. -}
+value : Json.Decode.Value
+value = Native.WebAPI.Document.events

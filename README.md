@@ -665,6 +665,13 @@ on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
 event object), and then stops listening.
 -}
 once : String -> Task x Json.Decode.Value
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Access the Javascript `document` object via `Json.Decode`. -}
+value : Json.Decode.Value
 ```
 
 ***See also***
@@ -861,6 +868,9 @@ WebAPI.Date.encode : Date -> Json.Encode.Value
 
 {-| Access the Javascript `window` object via `Json.Decode`. -}
 WebAPI.Window.value : Json.Decode.Value
+
+{-| Access the Javascript `document` object via `Json.Decode`. -}
+WebAPI.Document.value : Json.Decode.Value
 ```
 
 
