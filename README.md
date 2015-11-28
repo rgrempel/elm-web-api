@@ -924,7 +924,8 @@ When running `Json.Decode.decodeValue`, you'd then end up with a
 Your Elm function should return a `Response`, which controls the return value
 of the Javascript function, and allows for the execution of a `Task`.
 -}
-type alias Callback x a
+type alias Callback x a =
+    JD.Value -> Response x a
 
 {-| An opaque type representing your response to a function invocation from
 Javascript, i.e. a response to a callback.
