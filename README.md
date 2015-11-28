@@ -33,6 +33,7 @@ I'll continue my semi-random walk.
     * [WebAPI.Document](#webapidocument)
     * [WebAPI.Date](#webapidate)
     * [WebAPI.Event](#webapievent)
+    * [WebAPI.Function](#webapifunction)
     * [WebAPI.JSON](#webapijson)
     * [WebAPI.Location](#webapilocation)
     * [WebAPI.Math](#webapimath)
@@ -832,6 +833,171 @@ phase : Listener a b -> Phase
 
 ----------
 
+### WebAPI.Function
+
+Support for Javascript functions. Basically, this provides two capabilities:
+
+* You can call Javascript functions from Elm.
+* You can provide Elm functions to Javascript to be called back from Javascript.
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)
+
+
+```elm
+module WebAPI.Function where
+
+{- -----
+   Types
+   ----- -}
+
+{-| Opaque type representing a Javascript function. -}
+type Function
+
+{-| Opaque type representing a Javascript exception. -}
+type Error
+
+{-| Construct an error to be thrown in a Javascript callback. Normally, one
+does not want errors to be thrown. However, there may be some Javascript APIs
+that expect callbacks to throw errors. So, this makes that possible.
+-}
+error : String -> Error
+
+{-| Gets an error's message. -}
+message : Error -> String
+
+{- -----------------------------------
+   Obtaining functions from Javascript 
+   ----------------------------------- -}
+
+{-| Produce a Javascript function given a list of parameter names and a
+Javascript function body.
+-}
+javascript : List String -> String -> Result Error Function
+
+{-| Extract a function. -}
+decoder : JD.Decoder Function
+
+{- -----------------
+   Calling Functions
+   ----------------- -}
+
+{-| Call a function, using the supplied value for "this", and the supplied
+parameters. If you don't want to supply a `this`, you could use
+`Json.Encode.null`.
+-}
+apply : JE.Value -> List JE.Value -> Function -> Task Error JD.Value
+
+{- ---------------------------------
+   Providing functions to Javascript
+   --------------------------------- -}
+
+{-| Encode a function. -}
+encode : Function -> JE.Value
+
+{-| Given an Elm implementation, produce a function which can be called back
+from Javascript.
+-}
+elm : Callback x a -> Function
+
+{-| An Elm function which can be supplied to Javascript code as a callback.
+
+When the function is invoked from Javascript, the parameter will be a
+Javascript array in which the first element is whatever `this` was, and the
+remaining elements are the parameters to the javascript function. So, you'll
+want to apply some `Json.Decode` decoders to get Elm types out of that.
+
+Since you're being given an array which you should independently know the
+length of, you'll probably want to make use of `Json.Decode.tuple1`,
+`Json.Decode.tuple2`, etc., depending on how many arguments you're expecting.
+And, remember that the first element of the Javascript array is not the first
+argument, but instead whatever `this` was, so you may or may not be interested
+in it. If you just want to ignore it, you could use `Json.Decode.succeed`.
+
+For instance, let's suppose you're expecting 2 parameters which are integers,
+and you don't care about `this`. In that case, you might decode with:
+
+    JD.tuple3 (,,) (JD.succeed Nothing) JD.int JD.int
+
+When running `Json.Decode.decodeValue`, you'd then end up with a
+`(Maybe a, Int, Int)` or an error.
+
+Your Elm function should return a `Response`, which controls the return value
+of the Javascript function, and allows for the execution of a `Task`.
+-}
+type alias Callback x a
+
+{-| An opaque type representing your response to a function invocation from
+Javascript, i.e. a response to a callback.
+-}
+type Response x a
+
+{-| Respond to a Javascript function call with the supplied return value. -}
+return : JE.Value -> Response x a
+
+{-| Respond to a Javascript function call by throwing an error. Normally,
+you do not want to throw Javascript errors, but there may be some Javascript
+APIs that expect callbacks to do so. This makes it possible.
+-}
+throw : Error -> Response x a
+
+{-| Respond to a Javascript function call using the supplied return value,
+and also perform a `Task`.
+
+This is like `return`, except that the supplied `Task` is also immediately
+performed when the Javascript function is called. The `Task` is presumed to be
+asynchronous, so its completion does not affect the return value used for the
+Javascript function.
+
+If you want to 'promote' the callback into the normal flow of your app, you
+might want to use `Signal.send` to send an action to an address. (Note that
+`Signal.send` is asynchronous).
+-}
+asyncAndReturn : Task x a -> JE.Value -> Response x a
+
+{-| Respond to a Javascript function call by throwing an error,
+and also perform a `Task`.
+
+This is like `asyncReturn`, except an error will be thrown.
+-}
+asyncAndThrow : Task x a -> Error -> Response x a
+
+{-| Respond to a Javascript function call by executing a `Task`, and using
+the completion of the `Task` to control the function's return value.
+
+If the `Task` succeeds, the result will be used as the return value for the
+Javascript function. This allows you to chain other tasks in order to provide
+a return value -- so long as the other tasks are synchronous.
+
+If the `Task` fails, the result will be thrown as an error. Normally, one does
+not want to throw Javascript errors, but there may be some Javascript APIs that
+expect callbacks to do so.
+
+If the `Task` turns out to be asynchronous -- that is, if it fails to complete
+before the Javascript function returns -- then the supplied `JE.Value` will be
+used as the default return value.
+-}
+syncOrReturn : Task Error JE.Value -> JE.Value -> Response x a
+
+{-| Respond to a Javascript function call by executing a `Task`, and using
+the completion of the `Task` to control the function's return value.
+
+If the `Task` succeeds, the result will be used as the return value for the
+Javascript function. This allows you to chain other tasks in order to provide
+a return value -- so long as the other tasks are synchronous.
+
+If the `Task` fails, the result will be thrown as an error. Normally, one does
+not want to throw Javascript errors, but there may be some Javascript APIs that
+expect callbacks to do so.
+
+If the `Task` turns out to be asynchronous -- that is, if it fails to complete
+before the Javascript function returns -- then the supplied `Error` will be
+thrown.
+-}
+syncOrThrow : Task Error JE.Value -> Error -> Response x a
+```
+
+----------
+
 ### WebAPI.Intl
 
 TODO. Note that Safari doesn't support this, so it would need a
@@ -871,6 +1037,12 @@ WebAPI.Window.value : Json.Decode.Value
 
 {-| Access the Javascript `document` object via `Json.Decode`. -}
 WebAPI.Document.value : Json.Decode.Value
+
+{-| Extract a function. -}
+WebAPI.Function.decoder : Json.Decode.Decoder Function
+
+{-| Encode a function. -}
+WebAPI.Function.encode : Function -> Json.Encode.Value
 ```
 
 

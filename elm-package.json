@@ -12,6 +12,7 @@
         "WebAPI.Document",
         "WebAPI.Date",
         "WebAPI.Event",
+        "WebAPI.Function",
         "WebAPI.Location",
         "WebAPI.Math",
         "WebAPI.Number",
