@@ -33,6 +33,7 @@ I'll continue my semi-random walk.
     * [WebAPI.Document](#webapidocument)
     * [WebAPI.Date](#webapidate)
     * [WebAPI.Event](#webapievent)
+    * [WebAPI.JSON](#webapijson)
     * [WebAPI.Location](#webapilocation)
     * [WebAPI.Math](#webapimath)
     * [WebAPI.Number](#webapinumber)
@@ -449,6 +450,16 @@ isoString : Date -> String
 
 {-| The browser's `toUTCString()` -}
 utcString : Date -> String
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Extract a date. -}
+decoder : Json.Decode.Decoder Date
+
+{-| Encode a date. -}
+encode : Date -> Json.Encode.Value
 ```
 
 ***See also***
@@ -831,9 +842,23 @@ Generally speaking, JSON is handled by the
 [`Json.Encode`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Json-Encode)
 modules in elm-lang/core.
 
-TODO: Check if anything is missing.
-
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
+
+`Json.Decode` and `Json.Encode` are a little more interesting than you might
+think by their names alone. Essentially, they provide a type-safe way for
+moving back and forth between Javascript objects (not necessarily strings) and
+Elm types. 
+
+elm-web-api doesn't have a separate module for JSON. However, there are some
+helpers sprinkled throughout, which I will list here for convenience.
+
+```elm
+{-| Extract a date. -}
+WebAPI.Date.decoder : Json.Decode.Decoder Date
+
+{-| Encode a date. -}
+WebAPI.Date.encode : Date -> Json.Encode.Value
+```
 
 
 ----------

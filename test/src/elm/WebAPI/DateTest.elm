@@ -5,6 +5,8 @@ import ElmTest.Assertion exposing (..)
 import Task exposing (Task, sequence, succeed, andThen)
 
 import WebAPI.Date exposing (..)
+import Json.Decode as JD
+import Json.Encode as JE
 import Date
 import Time
 import String
@@ -358,6 +360,33 @@ strings =
             ]
 
 
+testDecoderGood : Test
+testDecoderGood =
+    let
+        value =
+            encode (Date.fromTime 1476000000)
+
+    in
+        test "Should encode and decode happily" <|
+            case JD.decodeValue decoder value of
+                Ok date ->
+                    assertEqual 1476000000 (Date.toTime date)
+
+                Err _ ->
+                    assert False
+
+
+testDecoderBad : Test
+testDecoderBad =
+    test "Should error if decoding something that isn't a date" <|
+        case JD.decodeValue decoder (JE.int 7) of
+            Ok _ ->
+                assert False
+
+            Err _ ->
+                assert True
+
+
 tests : Task () Test
 tests =
     Task.map (suite "WebAPI.DateTest") <|
@@ -382,5 +411,7 @@ tests =
                 , offsetMonthTest "offsetMonth UTC" UTC
                 , timescale
                 , strings
+                , testDecoderGood
+                , testDecoderBad
                 ]
 

@@ -7,6 +7,7 @@ module WebAPI.Date
     , day, inDays
     , week, inWeeks
     , dateString, timeString, isoString, utcString
+    , decoder, encode
     ) where
 
 
@@ -47,12 +48,18 @@ In the spirit of `Time.hour`, `Time.inHours`, `Time.second`, `Time.inSeconds`,
 # String conversions
 
 @docs dateString, timeString, isoString, utcString
+
+# JSON
+
+@docs decoder, encode
 -}
 
 
 import Date exposing (Date)
 import Time exposing (Time)
 import Task exposing (Task)
+import Json.Encode
+import Json.Decode
 import Debug
 
 import Native.WebAPI.Date
@@ -424,3 +431,16 @@ utcString : Date -> String
 utcString = Native.WebAPI.Date.utcString
 
 
+{- ----
+   JSON
+   ---- -}
+
+
+{-| Extract a date. -}
+decoder : Json.Decode.Decoder Date
+decoder = Native.WebAPI.Date.decoder
+
+
+{-| Encode a date. -}
+encode : Date -> Json.Encode.Value
+encode = Native.WebAPI.Date.encode

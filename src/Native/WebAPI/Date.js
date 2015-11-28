@@ -11,7 +11,26 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
         var Task = Elm.Native.Task.make(localRuntime);
         var Utils = Elm.Native.Utils.make(localRuntime);
 
+        // Copied from Native/Json.js
+        var crash = function crash (expected, actual) {
+            throw new Error(
+                'expecting ' + expected + ' but got ' + JSON.stringify(actual)
+            );
+        };
+
         localRuntime.Native.WebAPI.Date.values = {
+            decoder : function (value) {
+                if (value instanceof Date) {
+                    return value;
+                }
+
+                crash('a Date', value);
+            },
+
+            encode : function (value) {
+                return value;
+            },
+
             current : Task.asyncFunction(function (callback) {
                 callback(
                     Task.succeed(
