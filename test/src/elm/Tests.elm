@@ -18,7 +18,6 @@ import WebAPI.AnimationFrameTest
 import WebAPI.CookieTest
 import WebAPI.DocumentTest
 import WebAPI.WindowTest
-import WebAPI.FunctionTest
 
 
 test : Variant -> Task x Test
@@ -50,7 +49,6 @@ test variant =
             , WebAPI.AnimationFrameTest.tests
             , WebAPI.CookieTest.tests
             , WebAPI.WindowTest.tests
-            , WebAPI.FunctionTest.tests
             ]
 
         testsWithStorageDisabled =
