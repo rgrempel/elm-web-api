@@ -360,15 +360,82 @@ strings =
             ]
 
 
-testDecoderGood : Test
-testDecoderGood =
+testDecoderActualDate : Test
+testDecoderActualDate =
     let
         value =
             encode (Date.fromTime 1476000000)
 
     in
-        test "Should encode and decode happily" <|
+        test "Should encode and decode a real date" <|
             case JD.decodeValue decoder value of
+                Ok date ->
+                    assertEqual 1476000000 (Date.toTime date)
+
+                Err _ ->
+                    assert False
+
+
+testDecoderFloat : Test
+testDecoderFloat =
+    let
+        value =
+            JE.float 1476000000.0
+
+    in
+        test "Should decode a float as time from epoch" <|
+            case JD.decodeValue decoder value of
+                Ok date ->
+                    assertEqual 1476000000 (Date.toTime date)
+
+                Err _ ->
+                    assert False
+
+
+testDecoderInt : Test
+testDecoderInt =
+    let
+        value =
+            JE.int 1476000000
+
+    in
+        test "Should decode an int as time from epoch" <|
+            case JD.decodeValue decoder value of
+                Ok date ->
+                    assertEqual 1476000000 (Date.toTime date)
+
+                Err _ ->
+                    assert False
+
+
+testDecoderString : Test
+testDecoderString =
+    let
+        value =
+            JE.string <| isoString <| Date.fromTime 1476000000
+
+    in
+        test "Should decode a string" <|
+            case JD.decodeValue decoder value of
+                Ok date ->
+                    assertEqual 1476000000 (Date.toTime date)
+
+                Err _ ->
+                    assert False
+
+
+testDecoderStringified : Test
+testDecoderStringified =
+    let
+        value =
+            encode (Date.fromTime 1476000000)
+
+        stringified =
+            JE.encode 2 value
+
+    in
+        test "Should round-trip when actually stringified" <|
+            case JD.decodeString decoder stringified of
                 Ok date ->
                     assertEqual 1476000000 (Date.toTime date)
 
@@ -379,7 +446,7 @@ testDecoderGood =
 testDecoderBad : Test
 testDecoderBad =
     test "Should error if decoding something that isn't a date" <|
-        case JD.decodeValue decoder (JE.int 7) of
+        case JD.decodeValue decoder JE.null of
             Ok _ ->
                 assert False
 
@@ -411,7 +478,11 @@ tests =
                 , offsetMonthTest "offsetMonth UTC" UTC
                 , timescale
                 , strings
-                , testDecoderGood
+                , testDecoderActualDate
+                , testDecoderFloat
+                , testDecoderInt
+                , testDecoderString
+                , testDecoderStringified
                 , testDecoderBad
                 ]
 

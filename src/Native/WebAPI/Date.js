@@ -24,6 +24,18 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
                     return value;
                 }
 
+                // There is no actual JSON format for a date, so if we've
+                // actually been stringified, we may be seeing a string or a
+                // number.
+                if (
+                    typeof value === 'string' ||
+                    typeof value === 'number' ||
+                    value instanceof String ||
+                    value instanceof Number
+                ) {
+                    return new Date(value);
+                }
+
                 crash('a Date', value);
             },
 
