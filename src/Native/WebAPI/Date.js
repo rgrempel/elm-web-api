@@ -20,6 +20,7 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
 
         localRuntime.Native.WebAPI.Date.values = {
             decoder : function (value) {
+                // If we are supplied an actual date, we're golden.
                 if (value instanceof Date) {
                     return value;
                 }
@@ -27,13 +28,19 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
                 // There is no actual JSON format for a date, so if we've
                 // actually been stringified, we may be seeing a string or a
                 // number.
-                if (
-                    typeof value === 'string' ||
-                    typeof value === 'number' ||
-                    value instanceof String ||
-                    value instanceof Number
-                ) {
-                    return new Date(value);
+                if (typeof value === 'string' || value instanceof String) {
+                    // If it's a string, try to convert it to a number.
+                    // Date.parse will return NaN if it can't parse the string,
+                    var parsed = Date.parse(value);
+                    if (!isNaN(parsed)) {
+                        return new Date(parsed);
+                    }
+                }
+
+                if (typeof value === 'number' || value instanceof Number) {
+                    if (!isNaN(value)) {
+                        return new Date(value);
+                    }
                 }
 
                 crash('a Date', value);

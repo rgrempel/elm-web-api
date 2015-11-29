@@ -372,8 +372,8 @@ testDecoderActualDate =
                 Ok date ->
                     assertEqual 1476000000 (Date.toTime date)
 
-                Err _ ->
-                    assert False
+                Err error ->
+                    assertEqual "" error
 
 
 testDecoderFloat : Test
@@ -388,8 +388,8 @@ testDecoderFloat =
                 Ok date ->
                     assertEqual 1476000000 (Date.toTime date)
 
-                Err _ ->
-                    assert False
+                Err error ->
+                    assertEqual "" error
 
 
 testDecoderInt : Test
@@ -404,24 +404,24 @@ testDecoderInt =
                 Ok date ->
                     assertEqual 1476000000 (Date.toTime date)
 
-                Err _ ->
-                    assert False
+                Err error ->
+                    assertEqual "" error
 
 
-testDecoderString : Test
-testDecoderString =
+testDecoderGoodString : Test
+testDecoderGoodString =
     let
         value =
             JE.string <| isoString <| Date.fromTime 1476000000
 
     in
-        test "Should decode a string" <|
+        test "Should decode a good string" <|
             case JD.decodeValue decoder value of
                 Ok date ->
                     assertEqual 1476000000 (Date.toTime date)
 
-                Err _ ->
-                    assert False
+                Err error ->
+                    assertEqual "" error
 
 
 testDecoderStringified : Test
@@ -439,8 +439,8 @@ testDecoderStringified =
                 Ok date ->
                     assertEqual 1476000000 (Date.toTime date)
 
-                Err _ ->
-                    assert False
+                Err error ->
+                    assertEqual "" error
 
 
 testDecoderBad : Test
@@ -452,6 +452,22 @@ testDecoderBad =
 
             Err _ ->
                 assert True
+
+
+testDecoderBadString : Test
+testDecoderBadString =
+    let
+        value =
+            JE.string "This string really isn't a date" 
+
+    in
+        test "Should fail with a bad string" <|
+            case JD.decodeValue decoder value of
+                Ok _ ->
+                    assert False
+
+                Err _ ->
+                    assert True
 
 
 tests : Task () Test
@@ -481,7 +497,8 @@ tests =
                 , testDecoderActualDate
                 , testDecoderFloat
                 , testDecoderInt
-                , testDecoderString
+                , testDecoderGoodString
+                , testDecoderBadString
                 , testDecoderStringified
                 , testDecoderBad
                 ]
