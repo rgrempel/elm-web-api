@@ -101,6 +101,9 @@ var SeSauce = function(options, doEachBrowser) {
     }
 
     for (var i = 0, len = this.options.webdriver.desiredCapabilities.length; i < len; i++) {
+        // Stop looping through configurations if we've errored
+        if (this._stopped) break;
+
         var wdOptions = extend({}, this.options.webdriver);
         wdOptions.desiredCapabilities = this.options.webdriver.desiredCapabilities[i];
         var browser = webdriverio.remote(wdOptions);
@@ -113,7 +116,6 @@ var SeSauce = function(options, doEachBrowser) {
         browser.end = end.bind(browser);
 
         browser.passed = succeed.bind(browser);
-
         browser.updateJob = updateJob.bind(browser);
 
         doEachBrowser.call(this, browser);
