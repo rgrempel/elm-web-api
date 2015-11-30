@@ -853,6 +853,9 @@ module WebAPI.Function where
 {-| Opaque type representing a Javascript function. -}
 type Function
 
+{-| The number of arguments expected by a function. -}
+length : Function -> Int
+
 {-| Opaque type representing a Javascript exception. -}
 type Error
 

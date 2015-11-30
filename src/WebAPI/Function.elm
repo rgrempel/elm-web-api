@@ -1,5 +1,5 @@
 module WebAPI.Function
-    ( Function, decoder, encode, apply, construct
+    ( Function, length, decoder, encode, apply, construct
     , Callback, javascript, elm
     , Response, return, throw, asyncAndReturn, asyncAndThrow, syncOrReturn, syncOrThrow
     , Error, error, message
@@ -14,7 +14,7 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## Types
 
-@docs Function, Error, error, message
+@docs Function, length, Error, error, message
 
 ## Obtaining functions from Javascript
 
@@ -45,6 +45,11 @@ import Native.WebAPI.Function
 
 {-| Opaque type representing a Javascript function. -}
 type Function = Function
+
+
+{-| The number of arguments expected by a function. -}
+length : Function -> Int
+length = Native.WebAPI.Function.length
 
 
 {-| Opaque type representing a Javascript exception. -}

@@ -91,6 +91,10 @@ Elm.Native.WebAPI.Function.make = function (localRuntime) {
                 return value;
             },
 
+            length: function (func) {
+                return func.length;
+            },
+
             apply: F3(function (self, params, func) {
                 return Task.asyncFunction(function (callback) {
                     try {

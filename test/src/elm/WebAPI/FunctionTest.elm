@@ -36,6 +36,22 @@ testGoodJavascript =
             |> Task.mapError (always ())
 
 
+testLength : Test
+testLength =
+    let
+        function =
+            Function.javascript
+                ["a", "b"]
+                "return a + b;"
+                
+    in
+        function
+            |> Result.map Function.length
+            |> Result.map (assertEqual 2)
+            |> Result.withDefault (assertEqual "" "Unexpected functione error")
+            |> test "Should get function length."
+
+
 testBoundJavascript : Task () Test
 testBoundJavascript =
     let
@@ -446,6 +462,7 @@ tests =
             ++
             List.map Task.succeed
                 [ testBadJavascript
+                , testLength
                 , testMessage
                 , testDecoderSuccess
                 , testDecoderFailure
