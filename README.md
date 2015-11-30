@@ -887,6 +887,9 @@ parameters. If you don't want to supply a `this`, you could use
 -}
 apply : JE.Value -> List JE.Value -> Function -> Task Error JD.Value
 
+{-| Use a function as a constructor, via `new`, with the supplied parameters. -}
+construct : List JE.Value -> Function -> Task Error JD.Value
+
 {- ---------------------------------
    Providing functions to Javascript
    --------------------------------- -}

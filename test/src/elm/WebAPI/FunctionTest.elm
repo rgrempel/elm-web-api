@@ -54,6 +54,41 @@ testBoundJavascript =
             |> Task.mapError (always ())
 
 
+testGoodConstruct : Task () Test
+testGoodConstruct =
+    let
+        function =
+            Function.javascript
+                ["a"]
+                "this.val = a;"
+
+    in 
+        function
+            |> Task.fromResult
+            |> and (Function.construct [JE.int 17])
+            |> Task.map (JD.decodeValue (JD.at ["val"] JD.int))
+            |> Task.map (assertEqual (Ok 17))
+            |> Task.map (test "using function as constructor should work")
+            |> Task.mapError (always ())
+
+
+testConstructException : Task () Test
+testConstructException =
+    let
+        function =
+            Function.javascript
+                ["a", "b"]
+                "throw new Error(\"An error\");"
+
+    in
+        function
+            |> Task.fromResult
+            |> and (Function.construct [])
+            |> Task.toMaybe
+            |> Task.map (assertEqual Nothing)
+            |> Task.map (test "Task should have errored")
+
+
 testExposeJavascriptStuff : Task () Test
 testExposeJavascriptStuff =
     let
@@ -393,6 +428,8 @@ tests =
             [ testGoodJavascript
             , testBoundJavascript
             , testJavascriptWithException
+            , testGoodConstruct
+            , testConstructException
             , testExposeJavascriptStuff
             , testCallbackThatDoesStuff
             , testCallbackThatDoesStuffWithThis

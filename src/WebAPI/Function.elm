@@ -1,5 +1,5 @@
 module WebAPI.Function
-    ( Function, decoder, encode, apply
+    ( Function, decoder, encode, apply, construct
     , Callback, javascript, elm
     , Response, return, throw, asyncAndReturn, asyncAndThrow, syncOrReturn, syncOrThrow
     , Error, error, message
@@ -22,7 +22,7 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## Calling Functions
 
-@docs apply
+@docs apply, construct
 
 ## Providing functions to Javascript
 
@@ -92,6 +92,11 @@ parameters. If you don't want to supply a `this`, you could use
 -}
 apply : JE.Value -> List JE.Value -> Function -> Task Error JD.Value
 apply = Native.WebAPI.Function.apply
+
+
+{-| Use a function as a constructor, via `new`, with the supplied parameters. -}
+construct : List JE.Value -> Function -> Task Error JD.Value
+construct = Native.WebAPI.Function.construct
 
 
 {- ---------------------------------

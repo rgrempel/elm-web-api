@@ -102,6 +102,28 @@ Elm.Native.WebAPI.Function.make = function (localRuntime) {
                 });
             }),
 
+            construct: F2(function (params, func) {
+                return Task.asyncFunction(function (callback) {
+                    try {
+                        // We need to use `new` with an array of params. We can
+                        // do that via `bind`, since `bind` binds a function to
+                        // some params. We initially bind to a `null` this,
+                        // because `new` will supply the `this` anyway, of
+                        // course. And, we need to `apply` the bind, because we
+                        // want to supply the arguments to `bind` as an array.
+                        //
+                        // There is also probably a way to do this with
+                        // Object.create.
+                        var args = [null].concat(List.toArray(params));
+                        var funcWithArgs = Function.prototype.bind.apply(func, args);
+                        var result = new funcWithArgs();
+                        callback(Task.succeed(result));
+                    } catch (ex) {
+                        callback(Task.fail(ex));
+                    }
+                });
+            }),
+
             javascript: F2(function (params, body) {
                 try {
                     /* jshint evil:true */
