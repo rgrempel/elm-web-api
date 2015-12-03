@@ -1,5 +1,5 @@
 module WebAPI.Function
-    ( Function, length, decoder, encode, apply, construct
+    ( Function, length, decoder, encode, apply, pure, construct
     , Callback, javascript, elm
     , Response, return, throw, asyncAndReturn, asyncAndThrow, syncOrReturn, syncOrThrow
     , Error, error, message
@@ -22,7 +22,7 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## Calling Functions
 
-@docs apply, construct
+@docs apply, pure, construct
 
 ## Providing functions to Javascript
 
@@ -97,6 +97,23 @@ parameters. If you don't want to supply a `this`, you could use
 -}
 apply : JE.Value -> List JE.Value -> Function -> Task Error JD.Value
 apply = Native.WebAPI.Function.apply
+
+
+{-| Call a 'pure' function, using the supplied value for "this", and the
+supplied parameters. If you don't want to supply a `this`, you could use
+`Json.Encode.null`.
+
+It is your responsibility to know that the function is 'pure' -- that is:
+
+* it has no side-effects
+* it does not mutate its arguments (or anything else)
+* it returns the same value for the same arguments every time
+
+The type-checker can't verify this for you. If you have any doubt, use
+`apply` instead.
+-}
+pure : JE.Value -> List JE.Value -> Function -> Result Error JD.Value
+pure = Native.WebAPI.Function.pure
 
 
 {-| Use a function as a constructor, via `new`, with the supplied parameters. -}

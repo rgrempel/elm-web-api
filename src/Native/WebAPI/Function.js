@@ -106,6 +106,15 @@ Elm.Native.WebAPI.Function.make = function (localRuntime) {
                 });
             }),
 
+            pure: F3(function (self, params, func) {
+                try {
+                    var result = func.apply(self, List.toArray(params));
+                    return Result.Ok(result);
+                } catch (ex) {
+                    return Result.Err(ex);
+                }
+            }),
+
             construct: F2(function (params, func) {
                 return Task.asyncFunction(function (callback) {
                     try {

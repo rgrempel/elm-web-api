@@ -14,6 +14,9 @@ and : (a -> Task x b) -> Task x a -> Task x b
 and = flip Task.andThen
 
 
+withResult = flip Result.andThen
+
+
 recover : (x -> Task y a) -> Task x a -> Task y a
 recover = flip Task.onError
 
@@ -34,6 +37,23 @@ testGoodJavascript =
             |> Task.map (assertEqual (Ok 6))
             |> Task.map (test "basic good javascript should work")
             |> Task.mapError (always ())
+
+
+testPureGoodJavascript : Test
+testPureGoodJavascript =
+    let
+        function =
+            Function.javascript
+                ["a", "b"]
+                "return a + b;"
+
+    in
+        function
+            |> withResult (Function.pure JE.null [JE.int 2, JE.int 4])
+            |> Result.map (JD.decodeValue JD.int)
+            |> Result.map (assertEqual (Ok 6))
+            |> Result.withDefault (assert False)
+            |> test "basic good pure javascript should work"
 
 
 testLength : Test
@@ -68,6 +88,23 @@ testBoundJavascript =
             |> Task.map (assertEqual (Ok 6))
             |> Task.map (test "javascript with this should work")
             |> Task.mapError (always ())
+
+
+testPureBoundJavascript : Test
+testPureBoundJavascript =
+    let
+        function =
+            Function.javascript
+                ["a"]
+                "return a + this;"
+
+    in
+        function
+            |> withResult (Function.pure (JE.int 4) [JE.int 2])
+            |> Result.map (JD.decodeValue JD.int)
+            |> Result.map (assertEqual (Ok 6))
+            |> Result.withDefault (assert False)
+            |> test "pure javascript with this should work"
 
 
 testGoodConstruct : Task () Test
@@ -138,6 +175,22 @@ testJavascriptWithException =
             |> Task.toMaybe
             |> Task.map (assertEqual Nothing)
             |> Task.map (test "Task should have errored")
+
+
+testPureJavascriptWithException : Test
+testPureJavascriptWithException =
+    let
+        function =
+            Function.javascript
+                ["a", "b"]
+                "throw new Error(\"An error\");"
+
+    in
+        function
+            |> withResult (Function.pure JE.null [])
+            |> Result.toMaybe
+            |> assertEqual Nothing
+            |> test "Pure Task should have errored"
 
 
 testBadJavascript : Test
@@ -466,5 +519,8 @@ tests =
                 , testMessage
                 , testDecoderSuccess
                 , testDecoderFailure
+                , testPureGoodJavascript
+                , testPureBoundJavascript
+                , testPureJavascriptWithException
                 ]
 

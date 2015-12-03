@@ -890,6 +890,21 @@ parameters. If you don't want to supply a `this`, you could use
 -}
 apply : JE.Value -> List JE.Value -> Function -> Task Error JD.Value
 
+{-| Call a 'pure' function, using the supplied value for "this", and the
+supplied parameters. If you don't want to supply a `this`, you could use
+`Json.Encode.null`.
+
+It is your responsibility to know that the function is 'pure' -- that is:
+
+* it has no side-effects
+* it does not mutate its arguments (or anything else)
+* it returns the same value for the same arguments every time
+
+The type-checker can't verify this for you. If you have any doubt, use
+`apply` instead.
+-}
+pure : JE.Value -> List JE.Value -> Function -> Result Error JD.Value
+
 {-| Use a function as a constructor, via `new`, with the supplied parameters. -}
 construct : List JE.Value -> Function -> Task Error JD.Value
 
