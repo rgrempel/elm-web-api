@@ -1040,10 +1040,10 @@ WebAPI.Date.decoder : Json.Decode.Decoder Date
 WebAPI.Date.encode : Date -> Json.Encode.Value
 
 {-| Access the Javascript `window` object via `Json.Decode`. -}
-WebAPI.Window.value : Json.Decode.Value
+WebAPI.Window.value : Task x Json.Decode.Value
 
 {-| Access the Javascript `document` object via `Json.Decode`. -}
-WebAPI.Document.value : Json.Decode.Value
+WebAPI.Document.value : Task x Json.Decode.Value
 
 {-| Extract a function. -}
 WebAPI.Function.decoder : Json.Decode.Decoder Function
