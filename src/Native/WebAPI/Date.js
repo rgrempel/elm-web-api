@@ -11,13 +11,6 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
         var Task = Elm.Native.Task.make(localRuntime);
         var Utils = Elm.Native.Utils.make(localRuntime);
 
-        // Copied from Native/Json.js
-        var crash = function crash (expected, actual) {
-            throw new Error(
-                'expecting ' + expected + ' but got ' + JSON.stringify(actual)
-            );
-        };
-
         localRuntime.Native.WebAPI.Date.values = {
             decoder : function (value) {
                 // If we are supplied an actual date, we're golden.
@@ -25,25 +18,10 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
                     return value;
                 }
 
-                // There is no actual JSON format for a date, so if we've
-                // actually been stringified, we may be seeing a string or a
-                // number.
-                if (typeof value === 'string' || value instanceof String) {
-                    // If it's a string, try to convert it to a number.
-                    // Date.parse will return NaN if it can't parse the string,
-                    var parsed = Date.parse(value);
-                    if (!isNaN(parsed)) {
-                        return new Date(parsed);
-                    }
-                }
-
-                if (typeof value === 'number' || value instanceof Number) {
-                    if (!isNaN(value)) {
-                        return new Date(value);
-                    }
-                }
-
-                crash('a Date', value);
+                // This is what Json.Decode.decodeValue expects
+                throw new Error(
+                    'expecting a Date object but got ' + JSON.stringify(actual)
+                );
             },
 
             encode : function (value) {

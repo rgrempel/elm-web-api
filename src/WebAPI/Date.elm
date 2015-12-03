@@ -58,8 +58,8 @@ In the spirit of `Time.hour`, `Time.inHours`, `Time.second`, `Time.inSeconds`,
 import Date exposing (Date)
 import Time exposing (Time)
 import Task exposing (Task)
-import Json.Encode
-import Json.Decode
+import Json.Encode as JE
+import Json.Decode as JD
 import Debug
 
 import Native.WebAPI.Date
@@ -437,10 +437,40 @@ utcString = Native.WebAPI.Date.utcString
 
 
 {-| Extract a date. -}
-decoder : Json.Decode.Decoder Date
-decoder = Native.WebAPI.Date.decoder
+decoder : JD.Decoder Date
+decoder =
+    let
+        -- there is no actual json format for a date, so if we've actually been
+        -- stringified, we may be seeing a string or a number.
+        decodeString =
+            JD.customDecoder JD.string Date.fromString
+
+        decodeInt =
+            JD.customDecoder JD.int (float2date << toFloat)
+
+        decodeFloat =
+            JD.customDecoder JD.float float2date
+
+        float2date float =
+            case isNaN float of
+                True -> Result.Err "not a number"
+                False -> Result.Ok (Date.fromTime float)
+
+    in
+        JD.oneOf
+            [ decodeString
+            , decodeFloat
+            , decodeInt
+            -- This one is in case we were given an actual date object
+            , nativeDecoder
+            , JD.fail "expecting a date object, or a string or number that can be converted to a date"
+            ]
+
+
+nativeDecoder : JD.Decoder Date
+nativeDecoder = Native.WebAPI.Date.decoder
 
 
 {-| Encode a date. -}
-encode : Date -> Json.Encode.Value
+encode : Date -> JE.Value
 encode = Native.WebAPI.Date.encode
