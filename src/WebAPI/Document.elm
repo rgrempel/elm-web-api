@@ -154,5 +154,8 @@ once eventName =
    ---- -}
 
 {-| Access the Javascript `document` object via `Json.Decode`. -}
-value : Json.Decode.Value
-value = Native.WebAPI.Document.events
+value : Task x Json.Decode.Value
+value =
+    -- We need to put this behind a Task, because `Json.Decode` executes
+    -- immediately, and some of the things it could access are not constants
+    Task.succeed Native.WebAPI.Document.events

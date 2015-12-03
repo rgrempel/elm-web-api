@@ -75,14 +75,17 @@ testValue =
             JD.at ["title"] JD.string
 
     in
-        Task.succeed <|
-            test "Should be able to decode the document object" <|
-                case JD.decodeValue titleDecoder value of
+        value
+            |> Task.map (JD.decodeValue titleDecoder)
+            |> Task.map (\result -> 
+                case result of
                     Ok string ->
                         assertEqual "Main" string
 
                     Err _ ->
                         assert False
+                )
+            |> Task.map (test "Should be able to decode the document object")
 
 
 tests : Task () Test

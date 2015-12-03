@@ -21,14 +21,18 @@ object.
 @docs Error, enabled
 -}
 
-import Native.WebAPI.Cookie
-
 import Task exposing (Task)
 import String exposing (split, trim, join)
 import Dict exposing (Dict, insert)
 import Time exposing (inSeconds, Time)
 import Date exposing (Date)
+import Json.Decode as JD
+import Json.Encode as JE
 import List
+
+import WebAPI.Window exposing (encodeURIComponent, decodeURIComponent)
+import WebAPI.Function exposing (Function)
+import WebAPI.Date
 
 
 {-| A name for a cookie. -}
@@ -47,10 +51,28 @@ type Error
     | Error String
 
 
+and = flip Task.andThen
+
+
+cookieEnabledDecoder : JD.Decoder Bool
+cookieEnabledDecoder =
+    JD.at ["navigator", "cookieEnabled"] JD.bool
+
+
 {-| Whether cookies are enabled, according to the browser's
 `navigator.cookieEnabled`. -}
 enabled : Task x Bool
-enabled = Native.WebAPI.Cookie.enabled
+enabled =
+    WebAPI.Window.value
+        |> Task.map (JD.decodeValue cookieEnabledDecoder)
+        |> Task.map (\result ->
+                case result of
+                    Ok bool ->
+                        bool
+
+                    Err error ->
+                        Debug.crash "Could not decode navigator.cookieEnabled"
+            )
 
 
 {-| A `Task` which, when executed, will succeed with the cookies, or fail with an
@@ -63,8 +85,23 @@ get : Task Error (Dict Key Value)
 get = Task.map cookieString2Dict getString
 
 
+cookieDecoder : JD.Decoder String
+cookieDecoder =
+    JD.at ["document", "cookie"] JD.string
+
+
 getString : Task Error String
-getString = Native.WebAPI.Cookie.getString
+getString =
+    enabled `Task.andThen` \e ->
+        if e
+            then
+                WebAPI.Window.value
+                    |> Task.map (JD.decodeValue cookieDecoder)
+                    |> and Task.fromResult
+                    |> Task.mapError Error
+
+            else
+                Task.fail Disabled
 
 
 {- We pipeline the various operations inside the foldl so that we don't
@@ -76,7 +113,7 @@ cookieString2Dict : String -> Dict Key Value
 cookieString2Dict =
     let
         addCookieToDict =
-            trim >> split "=" >> List.map uriDecode >> addKeyValueToDict
+            trim >> split "=" >> List.map decodeURIComponent >> addKeyValueToDict
 
         addKeyValueToDict keyValueList =
             case keyValueList of
@@ -136,11 +173,11 @@ setWith options key value =
             flip Maybe.andThen
 
         handlers =
-            [ always <| Just <| (uriEncode key) ++ "=" ++ (uriEncode value)
-            , .path >> andThen (\path -> Just <| "path=" ++ uriEncode path)
-            , .domain >> andThen (\domain -> Just <| "domain=" ++ uriEncode domain)
+            [ always <| Just <| (encodeURIComponent key) ++ "=" ++ (encodeURIComponent value)
+            , .path >> andThen (\path -> Just <| "path=" ++ encodeURIComponent path)
+            , .domain >> andThen (\domain -> Just <| "domain=" ++ encodeURIComponent domain)
             , .maxAge >> andThen (\age -> Just <| "max-age=" ++ toString (inSeconds age))
-            , .expires >> andThen (\expires -> Just <| "expires=" ++ dateToUTCString expires)
+            , .expires >> andThen (\expires -> Just <| "expires=" ++ WebAPI.Date.utcString expires)
             , .secure >> andThen (\secure -> if secure then Just "secure" else Nothing)
             ]
 
@@ -152,20 +189,32 @@ setWith options key value =
 
 
 setString : String -> Task Error ()
-setString =
-    Native.WebAPI.Cookie.setString
+setString value =
+    enabled
+        |> and (\e ->
+            if e
+                then
+                    WebAPI.Function.apply JE.null [JE.string value] setStringFunction
+                        |> Task.mapError (WebAPI.Function.message >> Error)
+                        |> Task.map (always ())
+
+                else
+                    Task.fail Disabled
+           )
 
 
-dateToUTCString : Date -> String
-dateToUTCString =
-    Native.WebAPI.Cookie.dateToUTCString
+setStringFunction : Function
+setStringFunction =
+    let
+        result =
+            WebAPI.Function.javascript
+                ["value"]
+                "document.cookie = value;"
 
+    in
+        case result of
+            Ok func ->
+                func
 
-uriEncode : String -> String
-uriEncode =
-    Native.WebAPI.Cookie.uriEncode
-
-
-uriDecode : String -> String
-uriDecode =
-    Native.WebAPI.Cookie.uriDecode
+            Err error ->
+                Debug.crash "Error compiling perfectly good function."

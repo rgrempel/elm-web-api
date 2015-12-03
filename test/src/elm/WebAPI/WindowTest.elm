@@ -26,14 +26,17 @@ testValue =
             JD.at ["Math", "PI"] JD.float
 
     in
-        Task.succeed <|
-            test "Should be able to decode the window object" <|
-                case JD.decodeValue mathPiDecoder Window.value of
+        Window.value
+            |> Task.map (JD.decodeValue mathPiDecoder)
+            |> Task.map (\result ->
+                case result of
                     Ok float ->
                         assertEqual Basics.pi float
 
                     Err _ ->
                         assert False
+                )
+            |> Task.map (test "Should be able to decode the window object")
 
 
 tests : Task () Test

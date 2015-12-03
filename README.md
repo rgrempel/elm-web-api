@@ -672,7 +672,7 @@ once : String -> Task x Json.Decode.Value
    ---- -}
 
 {-| Access the Javascript `document` object via `Json.Decode`. -}
-value : Json.Decode.Value
+value : Task x Json.Decode.Value
 ```
 
 ***See also***
@@ -1610,6 +1610,16 @@ or enters blank text.
 -}
 prompt : String -> String -> Task () String
 
+{- ----
+   URIs
+   ---- -}
+
+{-| The browser's `encodeURIComponent()`. -}
+encodeURIComponent : String -> String
+
+{-| The browser's `decodeURIComponent()`. -}
+decodeURIComponent : String -> String
+
 {- -------------
    Online status
    ------------- -}
@@ -1691,7 +1701,7 @@ once : String -> Task x Json.Decode.Value
    ---- -}
 
 {-| Access the Javascript `window` object via `Json.Decode`. -}
-value : Json.Decode.Value
+value : Task x Json.Decode.Value
 ```
 
 ***See also***
@@ -1706,27 +1716,15 @@ Use [`WebAPI.AnimationFrame`](#webapianimationframe)
 &nbsp; &nbsp; &nbsp; &nbsp;
 Not implemented, since you will generally want `decodeURIComponent` instead.
 
-**`decodeURIComponent`**
-
-&nbsp; &nbsp; &nbsp; &nbsp;
-Use `Http.uriDecode` from
-[evancz/elm-http](http://package.elm-lang.org/packages/evancz/elm-http/latest).
-
 **`encodeURI`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 Not implemented, since you will generally want `encodeURIComponent` instead.
 
-**`encodeURIComponent`**
-
-&nbsp; &nbsp; &nbsp; &nbsp;
-Use `Http.uriEncode` from
-[evancz/elm-http](http://package.elm-lang.org/packages/evancz/elm-http/latest).
-
 **`eval`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
-Not implemented, since it is an abomination.
+See `WebAPI.Function.javascript` for a limited form.
 
 **`history`**
 

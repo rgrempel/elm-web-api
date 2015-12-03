@@ -4,6 +4,7 @@ module WebAPI.Window
     , onUnload, unload
     , on, once, events
     , isOnline, online
+    , encodeURIComponent, decodeURIComponent
     , value
     ) where
 
@@ -14,6 +15,10 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API
 ## Alerts and dialogs
 
 @docs alert, confirm, prompt
+
+## URIs
+
+@docs encodeURIComponent, decodeURIComponent
 
 ## Online status
 
@@ -67,6 +72,20 @@ or enters blank text.
 -}
 prompt : String -> String -> Task () String
 prompt = Native.WebAPI.Window.prompt
+
+
+{- ----
+   URIs
+   ---- -}
+
+{-| The browser's `encodeURIComponent()`. -}
+encodeURIComponent : String -> String
+encodeURIComponent = Native.WebAPI.Window.encodeURIComponent
+
+
+{-| The browser's `decodeURIComponent()`. -}
+decodeURIComponent : String -> String
+decodeURIComponent = Native.WebAPI.Window.decodeURIComponent
 
 
 {- -------------
@@ -182,5 +201,8 @@ once eventName =
    ---- -}
 
 {-| Access the Javascript `window` object via `Json.Decode`. -}
-value : Json.Decode.Value
-value = Native.WebAPI.Window.events
+value : Task x Json.Decode.Value
+value =
+    -- We need to put this behind a Task, because `Json.Decode` executes
+    -- immediately, and some of the things it could access are not constants.
+    Task.succeed Native.WebAPI.Window.events
