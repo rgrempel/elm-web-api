@@ -62,6 +62,7 @@ import Json.Encode as JE
 import Json.Decode as JD
 import Debug
 
+import WebAPI.Native
 import Native.WebAPI.Date
 
 
@@ -473,4 +474,4 @@ nativeDecoder = Native.WebAPI.Date.decoder
 
 {-| Encode a date. -}
 encode : Date -> JE.Value
-encode = Native.WebAPI.Date.encode
+encode = WebAPI.Native.unsafeCoerce

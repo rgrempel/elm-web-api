@@ -24,10 +24,6 @@ Elm.Native.WebAPI.Date.make = function (localRuntime) {
                 );
             },
 
-            encode : function (value) {
-                return value;
-            },
-
             current : Task.asyncFunction(function (callback) {
                 callback(
                     Task.succeed(
