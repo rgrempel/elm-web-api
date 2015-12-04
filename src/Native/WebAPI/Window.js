@@ -62,14 +62,8 @@ Elm.Native.WebAPI.Window.make = function (localRuntime) {
         });
  
         localRuntime.Native.WebAPI.Window.values = {
-            encodeURIComponent: function (component) {
-                return encodeURIComponent(component);
-            },
-
-            decodeURIComponent: function (component) {
-                return decodeURIComponent(component);
-            },
-
+            encodeURIComponent: encodeURIComponent,
+            decodeURIComponent: decodeURIComponent,
             alert: elmAlert,
             confirm: elmConfirm,
             prompt: F2(elmPrompt),
