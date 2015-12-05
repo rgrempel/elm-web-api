@@ -28,7 +28,7 @@
     "ci": "sh ci.sh",
     "local": "env GEB_SAUCE_LABS_USER= sh ci.sh",
     "jshint": "jshint -c jshint.json ../src/Native/WebAPI/*.js src/*.js src/mocha/*.js",
-    "instrument": "istanbul instrument --output build/instrumented --embed-source --complete-copy ../src"
+    "instrument": "istanbul instrument --no-compact --output build/instrumented --embed-source --complete-copy ../src"
   },
   "repository": {
     "type": "git",
