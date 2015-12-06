@@ -33,6 +33,7 @@ I'll continue my semi-random walk.
     * [WebAPI.Document](#webapidocument)
     * [WebAPI.Date](#webapidate)
     * [WebAPI.Event](#webapievent)
+        * [WebAPI.Event.BeforeUnload](#webapieventbeforeunload)
     * [WebAPI.Function](#webapifunction)
     * [WebAPI.JSON](#webapijson)
     * [WebAPI.Location](#webapilocation)
@@ -652,20 +653,8 @@ setTitle : String -> Task x ()
    Events
    ------ -}
 
-{-| A target for responding to events sent to the `document` object. Normally,
-it will be simpler to use `on`, but you may need this in some cases.
--}
-events : WebAPI.Event.Target
-
-{-| A task which, when executed, uses Javascript's `addEventListener()` to
-respond to events specified by the string (e.g. "click").
--}
-on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
-
-{-| Like `on`, but only succeeds once the event occurs (with the value of the
-event object), and then stops listening.
--}
-once : String -> Task x Json.Decode.Value
+{-| A target for responding to events sent to the `document` object. -}
+target : WebAPI.Event.Target
 
 {- ----
    JSON
@@ -689,16 +678,26 @@ See [WebAPI.Cookie](#webapicookie)
 
 General support for handling Javascript events.
 
-This is a low-level module ...  normally, you will want to use more specific
-methods in other modules -- assuming that they do what you want :-)
+There are more specific modules available for more specific types of events --
+for instance, [`WebAPI.Event.BeforeUnload`](#webapieventbeforeunload) for the
+`BeforeUnloadEvent`. So, if you're interested in a specific type of event,
+check there first.
 
-Furthermore, this is not really meant for targets that are within the `Html`
-that your `view` function produces. For those, use `Html.Events` to deal with
-events. Instead, this is meant for events on target that you don't set up in
-your `view` function, such as the `window` and `document` etc.
+Also, there are specific modules available for some targets. For instance,
+[`WebAPI.Window`](#webapiwindow) has some convenient event-handling methods.
+
+Furthermore, if you are using
+[evancz/elm-html](http://package.elm-lang.org/packages/evancz/elm-html/latest),
+this is not really meant for targets that are within the `Html` that your
+`view` function produces. For those, use `Html.Events` to deal with events.
+Instead, this is meant for events on target that you don't set up in your
+`view` function, such as the `window` and `document` etc. Though, of course,
+you could possibly achieve some interesting results by setting up listeners on
+the document or window and relying on bubbling.
 
 See Mozilla documentation for the
-[`EventTarget` interface](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget).
+[`EventTarget` interface](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget),
+and for [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event).
 I also found this
 [list of events](http://www.w3schools.com/jsref/dom_obj_event.asp)
 helpful.
@@ -707,86 +706,159 @@ helpful.
 ```elm
 module WebAPI.Event where
 
-{- ---------------
-   Handling Events
-   --------------- -}
+{- -----
+   Event
+   ----- -}
+
+{-| Opaque type representing a Javascript event. -}
+type Event
+
+{-| The type of the event. -}
+eventType : Event -> String
+
+{-| Does the event bubble up through the DOM? -}
+bubbles : Event -> Bool
+
+{-| Can the event be canceled? -}
+cancelable : Event -> Bool
+
+{-| The time when the event was created. -}
+timestamp : Event -> Time
+
+{-| The phases in which an event can be processed. -}
+type EventPhase
+    = NoPhase
+    | Capturing
+    | AtTarget
+    | Bubbling
+
+{-| The phase in which the event is currently being processed.
+
+Note that typically an undispatched `Event` will return `NoPhase`, but in
+Opera will return `AtTarget`.
+-}
+eventPhase : Event -> EventPhase
+
+{-| Has `preventDefault()` been called on this event? -}
+defaultPrevented : Event -> Bool
+
+{-| The target that the event was originally dispatched to. -}
+eventTarget : Event -> Maybe Target
+
+{-| The target that the current event listener was attached to. This may differ
+from the target which originally received the event, if we are in the bubbling
+or capturing phase.
+-}
+listenerTarget : Event -> Maybe Target
+
+{- ----------------------------
+   Constructing and Dispatching
+   ---------------------------- -}
+
+{-| Create an event with the given eventType and options. -}
+construct : String -> Options -> Task x Event
+
+{-| Options for creating events. -}
+type alias Options =
+    { cancelable : Bool
+    , bubbles : Bool
+    }
+
+{-| Default options, in which both are false. -}
+defaultOptions : Options
+
+{-| A task which dispatches an event, and completes when all the event handlers
+have run. The task will complete with `True` if the default action should be
+permitted.  If any handler calls `preventDefault()`, the task will return
+`False`. The task will fail if certain exceptions occur.
+-}
+dispatch : Target -> Event -> Task String Bool
+
+{- ---------
+   Listening
+   --------- -}
 
 {-| Opaque type which represents a Javascript object which can respond to
 Javascript's `addEventListener()` and `removeEventListener()`.
 
-To obtain a `Target`, see methods such as `WebAPI.Document.events` and
-`WebAPI.Window.events`.
+To obtain a `Target`, see methods such as `WebAPI.Document.target` and
+`WebAPI.Window.target`.
 -}
 type Target
 
 {-| A task which, when executed, uses Javascript's `addEventListener()` to add
 a `Responder` to the `Target` for the event specified by the string (e.g. "click").
 
-Succeeds with a `Listener`, which you can supply to `removeListener` if you
-wish.
+Succeeds with a `Listener`, which you can supply to `removeListener` if you wish.
+
+Note that no matter what string you provide for the event type, your
+`Responder` will be supplied with an `Event` object. If you want a more
+specific object (e.g. `BeforeUnloadEvent`, then see the more specific methods
+in those modules.
 -}
-addListener : Phase -> String -> Responder a b -> Target -> Task x Listener
+addListener : ListenerPhase -> String -> Responder Event -> Target -> Task x (Listener Event)
 
 {-| Convenience method for the usual case in which you call `addListener`
 for the `Bubble` phase.
 -}
-on : String -> Responder a b -> Target -> Task x Listener
+on : String -> Responder Event -> Target -> Task x (Listener Event)
 
 {-| Like `addListener`, but only responds to the event once, and the resulting
 `Task` only succeeds when the event occurs (with the value of the event object).
 Thus, your `Responder` method might not need to do anything.
 -}
-addListenerOnce : Phase -> String -> Responder a b -> Target -> Task x Json.Decode.Value
+addListenerOnce : ListenerPhase -> String -> Responder Event -> Target -> Task x Event
 
 {-| Like `addListenerOnce`, but supplies the default `Phase` (`Bubble`), and a
 `Responder` that does nothing (so you merely chain the resulting `Task`).
 -}
-once : String -> Target -> Task x Json.Decode.Value
+once : String -> Target -> Task x Event
+
+{-| Opaque type representing an event handler. -}
+type Listener event
+
+{-| The type of the listener's event. -}
+listenerType : Listener event -> String
+
+{-| The responder used by the listener. -}
+responder : Listener event -> Responder event
+
+{-| The listener's target. -}
+target : Listener event -> Target
+
+{-| The phases in which a `Responder` can be invoked. Typically, you will want `Bubble`. -}
+type ListenerPhase
+    = Capture
+    | Bubble
+
+{-| The listener's phase. -}
+listenerPhase : Listener event -> ListenerPhase
 
 {-| A task which will remove the supplied `Listener`.
 
 Alternatively, you can return `remove` from your `Responder` method, and the
 listener will be removed.
 -}
-removeListener : Listener -> Task x ()
+removeListener : Listener event -> Task x ()
 
-{-| The phase in which a `Responder` will be invoked. Typically, you will want `Bubble`. -}
-type Phase
-    = Capture
-    | Bubble
-
-{- ----------------------
-   Constructing Responses
-   ---------------------- -}
+{- ----------
+   Responding
+   ---------- -}
 
 {-| A function which will be called each time an event occurs, in order to
 determine how to respond to the event.
 
-* The `Json.Decode.Value` is the Javascript event object, which you might want
-to analyze further via a `Json.Decode.Decoder`.  There are decoders defined in
-the `Html.Events` module of
-[evancz/elm-html](http://package.elm-lang.org/packages/evancz/elm-html/latest)
-that you may find helpful for this.
-
+* The `event` parameter is the Javascript event object.
 * The `Listener` is the listener which is responsible for this event.
 
 Your function should return a list of responses which you would like to make
 to the event.
 -}
-type alias Responder x a =
-    Json.Decode.Value -> Listener -> List (Response x a)
+type alias Responder event =
+    event -> Listener event -> List Response
 
-{-| Represents a response which you would like to make to an event. -}
-type Response x a
-
-{-| Indicates that you would like to call `preventDefault()` on the event object. -}
-preventDefault : Response x a
-
-{-| Indicates that you would like to call `stopPropagation()` on the event object. -}
-stopPropagation : Response x a
-
-{-| Indicates that you would like to call `stopImmediatePropagation()` on the event object. -}
-stopImmediatePropagation : Response x a
+{-| Opaque type which represents a response which you would like to make to an event. -}
+type Response
 
 {-| Indicates that you would like to set a property on the event object with
 the specified key to the specified value.
@@ -795,39 +867,107 @@ Normally, you should not need this. However, there are some events which need
 to be manipulated in this way -- for instance, setting the `returnValue` on the
 `beforeunload` event.
 -}
-set : String -> Json.Encode.Value -> Response x a
+set : String -> Json.Encode.Value -> Response
 
 {-| Indicates that you would like to send a message in response to the event. -}
-send : Signal.Message -> Response x a
+send : Signal.Message -> Response
 
 {-| Indicates that you would like to perform a `Task` in response to the event.
 
 If the task is to send a message via `Signal.send`, then you can use `send` as
 a convenience.
 -}
-performTask : Task x a -> Response x a
+performTask : Task () () -> Response
 
 {-| Indicates that no longer wish to listen for this event on this target. -}
-remove : Response x a
+remove : Response
+
+{-| Indicates that you would like to prevent further propagation of the event. -}
+stopPropagation : Event -> Response
+
+{-| Like `stopPropagation`, but also prevents other listeners on the current
+target from being called.
+-}
+stopImmediatePropagation : Event -> Response
+
+{-| Cancels the standard behaviour of the event. -}
+preventDefault : Event -> Response
+
+{-| A responder that does nothing. -}
+noResponse : event -> Listener event -> List Response 
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Encode an event. -}
+encode : Event -> Json.Encode.Value
+
+{-| Decode an event. -}
+decoder : Json.Decode.Decoder Event
+```
+
+
+--------
+
+### WebAPI.Event.BeforeUnload
+
+The browser's `BeforeUnloadEvent'.
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent).
+
+See [`WebAPI.Window.beforeUnload`](#webapiwindow) and
+[`WebAPI.Window.confirmUnload`](#webapiwindow) for a higher-level, more
+convenient API.
+
+```elm
+module WebAPI.Event.BeforeUnload where
+
+{-| Opaque type representing a BeforeUnloadEvent. -}
+type BeforeUnloadEvent
 
 {- ---------
-   Listeners
+   Listening
    --------- -}
 
-{-| Opaque type representing an event handler. -}
-type Listener a b
+{-| Listen for the `beforeunload` event. -}
+addListener : ListenerPhase -> Responder BeforeUnloadEvent -> Target -> Task x (Listener BeforeUnloadEvent)
 
-{-| The name of the listener's event. -}
-eventName : Listener a b -> String
+{-| Listen for the `beforeunload` event in the `Bubble` phase. -}
+on : Responder BeforeUnloadEvent -> Target -> Task x (Listener BeforeUnloadEvent)
 
-{-| The responder used by the listener. -}
-responder : Listener a b -> Responder a b
+{-| Listen for the `beforeunload` event once. -}
+addListenerOnce : ListenerPhase -> Responder BeforeUnloadEvent -> Target -> Task x BeforeUnloadEvent
 
-{-| The listener's target. -}
-target : Listener a b -> Target
+{-| Listen for the `beforeunload` event once in the `Bubble` phase. -}
+once : Target -> Task x BeforeUnloadEvent
 
-{-| The listener's phase. -}
-phase : Listener a b -> Phase
+{- ----------
+   Responding
+   ---------- -}
+
+{-| Provide a prompt to use in the confirmation dialog box before leaving tha page. -}
+prompt : String -> BeforeUnloadEvent -> Response
+
+{- ----------
+   Conversion
+   ---------- -}
+
+{-| Convert to an `Event` in order to use `Event` functions. -}
+toEvent : BeforeUnloadEvent -> WebAPI.Event.Event
+
+{-| Convert from an `Event`. -}
+fromEvent : WebAPI.Event.Event -> Maybe BeforeUnloadEvent
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Encode a BeforeUnloadEvent. -}
+encode : BeforeUnloadEvent -> Json.Encode.Value
+
+{-| Decode a BeforeUnloadEvent. -}
+decoder : Json.Decode.Decoder BeforeUnloadEvent
 ```
 
 
@@ -1653,11 +1793,12 @@ online : Signal Bool
 
 To set up a confirmation dialog, have your responder return
 
-    WebAPI.Event.set "returnValue" (Json.Encode.encodeString "Your confimration message")
+    BeforeUnload.prompt "Your message" event
 
-as one of your responses. Or, for more convenience, use `confirmBeforeUnload`.
+as one of your responses. Or, for more convenience, use `confirmUnload`.
 -}
-beforeUnload : WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+beforeUnload : Responder BeforeUnloadEvent -> Task x (Listener BeforeUnloadEvent)
+beforeUnload responder =
 
 {-| A task which, when executed, listens for the page to be unloaded, and
 requires confirmation to do so.
@@ -1672,7 +1813,10 @@ this again to set up a new one.
 If you need to do anything more complex when `BeforeUnload` fires, then see
 `beforeUnload`.
 -}
-confirmUnload : String -> Task x WebAPI.Event.Listener
+confirmUnload : String -> Task x (Listener BeforeUnloadEvent)
+
+{-| Like `confirmUnload`, but only responds once and then removes the listener. -}
+confirmUnloadOnce : String -> Task x BeforeUnloadEvent
 
 {-| A task which, when executed, listens for the 'unload' event.
 
@@ -1680,7 +1824,7 @@ Note that it is unclear how much you can actually accomplish within
 the Elm architecture before the page actually unloads. Thus, you should
 experiment with this if you use it, and see how well it works.
 -}
-onUnload : WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+onUnload : Responder Event -> Task x (Listener Event)
 
 {-| A task which, when executed, waits for the 'unload' event, and
 then succeeds. To do something at that time, just chain additional
@@ -1690,26 +1834,14 @@ Note that it is unclear how much you can actually accomplish within
 the Elm architecture before the page actually unloads. Thus, you should
 experiment with this if you use it, and see how well it works.
 -}
-unload : Task x ()
+unloadOnce : Task x Event
 
-{- ------
-   Events
-   ------ -}
+{- ------------
+   Other Events
+   ------------ -}
 
-{-| A target for responding to events sent to the `window` object. Normally,
-it will be simpler to use `on`, but you may need this in some cases.
--}
-events : WebAPI.Event.Target
-
-{-| A task which, when executed, uses Javascript's `addEventListener()` to
-respond to events specified by the string (e.g. "click").
--}
-on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
-
-{-| Like `on`, but only succeeds once the event occurs (with the value of the
-event object), and then stops listening.
--}
-once : String -> Task x Json.Decode.Value
+{-| A target for responding to events sent to the `window` object. -}
+target : WebAPI.Event.Target
 
 {- ----
    JSON

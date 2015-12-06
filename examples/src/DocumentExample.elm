@@ -9,15 +9,14 @@ import Html.Events exposing (onClick)
 import Signal exposing (Signal, Mailbox, Address)
 
 import WebAPI.Event exposing
-    ( Listener, removeListener
+    ( Listener, removeListener, on, once
     , remove, send, performTask, preventDefault
     , stopPropagation, stopImmediatePropagation
     )
 
 import WebAPI.Document exposing
     ( getReadyState, ReadyState(..)
-    , domContentLoaded, loaded
-    , once, on
+    , domContentLoaded, loaded, target
     )
 
 
@@ -45,7 +44,7 @@ port tasks = app.tasks
 
 type alias Model =
     { log : List Log
-    , clickListener : Maybe Listener
+    , clickListener : Maybe (Listener WebAPI.Event.Event)
     }
 
 
@@ -65,7 +64,7 @@ type Action
     | Write Log
     | ListenForOneClick
     | ListenForKeys Bool
-    | SetClickListener (Maybe Listener)
+    | SetClickListener (Maybe (Listener WebAPI.Event.Event))
     | TestRemove
 
 
@@ -116,7 +115,7 @@ update action model =
             , Effects.task <|
                 Task.map
                     (always (Write GotOneClick))
-                    (once "click")
+                    (once "click" target)
             )
 
         TestRemove ->
@@ -129,7 +128,7 @@ update action model =
                             Signal.send mailbox.address <|
                                 Write RespondedViaTask
                         ]
-                    )
+                    ) target
             )
 
         ListenForKeys start ->
@@ -140,9 +139,9 @@ update action model =
                         Task.map
                             (SetClickListener << Just) <|
                             on "keypress" (\event listener ->
-                                [ stopPropagation
-                                , stopImmediatePropagation
-                                , preventDefault
+                                [ stopPropagation event
+                                , stopImmediatePropagation event
+                                , preventDefault event
                                 , performTask <|
                                     Signal.send mailbox.address <|
                                         Write RespondedViaTask
@@ -151,7 +150,7 @@ update action model =
                                     Signal.message mailbox.address <|
                                         Write RespondedViaMessage
                                 ]
-                            )
+                            ) target
                     )
 
                 (False, Just listener) ->

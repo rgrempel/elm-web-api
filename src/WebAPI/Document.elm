@@ -3,7 +3,7 @@ module WebAPI.Document
     , readyState, getReadyState
     , domContentLoaded, loaded
     , getTitle, setTitle
-    , events, on, once
+    , target
     , value
     ) where
 
@@ -21,7 +21,7 @@ module WebAPI.Document
 
 ## Events
 
-@docs on, once, events
+@docs target
 
 ## JSON
 
@@ -33,7 +33,9 @@ import Signal exposing (Signal)
 import Task exposing (Task, andThen)
 import Json.Decode
 import Json.Encode
-import WebAPI.Event
+
+import WebAPI.Event exposing (Target, Listener, Responder, Event)
+
 import Native.WebAPI.Document
 
 
@@ -79,7 +81,7 @@ domContentLoaded =
             then
                 -- If it hasn't fired yet, listen for it
                 Task.map (always ()) <|
-                    once "DOMContentLoaded"
+                    WebAPI.Event.once "DOMContentLoaded" target
 
             else
                 Task.succeed ()
@@ -102,7 +104,7 @@ loaded =
             else
                 -- If it hasn't fired yet, listen for it
                 Task.map (always ()) <|
-                    once "load"
+                    WebAPI.Event.once "load" target
     )
 
 
@@ -126,27 +128,9 @@ setTitle = Native.WebAPI.Document.setTitle
    Events
    ------ -}
 
-{-| A target for responding to events sent to the `document` object. Normally,
-it will be simpler to use `on`, but you may need this in some cases.
--}
-events : WebAPI.Event.Target
-events = Native.WebAPI.Document.events
-
-
-{-| A task which, when executed, uses Javascript's `addEventListener()` to
-respond to events specified by the string (e.g. "click").
--}
-on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
-on eventName responder =
-    WebAPI.Event.on eventName responder events
-
-
-{-| Like `on`, but only succeeds once the event occurs (with the value of the
-event object), and then stops listening.
--}
-once : String -> Task x Json.Decode.Value
-once eventName =
-    WebAPI.Event.once eventName events
+{-| A target for responding to events sent to the `document` object. -}
+target : Target
+target = Native.WebAPI.Document.events
 
 
 {- ----

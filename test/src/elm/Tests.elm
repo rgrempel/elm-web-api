@@ -19,6 +19,7 @@ import WebAPI.CookieTest
 import WebAPI.DocumentTest
 import WebAPI.WindowTest
 import WebAPI.FunctionTest
+import WebAPI.EventTest
 
 
 test : Variant -> Task x Test
@@ -51,6 +52,7 @@ test variant =
             , WebAPI.CookieTest.tests
             , WebAPI.WindowTest.tests
             , WebAPI.FunctionTest.tests
+            , WebAPI.EventTest.tests
             ]
 
         testsWithStorageDisabled =

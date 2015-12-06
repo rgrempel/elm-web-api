@@ -1,8 +1,9 @@
 module WebAPI.Window
     ( alert, confirm, prompt
-    , beforeUnload, confirmUnload
-    , onUnload, unload
-    , on, once, events
+    , beforeUnload
+    , confirmUnload, confirmUnloadOnce
+    , onUnload, unloadOnce
+    , target
     , isOnline, online
     , encodeURIComponent, decodeURIComponent
     , value
@@ -26,11 +27,11 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API
 
 ## Unloading
 
-@docs confirmUnload, beforeUnload, unload, onUnload
+@docs beforeUnload, confirmUnload, confirmUnloadOnce, onUnload, unloadOnce
 
-## Events
+## Other Events
 
-@docs on, once, events
+@docs target
 
 ## JSON
 
@@ -41,7 +42,10 @@ See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API
 import Task exposing (Task)
 import Json.Decode
 import Json.Encode
-import WebAPI.Event
+
+import WebAPI.Event exposing (Target, Listener, Responder, Event, ListenerPhase(Bubble))
+import WebAPI.Event.BeforeUnload exposing (BeforeUnloadEvent)
+
 import Native.WebAPI.Window
 
 
@@ -110,13 +114,13 @@ online = Native.WebAPI.Window.online
 
 To set up a confirmation dialog, have your responder return
 
-    WebAPI.Event.set "returnValue" (Json.Encode.encodeString "Your confimration message")
+    BeforeUnload.prompt "Your message" event
 
-as one of your responses. Or, for more convenience, use `confirmBeforeUnload`.
+as one of your responses. Or, for more convenience, use `confirmUnload`.
 -}
-beforeUnload : WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+beforeUnload : Responder BeforeUnloadEvent -> Task x (Listener BeforeUnloadEvent)
 beforeUnload responder =
-    on "beforeunload" responder
+    WebAPI.Event.BeforeUnload.on responder target
 
 
 {-| A task which, when executed, listens for the page to be unloaded, and
@@ -132,16 +136,27 @@ this again to set up a new one.
 If you need to do anything more complex when `BeforeUnload` fires, then see
 `beforeUnload`.
 -}
-confirmUnload : String -> Task x WebAPI.Event.Listener
+confirmUnload : String -> Task x (Listener BeforeUnloadEvent)
 confirmUnload message =
     let
         responder event listener =
-            [ WebAPI.Event.set "returnValue" <|
-                Json.Encode.string message
+            [ WebAPI.Event.BeforeUnload.prompt message event
             ]
 
     in
         beforeUnload responder
+
+
+{-| Like `confirmUnload`, but only responds once and then removes the listener. -}
+confirmUnloadOnce : String -> Task x BeforeUnloadEvent
+confirmUnloadOnce message =
+    let
+        responder event listener =
+            [ WebAPI.Event.BeforeUnload.prompt message event
+            ]
+
+    in
+        WebAPI.Event.BeforeUnload.addListenerOnce Bubble responder target
 
 
 {-| A task which, when executed, listens for the 'unload' event.
@@ -150,9 +165,9 @@ Note that it is unclear how much you can actually accomplish within
 the Elm architecture before the page actually unloads. Thus, you should
 experiment with this if you use it, and see how well it works.
 -}
-onUnload : WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
+onUnload : Responder Event -> Task x (Listener Event)
 onUnload responder =
-    on "unload" responder
+    WebAPI.Event.on "unload" responder target
 
 
 {-| A task which, when executed, waits for the 'unload' event, and
@@ -163,37 +178,18 @@ Note that it is unclear how much you can actually accomplish within
 the Elm architecture before the page actually unloads. Thus, you should
 experiment with this if you use it, and see how well it works.
 -}
-unload : Task x ()
-unload =
-    Task.map (always ()) <|
-        once "unload"
+unloadOnce : Task x Event
+unloadOnce =
+    WebAPI.Event.once "unload" target
 
 
-{- ------
-   Events
-   ------ -}
+{- ------------
+   Other Events
+   ------------ -}
 
-{-| A target for responding to events sent to the `window` object. Normally,
-it will be simpler to use `on`, but you may need this in some cases.
--}
-events : WebAPI.Event.Target
-events = Native.WebAPI.Window.events
-
-
-{-| A task which, when executed, uses Javascript's `addEventListener()` to
-respond to events specified by the string (e.g. "click").
--}
-on : String -> WebAPI.Event.Responder a b -> Task x WebAPI.Event.Listener
-on eventName responder =
-    WebAPI.Event.on eventName responder events
-
-
-{-| Like `on`, but only succeeds once the event occurs (with the value of the
-event object), and then stops listening.
--}
-once : String -> Task x Json.Decode.Value
-once eventName =
-    WebAPI.Event.once eventName events
+{-| A target for responding to events sent to the `window` object. -}
+target : Target
+target = Native.WebAPI.Window.events
 
 
 {- ----

@@ -10,6 +10,7 @@ import Signal exposing (Signal, Address)
 
 import WebAPI.Event exposing (Listener, removeListener)
 import WebAPI.Window exposing (alert, confirm, prompt, isOnline, confirmUnload)
+import WebAPI.Event.BeforeUnload exposing (BeforeUnloadEvent)
 
 
 app : App Model
@@ -34,7 +35,7 @@ port tasks = app.tasks
 
 type alias Model =
     { message : String
-    , confirmUnloadListener : Maybe Listener
+    , confirmUnloadListener : Maybe (Listener BeforeUnloadEvent)
     }
 
 
@@ -53,7 +54,7 @@ type Action
     | HandleOnlineResponse (Result () Bool)
     | HandleOnlineSignal Bool
     | ConfirmUnload Bool
-    | SetConfirmUnloadListener (Maybe Listener)
+    | SetConfirmUnloadListener (Maybe (Listener BeforeUnloadEvent))
 
 
 update : Action -> Model -> (Model, Effects Action)
