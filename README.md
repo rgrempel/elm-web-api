@@ -1152,15 +1152,6 @@ thrown.
 syncOrThrow : Task Error JE.Value -> Error -> Response x a
 ```
 
-----------
-
-### WebAPI.Intl
-
-TODO. Note that Safari doesn't support this, so it would need a
-[polyfill](https://www.npmjs.com/package/intl).
-
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
-
 
 ----------
 
@@ -1514,19 +1505,6 @@ Not implemented for the moment, since localization requires some thought.
 
 ----------
 
-### WebAPI.RegExp
-
-Generally speaking, regular expressions are handled by the
-[`Regex` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Regex)
-in elm-lang/core.
-
-TODO: Check if anything is missing.
-
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp).
-
-
-----------
-
 ### WebAPI.Screen
 
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Screen).
@@ -1704,19 +1682,6 @@ signal.
 -}
 events : Signal (Maybe Event)
 ```
-
-
-----------
-
-### WebAPI.String
-
-Generally speaking, strings are dealt with by the
-[`String` module](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/String)
-in elm-lang/core.
-
-TODO: Check if anything is missing.
-
-See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
 
 
 ----------
