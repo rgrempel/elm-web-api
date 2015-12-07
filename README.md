@@ -50,12 +50,6 @@ I have set up testing via Travis and SauceLabs -- you can see at the top
 of this page a graphic that indicates which browsers I'm testing against.
 Let me know if you think I should try out some older verions as well.
 
-For the moment, I'm not thinking too hard about supporting node.js as well.
-That's a somewhat larger issue for Elm (it requires some shimming even to get
-elm-lang/core to work). Furthermore, it might make sense to have a separate
-package to wrap node.js-oriented APIs (and provide appropriate shims), even if
-there is some overlap.
-
 
 ## Installation
 
