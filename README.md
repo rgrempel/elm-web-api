@@ -34,6 +34,7 @@ I'll continue my semi-random walk.
     * [WebAPI.Date](#webapidate)
     * [WebAPI.Event](#webapievent)
         * [WebAPI.Event.BeforeUnload](#webapieventbeforeunload)
+        * [WebAPI.Event.Custom](#webapieventcustom)
     * [WebAPI.Function](#webapifunction)
     * [WebAPI.JSON](#webapijson)
     * [WebAPI.Location](#webapilocation)
@@ -765,6 +766,13 @@ defaultOptions : Options
 have run. The task will complete with `True` if the default action should be
 permitted.  If any handler calls `preventDefault()`, the task will return
 `False`. The task will fail if certain exceptions occur.
+
+To dispatch an event from a sub-module, use the submodule's `toEvent` method.
+For instance, to dispatch a `CustomEvent`, do something like:
+
+    dispatchCustomEvent : Target -> CustomEvent -> Task String Bool
+    dispatchCustomEvent target customEvent =
+        WebAPI.Event.dispatch target (WebAPI.Event.CustomEvent.toEvent customEvent)
 -}
 dispatch : Target -> Event -> Task String Bool
 
@@ -962,6 +970,69 @@ encode : BeforeUnloadEvent -> Json.Encode.Value
 
 {-| Decode a BeforeUnloadEvent. -}
 decoder : Json.Decode.Decoder BeforeUnloadEvent
+```
+
+
+-----------
+
+### WebAPI.Event.Custom
+
+The browser's `CustomEvent'.
+
+See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
+
+
+```elm
+module WebAPI.Event.Custom where
+
+{- -----------
+   CustomEvent
+   ----------- -}
+
+{-| Opaque type representing a CustomEvent. -}
+type CustomEvent
+
+{-| Data set when the `CustomEvent` was created. -}
+detail : CustomEvent -> Json.Decode.Value
+
+{-| Create a `CustomEvent` with the given eventType, detail and options. -}
+construct : String -> Json.Encode.Value -> Event.Options -> Task x CustomEvent
+
+{- ---------
+   Listening
+   --------- -}
+
+{-| Listen for a `CustomEvent` with the given event name. -}
+addListener : ListenerPhase -> String -> Responder CustomEvent -> Target -> Task x (Listener CustomEvent)
+
+{-| Listen for a `CustomEvent` in the `Bubble` phase. -}
+on : String -> Responder CustomEvent -> Target -> Task x (Listener CustomEvent)
+
+{-| Listen for a `CustomEvent` once. -}
+addListenerOnce : ListenerPhase -> String -> Responder CustomEvent -> Target -> Task x CustomEvent
+
+{-| Listen for a `CustomEvent` once in the `Bubble` phase. -}
+once : String -> Target -> Task x CustomEvent
+
+{- ----------
+   Conversion
+   ---------- -}
+
+{-| Convert to an `Event` in order to use `Event` functions. -}
+toEvent : CustomEvent -> Event
+
+{-| Convert from an `Event`. -}
+fromEvent : Event -> Maybe CustomEvent
+
+{- ----
+   JSON
+   ---- -}
+
+{-| Encode a CustomEvent. -}
+encode : CustomEvent -> Json.Encode.Value
+
+{-| Decode a CustomEvent. -}
+decoder : Json.Decode.Decoder CustomEvent
 ```
 
 

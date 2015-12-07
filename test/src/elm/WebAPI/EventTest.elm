@@ -14,6 +14,8 @@ import WebAPI.Document as Document
 import WebAPI.Event as Event
 import WebAPI.Date
 
+import WebAPI.Event.CustomEventTest
+
 
 and = flip Task.andThen
 andAlways = and << always
@@ -586,4 +588,5 @@ tests =
             , testSet
             , testStopPropagation, testStopImmediatePropagation
             , testDecoderGood, testDecoderBad
+            , WebAPI.Event.CustomEventTest.tests
             ]

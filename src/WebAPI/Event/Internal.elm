@@ -1,5 +1,6 @@
 module WebAPI.Event.Internal
     ( addListener, on, addListenerOnce, once
+    , decoder
     ) where
 
 
@@ -48,11 +49,16 @@ methods can handle any 'event' type. But that's not really true -- the string
 must be appropriate to the event type. So, we guarantee they correspond by
 only exposing (to the client) methods where they do correspond -- that is, where
 the string and the specialization of `event` match properly.
+
+@docs addListener, on, addListenerOnce, once
+@docs decoder
 -}
 
+import Json.Decode
 import Task exposing (Task)
 
 import WebAPI.Event exposing (..)
+import Native.WebAPI.Event
 import Native.WebAPI.Listener
 
 
@@ -87,3 +93,8 @@ addListenerOnce = Native.WebAPI.Listener.addOnce
 once : String -> Target -> Task x event
 once string target =
     addListenerOnce Bubble string noResponse target
+
+
+{-| Decode an event with the given type. -}
+decoder : String -> Json.Decode.Decoder event
+decoder = Native.WebAPI.Event.decoder

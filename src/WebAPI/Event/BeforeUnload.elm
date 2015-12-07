@@ -23,7 +23,7 @@ import Json.Decode
 import Json.Encode
 import Task exposing (Task)
 
-import WebAPI.Event exposing (ListenerPhase(Bubble), Responder, Response, Target, Listener, noResponse)
+import WebAPI.Event exposing (Event, ListenerPhase(Bubble), Responder, Response, Target, Listener, noResponse)
 import WebAPI.Event.Internal
 import WebAPI.Native
 import Native.WebAPI.Event
@@ -80,12 +80,12 @@ prompt string event =
 
 
 {-| Convert to an `Event` in order to use `Event` functions. -}
-toEvent : BeforeUnloadEvent -> WebAPI.Event.Event
+toEvent : BeforeUnloadEvent -> Event
 toEvent = WebAPI.Native.unsafeCoerce
 
 
 {-| Convert from an `Event`. -}
-fromEvent : WebAPI.Event.Event -> Maybe BeforeUnloadEvent
+fromEvent : Event -> Maybe BeforeUnloadEvent
 fromEvent event =
     Result.toMaybe <|
         Json.Decode.decodeValue decoder (WebAPI.Event.encode event)
@@ -103,4 +103,4 @@ encode = WebAPI.Native.unsafeCoerce
 
 {-| Decode a BeforeUnloadEvent. -}
 decoder : Json.Decode.Decoder BeforeUnloadEvent
-decoder = Native.WebAPI.Event.decoder "BeforeUnloadEvent"
+decoder = WebAPI.Event.Internal.decoder "BeforeUnloadEvent"

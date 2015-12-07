@@ -41,6 +41,25 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
                 });
             }),
 
+            // String -> Json.Encode.Value -> WebAPI.Event.Options -> Task x CustomEvent
+            customEvent: F3(function (eventType, detail, options) {
+                var params = Utils.update(options, {});
+                params.detail = detail;
+
+                return Task.asyncFunction(function (callback) {
+                    var event;
+
+                    try {
+                        event = new CustomEvent(eventType, params);
+                    } catch (ex) {
+                        event = document.createEvent('CustomEvent');
+                        event.initCustomEvent(eventType, options.bubbles, options.cancelable, detail);
+                    }
+
+                    callback(Task.succeed(event));
+                });
+            }),
+
             eventType: function (event) {
                 return event.type;
             },

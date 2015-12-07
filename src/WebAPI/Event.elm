@@ -178,6 +178,13 @@ defaultOptions = Options False False
 have run. The task will complete with `True` if the default action should be
 permitted.  If any handler calls `preventDefault()`, the task will return
 `False`. The task will fail if certain exceptions occur.
+
+To dispatch an event from a sub-module, use the submodule's `toEvent` method.
+For instance, to dispatch a `CustomEvent`, do something like:
+
+    dispatchCustomEvent : Target -> CustomEvent -> Task String Bool
+    dispatchCustomEvent target customEvent =
+        WebAPI.Event.dispatch target (WebAPI.Event.CustomEvent.toEvent customEvent)
 -}
 dispatch : Target -> Event -> Task String Bool
 dispatch = Native.WebAPI.Event.dispatch
