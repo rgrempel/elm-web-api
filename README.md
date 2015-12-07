@@ -1055,7 +1055,7 @@ encode : Function -> JE.Value
 {-| Given an Elm implementation, produce a function which can be called back
 from Javascript.
 -}
-elm : Callback x a -> Function
+elm : Callback -> Function
 
 {-| An Elm function which can be supplied to Javascript code as a callback.
 
@@ -1082,22 +1082,22 @@ When running `Json.Decode.decodeValue`, you'd then end up with a
 Your Elm function should return a `Response`, which controls the return value
 of the Javascript function, and allows for the execution of a `Task`.
 -}
-type alias Callback x a =
-    JD.Value -> Response x a
+type alias Callback =
+    JD.Value -> Response
 
 {-| An opaque type representing your response to a function invocation from
 Javascript, i.e. a response to a callback.
 -}
-type Response x a
+type Response
 
 {-| Respond to a Javascript function call with the supplied return value. -}
-return : JE.Value -> Response x a
+return : JE.Value -> Response
 
 {-| Respond to a Javascript function call by throwing an error. Normally,
 you do not want to throw Javascript errors, but there may be some Javascript
 APIs that expect callbacks to do so. This makes it possible.
 -}
-throw : Error -> Response x a
+throw : Error -> Response
 
 {-| Respond to a Javascript function call using the supplied return value,
 and also perform a `Task`.
@@ -1111,14 +1111,14 @@ If you want to 'promote' the callback into the normal flow of your app, you
 might want to use `Signal.send` to send an action to an address. (Note that
 `Signal.send` is asynchronous).
 -}
-asyncAndReturn : Task x a -> JE.Value -> Response x a
+asyncAndReturn : Task () () -> JE.Value -> Response
 
 {-| Respond to a Javascript function call by throwing an error,
 and also perform a `Task`.
 
 This is like `asyncReturn`, except an error will be thrown.
 -}
-asyncAndThrow : Task x a -> Error -> Response x a
+asyncAndThrow : Task () () -> Error -> Response
 
 {-| Respond to a Javascript function call by executing a `Task`, and using
 the completion of the `Task` to control the function's return value.
@@ -1135,7 +1135,7 @@ If the `Task` turns out to be asynchronous -- that is, if it fails to complete
 before the Javascript function returns -- then the supplied `JE.Value` will be
 used as the default return value.
 -}
-syncOrReturn : Task Error JE.Value -> JE.Value -> Response x a
+syncOrReturn : Task Error JE.Value -> JE.Value -> Response
 
 {-| Respond to a Javascript function call by executing a `Task`, and using
 the completion of the `Task` to control the function's return value.
@@ -1152,7 +1152,7 @@ If the `Task` turns out to be asynchronous -- that is, if it fails to complete
 before the Javascript function returns -- then the supplied `Error` will be
 thrown.
 -}
-syncOrThrow : Task Error JE.Value -> Error -> Response x a
+syncOrThrow : Task Error JE.Value -> Error -> Response
 ```
 
 

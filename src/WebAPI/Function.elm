@@ -149,7 +149,7 @@ encode = Native.WebAPI.Function.encode
 {-| Given an Elm implementation, produce a function which can be called back
 from Javascript.
 -}
-elm : Callback x a -> Function
+elm : Callback -> Function
 elm = Native.WebAPI.Function.elm
 
 
@@ -178,21 +178,21 @@ When running `Json.Decode.decodeValue`, you'd then end up with a
 Your Elm function should return a `Response`, which controls the return value
 of the Javascript function, and allows for the execution of a `Task`.
 -}
-type alias Callback x a =
-    JD.Value -> Response x a
+type alias Callback =
+    JD.Value -> Response
 
 
 {-| An opaque type representing your response to a function invocation from
 Javascript, i.e. a response to a callback.
 -}
-type Response x a
+type Response
     = Result (Result Error JE.Value)
-    | Async (Task x a) (Result Error JE.Value)
+    | Async (Task () ()) (Result Error JE.Value)
     | Sync (Task Error JE.Value) (Result Error JE.Value)
 
 
 {-| Respond to a Javascript function call with the supplied return value. -}
-return : JE.Value -> Response x a
+return : JE.Value -> Response
 return = Result << Result.Ok
 
 
@@ -200,7 +200,7 @@ return = Result << Result.Ok
 you do not want to throw Javascript errors, but there may be some Javascript
 APIs that expect callbacks to do so. This makes it possible.
 -}
-throw : Error -> Response x a
+throw : Error -> Response
 throw = Result << Result.Err
 
 
@@ -216,7 +216,7 @@ If you want to 'promote' the callback into the normal flow of your app, you
 might want to use `Signal.send` to send an action to an address. (Note that
 `Signal.send` is asynchronous).
 -}
-asyncAndReturn : Task x a -> JE.Value -> Response x a
+asyncAndReturn : Task () () -> JE.Value -> Response
 asyncAndReturn task value =
     Async task (Result.Ok value)
 
@@ -226,7 +226,7 @@ and also perform a `Task`.
 
 This is like `asyncReturn`, except an error will be thrown.
 -}
-asyncAndThrow : Task x a -> Error -> Response x a
+asyncAndThrow : Task () () -> Error -> Response
 asyncAndThrow task value =
     Async task (Result.Err value)
 
@@ -246,7 +246,7 @@ If the `Task` turns out to be asynchronous -- that is, if it fails to complete
 before the Javascript function returns -- then the supplied `JE.Value` will be
 used as the default return value.
 -}
-syncOrReturn : Task Error JE.Value -> JE.Value -> Response x a
+syncOrReturn : Task Error JE.Value -> JE.Value -> Response
 syncOrReturn task value =
     Sync task (Result.Ok value)
 
@@ -266,6 +266,6 @@ If the `Task` turns out to be asynchronous -- that is, if it fails to complete
 before the Javascript function returns -- then the supplied `Error` will be
 thrown.
 -}
-syncOrThrow : Task Error JE.Value -> Error -> Response x a
+syncOrThrow : Task Error JE.Value -> Error -> Response
 syncOrThrow task value =
     Sync task (Result.Err value)
