@@ -39,6 +39,23 @@ testGoodJavascript =
             |> Task.mapError (always ())
 
 
+testGoodUnsafeJavascript : Task () Test
+testGoodUnsafeJavascript =
+    let
+        function =
+            Function.unsafeJavascript
+                ["a", "b"]
+                "return a + b;"
+
+    in
+        Task.succeed function
+            |> and (Function.apply JE.null [JE.int 2, JE.int 4])
+            |> Task.map (JD.decodeValue JD.int)
+            |> Task.map (assertEqual (Ok 6))
+            |> Task.map (test "basic good javascript should work")
+            |> Task.mapError (always ())
+
+
 testPureGoodJavascript : Test
 testPureGoodJavascript =
     let
@@ -495,6 +512,7 @@ tests =
     Task.map (suite "WebAPI.FunctionTest") <|
         sequence <|
             [ testGoodJavascript
+            , testGoodUnsafeJavascript
             , testBoundJavascript
             , testJavascriptWithException
             , testGoodConstruct

@@ -1011,6 +1011,9 @@ Javascript function body.
 -}
 javascript : List String -> String -> Result Error Function
 
+{-| Like `javascript`, but crashes if the Javascript won't compile. -}
+unsafeJavascript : List String -> String -> Function
+
 {-| Extract a function. -}
 decoder : JD.Decoder Function
 

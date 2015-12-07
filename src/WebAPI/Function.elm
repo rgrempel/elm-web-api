@@ -1,6 +1,6 @@
 module WebAPI.Function
     ( Function, length, decoder, encode, apply, pure, construct
-    , Callback, javascript, elm
+    , Callback, javascript, unsafeJavascript, elm
     , Response, return, throw, asyncAndReturn, asyncAndThrow, syncOrReturn, syncOrThrow
     , Error, error, message
     ) where
@@ -18,7 +18,7 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 ## Obtaining functions from Javascript
 
-@docs javascript, decoder
+@docs javascript, unsafeJavascript, decoder
 
 ## Calling Functions
 
@@ -79,6 +79,21 @@ Javascript function body.
 -}
 javascript : List String -> String -> Result Error Function
 javascript = Native.WebAPI.Function.javascript
+
+
+{-| Like `javascript`, but crashes if the Javascript won't compile. -}
+unsafeJavascript : List String -> String -> Function
+unsafeJavascript params body =
+    case javascript params body of
+        Ok func ->
+            func
+
+        Err error ->
+            Debug.crash <|
+                "Error while trying to compile Javascript.\n\n" ++
+                "Params: " ++ (toString params) ++
+                "Body: \n\n" ++ body ++
+                "\n\nMessage: " ++ (message error)
 
 
 {-| Extract a function. -}
