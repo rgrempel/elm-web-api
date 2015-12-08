@@ -11,7 +11,7 @@ module WebAPI.Event.Custom
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
 
 @docs CustomEvent, detail
-@docs construct, dispatch
+@docs construct
 @docs addListener, on, addListenerOnce, once
 @docs toEvent, fromEvent
 @docs encode, decoder
