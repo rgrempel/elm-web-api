@@ -1,5 +1,5 @@
 {
-    "version": "2.0.0",
+    "version": "2.1.0",
     "summary": "Expose Web APIs provided by the browser's Javascript runtime",
     "repository": "https://github.com/rgrempel/elm-web-api.git",
     "license": "BSD3",
@@ -13,6 +13,7 @@
         "WebAPI.Date",
         "WebAPI.Event",
         "WebAPI.Event.BeforeUnload",
+        "WebAPI.Event.Custom",
         "WebAPI.Function",
         "WebAPI.Location",
         "WebAPI.Math",
@@ -23,7 +24,7 @@
     ],
     "native-modules": true,
     "dependencies": {
-        "elm-lang/core": "2.0.0 <= v < 4.0.0"
+        "elm-lang/core": "3.0.0 <= v < 4.0.0"
     },
-    "elm-version": "0.15.0 <= v < 0.17.0"
+    "elm-version": "0.16.0 <= v < 0.17.0"
 }
