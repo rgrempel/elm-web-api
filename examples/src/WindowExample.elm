@@ -35,7 +35,7 @@ port tasks = app.tasks
 
 type alias Model =
     { message : String
-    , confirmUnloadListener : Maybe (Listener BeforeUnloadEvent)
+    , confirmUnloadListener : Maybe Listener
     }
 
 
@@ -54,7 +54,7 @@ type Action
     | HandleOnlineResponse (Result () Bool)
     | HandleOnlineSignal Bool
     | ConfirmUnload Bool
-    | SetConfirmUnloadListener (Maybe (Listener BeforeUnloadEvent))
+    | SetConfirmUnloadListener (Maybe Listener)
 
 
 update : Action -> Model -> (Model, Effects Action)

@@ -4,7 +4,8 @@ module WebAPI.Event
     , defaultPrevented, eventTarget, listenerTarget
     , Options, defaultOptions, construct, dispatch
     , Target, addListener, on, addListenerOnce, once
-    , Listener, listenerType, responder, target, removeListener
+    , Selector, select
+    , Listener, listenerType, target, removeListener
     , ListenerPhase(Capture, Bubble), listenerPhase
     , Responder, noResponse
     , Response, preventDefault, stopPropagation, stopImmediatePropagation, set, send, performTask, remove
@@ -49,7 +50,8 @@ helpful.
 ## Listening
 
 @docs Target, addListener, on, addListenerOnce, once
-@docs Listener, listenerType, responder, target, ListenerPhase, listenerPhase, removeListener
+@docs Selector, select
+@docs Listener, listenerType, target, ListenerPhase, listenerPhase, removeListener
 
 ## Responding
 
@@ -70,6 +72,7 @@ import Json.Decode
 import Json.Encode
 
 import WebAPI.Native
+import WebAPI.Event.Internal
 import Native.WebAPI.Listener
 import Native.WebAPI.Event
 
@@ -204,24 +207,19 @@ type Target = Target
 
 
 {-| A task which, when executed, uses Javascript's `addEventListener()` to add
-a `Responder` to the `Target` for the event specified by the string (e.g. "click").
+a `Responder` to the `Target` for the event specified by the `Selector`.
 
 Succeeds with a `Listener`, which you can supply to `removeListener` if you
 wish.
-
-Note that no matter what string you provide for the event type, your
-`Responder` will be supplied with an `Event` object. If you want a more
-specific object (e.g. `BeforeUnloadEvent`, then see the more specific methods
-in those modules.
 -}
-addListener : ListenerPhase -> String -> Responder Event -> Target -> Task x (Listener Event)
+addListener : ListenerPhase -> Selector event -> Responder event -> Target -> Task x Listener
 addListener = Native.WebAPI.Listener.add
 
 
 {-| Convenience method for the usual case in which you call `addListener`
 for the `Bubble` phase.
 -}
-on : String -> Responder Event -> Target -> Task x (Listener Event)
+on : Selector event -> Responder event -> Target -> Task x Listener
 on = addListener Bubble
 
 
@@ -229,34 +227,47 @@ on = addListener Bubble
 `Task` only succeeds when the event occurs (with the value of the event object).
 Thus, your `Responder` method might not need to do anything.
 -}
-addListenerOnce : ListenerPhase -> String -> Responder Event -> Target -> Task x Event
+addListenerOnce : ListenerPhase -> Selector event -> Responder event -> Target -> Task x event
 addListenerOnce = Native.WebAPI.Listener.addOnce
 
 
 {-| Like `addListenerOnce`, but supplies the default `Phase` (`Bubble`), and a
 `Responder` that does nothing (so you merely chain the resulting `Task`).
 -}
-once : String -> Target -> Task x Event
+once : Selector event -> Target -> Task x event
 once string target =
     addListenerOnce Bubble string noResponse target
 
 
+-- This is basically here so that we can re-export it. We don't want to expose
+-- it from the internal module, since we don't want clients to construct it
+-- directly. But we can export it from here without the tag.
+{-| Opaque type representing an event name which uses an event type. -}
+type alias Selector event = WebAPI.Event.Internal.Selector event
+
+
+{-| Select an event name using the `Event` type.
+
+You can handle any event name with the `Event` type if you like, but often
+you should use a more specific event type. For instance, for 'beforeunload`,
+you should use `WebAPI.Event.BeforeUnload.select`, so that you can use a
+`BeforeUnloadEvent` in your `Responder`.
+-}
+select : String -> Selector Event
+select = WebAPI.Event.Internal.Selector
+
+
 {-| Opaque type representing an event handler. -}
-type Listener event = Listener
+type Listener = Listener
 
 
 {-| The type of the listener's event. -}
-listenerType : Listener event -> String
+listenerType : Listener -> String
 listenerType = Native.WebAPI.Listener.eventName
 
 
-{-| The responder used by the listener. -}
-responder : Listener event -> Responder event
-responder = Native.WebAPI.Listener.responder
-
-
 {-| The listener's target. -}
-target : Listener event -> Target
+target : Listener -> Target
 target = Native.WebAPI.Listener.target
 
 
@@ -267,7 +278,7 @@ type ListenerPhase
 
 
 {-| The listener's phase. -}
-listenerPhase : Listener event -> ListenerPhase
+listenerPhase : Listener -> ListenerPhase
 listenerPhase = Native.WebAPI.Listener.phase
 
 
@@ -276,7 +287,7 @@ listenerPhase = Native.WebAPI.Listener.phase
 Alternatively, you can return `remove` from your `Responder` method, and the
 listener will be removed.
 -}
-removeListener : Listener event -> Task x ()
+removeListener : Listener -> Task x ()
 removeListener = Native.WebAPI.Listener.remove
 
 
@@ -295,7 +306,7 @@ Your function should return a list of responses which you would like to make
 to the event.
 -}
 type alias Responder event =
-    event -> Listener event -> List Response
+    event -> Listener -> List Response
 
 
 {-| Opaque type which represents a response which you would like to make to an event. -}
@@ -374,7 +385,7 @@ preventDefaultNative = Native.WebAPI.Event.preventDefault
 
 
 {-| A responder that does nothing. -}
-noResponse : event -> Listener event -> List Response 
+noResponse : event -> Listener -> List Response
 noResponse event listener = []
 
 

@@ -789,44 +789,49 @@ To obtain a `Target`, see methods such as `WebAPI.Document.target` and
 type Target
 
 {-| A task which, when executed, uses Javascript's `addEventListener()` to add
-a `Responder` to the `Target` for the event specified by the string (e.g. "click").
+a `Responder` to the `Target` for the event specified by the `Selector`.
 
-Succeeds with a `Listener`, which you can supply to `removeListener` if you wish.
-
-Note that no matter what string you provide for the event type, your
-`Responder` will be supplied with an `Event` object. If you want a more
-specific object (e.g. `BeforeUnloadEvent`, then see the more specific methods
-in those modules.
+Succeeds with a `Listener`, which you can supply to `removeListener` if you
+wish.
 -}
-addListener : ListenerPhase -> String -> Responder Event -> Target -> Task x (Listener Event)
+addListener : ListenerPhase -> Selector event -> Responder event -> Target -> Task x Listener
 
 {-| Convenience method for the usual case in which you call `addListener`
 for the `Bubble` phase.
 -}
-on : String -> Responder Event -> Target -> Task x (Listener Event)
+on : Selector event -> Responder event -> Target -> Task x Listener
 
 {-| Like `addListener`, but only responds to the event once, and the resulting
 `Task` only succeeds when the event occurs (with the value of the event object).
 Thus, your `Responder` method might not need to do anything.
 -}
-addListenerOnce : ListenerPhase -> String -> Responder Event -> Target -> Task x Event
+addListenerOnce : ListenerPhase -> Selector event -> Responder event -> Target -> Task x event
 
 {-| Like `addListenerOnce`, but supplies the default `Phase` (`Bubble`), and a
 `Responder` that does nothing (so you merely chain the resulting `Task`).
 -}
-once : String -> Target -> Task x Event
+once : Selector event -> Target -> Task x event
+
+{-| Opaque type representing an event name which uses an event type. -}
+type alias Selector event
+
+{-| Select an event name using the `Event` type.
+
+You can handle any event name with the `Event` type if you like, but often
+you should use a more specific event type. For instance, for 'beforeunload`,
+you should use `WebAPI.Event.BeforeUnload.select`, so that you can use a
+`BeforeUnloadEvent` in your `Responder`.
+-}
+select : String -> Selector Event
 
 {-| Opaque type representing an event handler. -}
-type Listener event
+type Listener
 
 {-| The type of the listener's event. -}
-listenerType : Listener event -> String
-
-{-| The responder used by the listener. -}
-responder : Listener event -> Responder event
+listenerType : Listener -> String
 
 {-| The listener's target. -}
-target : Listener event -> Target
+target : Listener -> Target
 
 {-| The phases in which a `Responder` can be invoked. Typically, you will want `Bubble`. -}
 type ListenerPhase
@@ -834,14 +839,14 @@ type ListenerPhase
     | Bubble
 
 {-| The listener's phase. -}
-listenerPhase : Listener event -> ListenerPhase
+listenerPhase : Listener -> ListenerPhase
 
 {-| A task which will remove the supplied `Listener`.
 
 Alternatively, you can return `remove` from your `Responder` method, and the
 listener will be removed.
 -}
-removeListener : Listener event -> Task x ()
+removeListener : Listener -> Task x ()
 
 {- ----------
    Responding
@@ -857,7 +862,7 @@ Your function should return a list of responses which you would like to make
 to the event.
 -}
 type alias Responder event =
-    event -> Listener event -> List Response
+    event -> Listener -> List Response
 
 {-| Opaque type which represents a response which you would like to make to an event. -}
 type Response
@@ -896,7 +901,7 @@ stopImmediatePropagation : Event -> Response
 preventDefault : Event -> Response
 
 {-| A responder that does nothing. -}
-noResponse : event -> Listener event -> List Response 
+noResponse : event -> Listener -> List Response
 
 {- ----
    JSON
@@ -925,24 +930,15 @@ convenient API.
 ```elm
 module WebAPI.Event.BeforeUnload where
 
+{- -----------------
+   BeforeUnloadEvent
+   ----------------- -}
+
 {-| Opaque type representing a BeforeUnloadEvent. -}
 type BeforeUnloadEvent
 
-{- ---------
-   Listening
-   --------- -}
-
-{-| Listen for the `beforeunload` event. -}
-addListener : ListenerPhase -> Responder BeforeUnloadEvent -> Target -> Task x (Listener BeforeUnloadEvent)
-
-{-| Listen for the `beforeunload` event in the `Bubble` phase. -}
-on : Responder BeforeUnloadEvent -> Target -> Task x (Listener BeforeUnloadEvent)
-
-{-| Listen for the `beforeunload` event once. -}
-addListenerOnce : ListenerPhase -> Responder BeforeUnloadEvent -> Target -> Task x BeforeUnloadEvent
-
-{-| Listen for the `beforeunload` event once in the `Bubble` phase. -}
-once : Target -> Task x BeforeUnloadEvent
+{-| Select the 'beforeunload' event. -}
+select : Selector BeforeUnloadEvent
 
 {- ----------
    Responding
@@ -959,7 +955,7 @@ prompt : String -> BeforeUnloadEvent -> Response
 toEvent : BeforeUnloadEvent -> WebAPI.Event.Event
 
 {-| Convert from an `Event`. -}
-fromEvent : WebAPI.Event.Event -> Maybe BeforeUnloadEvent
+fromEvent : Event -> Maybe BeforeUnloadEvent
 
 {- ----
    JSON
@@ -998,21 +994,8 @@ detail : CustomEvent -> Json.Decode.Value
 {-| Create a `CustomEvent` with the given eventType, detail and options. -}
 construct : String -> Json.Encode.Value -> Event.Options -> Task x CustomEvent
 
-{- ---------
-   Listening
-   --------- -}
-
-{-| Listen for a `CustomEvent` with the given event name. -}
-addListener : ListenerPhase -> String -> Responder CustomEvent -> Target -> Task x (Listener CustomEvent)
-
-{-| Listen for a `CustomEvent` in the `Bubble` phase. -}
-on : String -> Responder CustomEvent -> Target -> Task x (Listener CustomEvent)
-
-{-| Listen for a `CustomEvent` once. -}
-addListenerOnce : ListenerPhase -> String -> Responder CustomEvent -> Target -> Task x CustomEvent
-
-{-| Listen for a `CustomEvent` once in the `Bubble` phase. -}
-once : String -> Target -> Task x CustomEvent
+{-| Select a `CustomEvent` with the given event type. -}
+select : String -> Selector CustomEvent
 
 {- ----------
    Conversion

@@ -118,9 +118,9 @@ To set up a confirmation dialog, have your responder return
 
 as one of your responses. Or, for more convenience, use `confirmUnload`.
 -}
-beforeUnload : Responder BeforeUnloadEvent -> Task x (Listener BeforeUnloadEvent)
+beforeUnload : Responder BeforeUnloadEvent -> Task x Listener
 beforeUnload responder =
-    WebAPI.Event.BeforeUnload.on responder target
+    WebAPI.Event.on WebAPI.Event.BeforeUnload.select responder target
 
 
 {-| A task which, when executed, listens for the page to be unloaded, and
@@ -136,7 +136,7 @@ this again to set up a new one.
 If you need to do anything more complex when `BeforeUnload` fires, then see
 `beforeUnload`.
 -}
-confirmUnload : String -> Task x (Listener BeforeUnloadEvent)
+confirmUnload : String -> Task x Listener
 confirmUnload message =
     let
         responder event listener =
@@ -156,7 +156,7 @@ confirmUnloadOnce message =
             ]
 
     in
-        WebAPI.Event.BeforeUnload.addListenerOnce Bubble responder target
+        WebAPI.Event.addListenerOnce Bubble WebAPI.Event.BeforeUnload.select responder target
 
 
 {-| A task which, when executed, listens for the 'unload' event.
@@ -165,9 +165,9 @@ Note that it is unclear how much you can actually accomplish within
 the Elm architecture before the page actually unloads. Thus, you should
 experiment with this if you use it, and see how well it works.
 -}
-onUnload : Responder Event -> Task x (Listener Event)
+onUnload : Responder Event -> Task x Listener
 onUnload responder =
-    WebAPI.Event.on "unload" responder target
+    WebAPI.Event.on (WebAPI.Event.select "unload") responder target
 
 
 {-| A task which, when executed, waits for the 'unload' event, and
@@ -180,7 +180,7 @@ experiment with this if you use it, and see how well it works.
 -}
 unloadOnce : Task x Event
 unloadOnce =
-    WebAPI.Event.once "unload" target
+    WebAPI.Event.once (WebAPI.Event.select "unload") target
 
 
 {- ------------

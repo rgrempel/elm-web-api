@@ -33,7 +33,7 @@ testListenerWithDetail =
             ]
     
     in
-        CustomEvent.on "myownevent" responder Window.target
+        Event.on (CustomEvent.select "myownevent") responder Window.target
             |> andAlways (CustomEvent.construct "myownevent" (JE.int 17) Event.defaultOptions)
             |> and (CustomEvent.toEvent >> Event.dispatch Window.target)
             |> andAlways (Task.sleep 5) 

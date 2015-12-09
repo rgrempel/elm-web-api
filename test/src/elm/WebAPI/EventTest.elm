@@ -35,7 +35,7 @@ testAddListener =
             ]
     
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" Event.defaultOptions)
             |> and (Event.dispatch Window.target)
             |> andAlways (Task.sleep 5) 
@@ -68,7 +68,7 @@ testAddListenerThenRemove =
                 |> and (Event.dispatch Window.target)
 
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> and withListener
             |> andAlways (Task.sleep 5)
             |> andAlways (sample count2)
@@ -93,7 +93,7 @@ testAddListenerOnce =
         -- This is tricky to test, because addListenerOnce doesn't complete until the event
         -- occurs. So, we have to spawn it, but give it some time to set up the event handler
         -- before we test it.
-        (Task.spawn (Event.addListenerOnce Event.Bubble "myownevent" responder Window.target))
+        (Task.spawn (Event.addListenerOnce Event.Bubble (Event.select "myownevent") responder Window.target))
             |> andAlways (Task.sleep 5)
             |> andAlways (Event.construct "myownevent" Event.defaultOptions)
             |> and (Event.dispatch Window.target)
@@ -113,7 +113,7 @@ testAddListenerOnceCompletesWithEvent =
             Signal.mailbox Nothing
 
         toSpawn =
-            Event.addListenerOnce Event.Bubble "myownevent" Event.noResponse Window.target
+            Event.addListenerOnce Event.Bubble (Event.select "myownevent") Event.noResponse Window.target
                 -- Should complete with the event ... send the event to the mailbox
                 |> and (Signal.send mbox4.address << Just)
 
@@ -211,7 +211,7 @@ testPhaseCapturing =
             ]
 
     in
-        Event.addListener Event.Capture "myownevent" responder Window.target
+        Event.addListener Event.Capture (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = False})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -232,7 +232,7 @@ testPhaseAtTarget =
             ]
 
     in
-        Event.addListener Event.Capture "myownevent" responder Document.target
+        Event.addListener Event.Capture (Event.select "myownevent") responder Document.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = False})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -253,7 +253,7 @@ testPhaseBubbling =
             ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = False})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -287,8 +287,8 @@ testDefaultPreventedTrue =
             ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder1 Document.target
-            |> andAlways (Event.addListener Event.Bubble "myownevent" responder2 Window.target)
+        Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
+            |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -313,8 +313,8 @@ testDefaultPreventedFalse =
             ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder1 Document.target
-            |> andAlways (Event.addListener Event.Bubble "myownevent" responder2 Window.target)
+        Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
+            |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -348,7 +348,7 @@ testEventTarget =
                 ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -374,7 +374,7 @@ testListenerTarget =
                 ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -392,7 +392,7 @@ testDispatchReturnTrue =
             ]
     
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Window.target)
             |> Task.map assert
@@ -409,7 +409,7 @@ testDispatchReturnFalse =
             ]
     
     in
-        Event.addListener Event.Bubble "myownevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Window.target)
             |> Task.map (assert << not)
@@ -425,7 +425,7 @@ testListenerType =
                 |> Task.map (always (assertEqual "myevent" (Event.listenerType listener)))
 
     in
-        Event.addListener Event.Bubble "myevent" Event.noResponse Window.target
+        Event.addListener Event.Bubble (Event.select "myevent") Event.noResponse Window.target
             |> and withListener
             |> Task.map (test "testListenerType")
 
@@ -439,7 +439,7 @@ testListenerTypeInResponder =
             ]
     
     in
-        Event.addListener Event.Bubble "someevent" responder Window.target
+        Event.addListener Event.Bubble (Event.select "someevent") responder Window.target
             |> andAlways (Event.construct "someevent" Event.defaultOptions)
             |> and (Event.dispatch Window.target)
             |> andAlways (Task.sleep 5) 
@@ -457,7 +457,7 @@ testPhase =
                 |> Task.map (always (assertEqual Event.Bubble (Event.listenerPhase listener)))
 
     in
-        Event.addListener Event.Bubble "myevent" Event.noResponse Window.target
+        Event.addListener Event.Bubble (Event.select "myevent") Event.noResponse Window.target
             |> and withListener
             |> Task.map (test "testTarget")
 
@@ -483,8 +483,8 @@ testSet =
             ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder1 Document.target
-            |> andAlways (Event.addListener Event.Bubble "myownevent" responder2 Window.target)
+        Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
+            |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -511,8 +511,8 @@ testStopPropagation =
             ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder1 Document.target
-            |> andAlways (Event.addListener Event.Bubble "myownevent" responder2 Window.target)
+        Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
+            |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
@@ -539,8 +539,8 @@ testStopImmediatePropagation =
             ]
 
     in
-        Event.addListener Event.Bubble "myownevent" responder1 Document.target
-            |> andAlways (Event.addListener Event.Bubble "myownevent" responder2 Document.target)
+        Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
+            |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Document.target)
             |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)

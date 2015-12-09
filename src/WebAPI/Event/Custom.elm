@@ -1,6 +1,5 @@
 module WebAPI.Event.Custom
-    ( CustomEvent, detail, construct
-    , addListener, on, addListenerOnce, once
+    ( CustomEvent, detail, construct, select
     , toEvent, fromEvent
     , encode, decoder
     ) where
@@ -11,8 +10,7 @@ module WebAPI.Event.Custom
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
 
 @docs CustomEvent, detail
-@docs construct
-@docs addListener, on, addListenerOnce, once
+@docs construct, select
 @docs toEvent, fromEvent
 @docs encode, decoder
 -}
@@ -22,7 +20,7 @@ import Json.Encode
 import Task exposing (Task)
 
 import WebAPI.Event exposing (Event, ListenerPhase(Bubble), Responder, Response, Target, Listener, noResponse)
-import WebAPI.Event.Internal
+import WebAPI.Event.Internal exposing (Selector(Selector))
 import WebAPI.Native
 import Native.WebAPI.Event
 
@@ -51,37 +49,14 @@ detail event =
         Result.withDefault Json.Encode.null result
 
 
-{-| Create a `CustomEvent` with the given eventType, detail and options. -}
+{-| Create a `CustomEvent` with the given event type, detail and options. -}
 construct : String -> Json.Encode.Value -> WebAPI.Event.Options -> Task x CustomEvent
 construct = Native.WebAPI.Event.customEvent
 
 
-{- ---------
-   Listening
-   --------- -}
-
-
-{-| Listen for a `CustomEvent` with the given event name. -}
-addListener : ListenerPhase -> String -> Responder CustomEvent -> Target -> Task x (Listener CustomEvent)
-addListener phase =
-    WebAPI.Event.Internal.addListener phase
-
-
-{-| Listen for a `CustomEvent` in the `Bubble` phase. -}
-on : String -> Responder CustomEvent -> Target -> Task x (Listener CustomEvent)
-on = addListener Bubble
-
-
-{-| Listen for a `CustomEvent` once. -}
-addListenerOnce : ListenerPhase -> String -> Responder CustomEvent -> Target -> Task x CustomEvent
-addListenerOnce phase =
-    WebAPI.Event.Internal.addListenerOnce phase
-
-
-{-| Listen for a `CustomEvent` once in the `Bubble` phase. -}
-once : String -> Target -> Task x CustomEvent
-once string target =
-    addListenerOnce Bubble string noResponse target
+{-| Select a `CustomEvent` with the given event type. -}
+select : String -> Selector CustomEvent
+select = Selector
 
 
 {- ----------

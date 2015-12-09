@@ -81,7 +81,7 @@ domContentLoaded =
             then
                 -- If it hasn't fired yet, listen for it
                 Task.map (always ()) <|
-                    WebAPI.Event.once "DOMContentLoaded" target
+                    WebAPI.Event.once (WebAPI.Event.select "DOMContentLoaded") target
 
             else
                 Task.succeed ()
@@ -104,7 +104,7 @@ loaded =
             else
                 -- If it hasn't fired yet, listen for it
                 Task.map (always ()) <|
-                    WebAPI.Event.once "load" target
+                    WebAPI.Event.once (WebAPI.Event.select "load") target
     )
 
 

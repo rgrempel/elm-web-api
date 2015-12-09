@@ -1,6 +1,5 @@
 module WebAPI.Event.BeforeUnload
-    ( BeforeUnloadEvent, prompt
-    , addListener, on, addListenerOnce, once
+    ( BeforeUnloadEvent, prompt, select
     , toEvent, fromEvent
     , encode, decoder
     ) where
@@ -13,8 +12,7 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bef
 See `WebAPI.Window.beforeUnload` and `WebAPI.Window.confirmUnload` for a
 higher-level, more convenient API.
 
-@docs BeforeUnloadEvent, prompt
-@docs addListener, on, addListenerOnce, once
+@docs BeforeUnloadEvent, prompt, select
 @docs toEvent, fromEvent
 @docs encode, decoder
 -}
@@ -24,41 +22,23 @@ import Json.Encode
 import Task exposing (Task)
 
 import WebAPI.Event exposing (Event, ListenerPhase(Bubble), Responder, Response, Target, Listener, noResponse)
-import WebAPI.Event.Internal
+import WebAPI.Event.Internal exposing (Selector(Selector))
 import WebAPI.Native
 import Native.WebAPI.Event
+
+
+{- -----------------
+   BeforeUnloadEvent
+   ----------------- -}
 
 
 {-| Opaque type representing a BeforeUnloadEvent. -}
 type BeforeUnloadEvent = BeforeUnloadEvent
 
 
-{- ---------
-   Listening
-   --------- -}
-
-
-{-| Listen for the `beforeunload` event. -}
-addListener : ListenerPhase -> Responder BeforeUnloadEvent -> Target -> Task x (Listener BeforeUnloadEvent)
-addListener phase =
-    WebAPI.Event.Internal.addListener phase "beforeunload"
-
-
-{-| Listen for the `beforeunload` event in the `Bubble` phase. -}
-on : Responder BeforeUnloadEvent -> Target -> Task x (Listener BeforeUnloadEvent)
-on = addListener Bubble
-
-
-{-| Listen for the `beforeunload` event once. -}
-addListenerOnce : ListenerPhase -> Responder BeforeUnloadEvent -> Target -> Task x BeforeUnloadEvent
-addListenerOnce phase =
-    WebAPI.Event.Internal.addListenerOnce phase "beforeunload"
-
-
-{-| Listen for the `beforeunload` event once in the `Bubble` phase. -}
-once : Target -> Task x BeforeUnloadEvent
-once target =
-    addListenerOnce Bubble noResponse target
+{-| Select the 'beforeunload' event. -}
+select : Selector BeforeUnloadEvent
+select = Selector "beforeunload"
 
 
 {- ----------

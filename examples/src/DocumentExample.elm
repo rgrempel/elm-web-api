@@ -9,7 +9,7 @@ import Html.Events exposing (onClick)
 import Signal exposing (Signal, Mailbox, Address)
 
 import WebAPI.Event exposing
-    ( Listener, removeListener, on, once
+    ( Listener, removeListener, on, once, select
     , remove, send, performTask, preventDefault
     , stopPropagation, stopImmediatePropagation
     )
@@ -44,7 +44,7 @@ port tasks = app.tasks
 
 type alias Model =
     { log : List Log
-    , clickListener : Maybe (Listener WebAPI.Event.Event)
+    , clickListener : Maybe Listener
     }
 
 
@@ -64,7 +64,7 @@ type Action
     | Write Log
     | ListenForOneClick
     | ListenForKeys Bool
-    | SetClickListener (Maybe (Listener WebAPI.Event.Event))
+    | SetClickListener (Maybe Listener)
     | TestRemove
 
 
@@ -115,14 +115,14 @@ update action model =
             , Effects.task <|
                 Task.map
                     (always (Write GotOneClick))
-                    (once "click" target)
+                    (once (select "click") target)
             )
 
         TestRemove ->
             ( { model | log = TestingRemove :: model.log }
             , Effects.task <|
                 Task.map (always NoOp) <|
-                    on "click" (\event listener ->
+                    on (select "click") (\event listener ->
                         [ remove
                         , performTask <|
                             Signal.send mailbox.address <|
@@ -138,7 +138,7 @@ update action model =
                     , Effects.task <|
                         Task.map
                             (SetClickListener << Just) <|
-                            on "keypress" (\event listener ->
+                            on (select "keypress") (\event listener ->
                                 [ stopPropagation event
                                 , stopImmediatePropagation event
                                 , preventDefault event

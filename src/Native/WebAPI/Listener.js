@@ -79,7 +79,7 @@ Elm.Native.WebAPI.Listener.make = function (localRuntime) {
         localRuntime.Native.WebAPI.Listener.values = {
             add: F4(function (phase, eventName, responder, target) {
                 return Task.asyncFunction(function (callback) {
-                    var listener = new Listener(phase, eventName, responder, target, null);
+                    var listener = new Listener(phase, eventName._0, responder, target, null);
                     listener.addEventListener();
                     callback(Task.succeed(listener));
                 });
@@ -87,7 +87,7 @@ Elm.Native.WebAPI.Listener.make = function (localRuntime) {
 
             addOnce: F4(function (phase, eventName, responder, target) {
                 return Task.asyncFunction(function (callback) {
-                    var listener = new Listener(phase, eventName, responder, target, callback);
+                    var listener = new Listener(phase, eventName._0, responder, target, callback);
                     listener.addEventListener();
                 });
             }),
