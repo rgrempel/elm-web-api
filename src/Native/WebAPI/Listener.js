@@ -103,10 +103,6 @@ Elm.Native.WebAPI.Listener.make = function (localRuntime) {
                 return listener.eventName;
             },
 
-            responder: function (listener) {
-                return listener.resopnder;
-            },
-
             target: function (listener) {
                 return listener.target;
             },
