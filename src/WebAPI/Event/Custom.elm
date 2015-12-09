@@ -1,5 +1,5 @@
 module WebAPI.Event.Custom
-    ( CustomEvent, detail, construct, select
+    ( CustomEvent, detail, select, options
     , toEvent, fromEvent
     , encode, decoder
     ) where
@@ -10,7 +10,7 @@ module WebAPI.Event.Custom
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
 
 @docs CustomEvent, detail
-@docs construct, select
+@docs options, select
 @docs toEvent, fromEvent
 @docs encode, decoder
 -}
@@ -20,7 +20,7 @@ import Json.Encode
 import Task exposing (Task)
 
 import WebAPI.Event exposing (Event, ListenerPhase(Bubble), Responder, Response, Target, Listener, noResponse)
-import WebAPI.Event.Internal exposing (Selector(Selector))
+import WebAPI.Event.Internal exposing (Selector(Selector), Options(Options))
 import WebAPI.Native
 import Native.WebAPI.Event
 
@@ -49,9 +49,12 @@ detail event =
         Result.withDefault Json.Encode.null result
 
 
-{-| Create a `CustomEvent` with the given event type, detail and options. -}
-construct : String -> Json.Encode.Value -> WebAPI.Event.Options -> Task x CustomEvent
-construct = Native.WebAPI.Event.customEvent
+{-| Specify options for creating a `CustomEvent` with the given detail. -}
+options : Json.Encode.Value -> Options Event -> Options CustomEvent
+options value (Options list _) =
+    Options
+        (list ++ [ ("detail", value) ])
+        "CustomEvent"
 
 
 {-| Select a `CustomEvent` with the given event type. -}

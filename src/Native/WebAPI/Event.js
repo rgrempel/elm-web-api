@@ -10,8 +10,11 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
     if (!localRuntime.Native.WebAPI.Event.values) {
         var Task = Elm.Native.Task.make(localRuntime);
         var Utils = Elm.Native.Utils.make(localRuntime);
+        var JE = Elm.Native.Json.make(localRuntime);
+        var List = Elm.List.make(localRuntime);
+        var NL = Elm.Native.List.make(localRuntime);
         var Maybe = Elm.Maybe.make(localRuntime);
-        var NS = Elm.Native.Signal.make(localRuntime);
+        var Basics = Elm.Basics.make(localRuntime);
 
         var toMaybe = function toMaybe (obj) {
             return obj === null || obj === undefined ? Maybe.Nothing : Maybe.Just(obj);
@@ -25,35 +28,26 @@ Elm.Native.WebAPI.Event.make = function (localRuntime) {
         };
 
         localRuntime.Native.WebAPI.Event.values = {
-            // String -> WebAPI.Event.Options -> Task x Event
-            event: F2(function (eventType, options) {
-                return Task.asyncFunction(function (callback) {
-                    var event;
-
-                    try {
-                        event = new Event(eventType, options);
-                    } catch (ex) {
-                        event = document.createEvent('Event');
-                        event.initEvent(eventType, options.bubbles, options.cancelable);
-                    }
-
-                    callback(Task.succeed(event));
-                });
-            }),
-
-            // String -> Json.Encode.Value -> WebAPI.Event.Options -> Task x CustomEvent
-            customEvent: F3(function (eventType, detail, options) {
-                var params = Utils.update(options, {});
-                params.detail = detail;
+            construct: F3(function (eventClass, eventName, options) {
+                var params = JE.encodeObject(options);
+                var args;
 
                 return Task.asyncFunction(function (callback) {
                     var event;
 
                     try {
-                        event = new CustomEvent(eventType, params);
+                        event = new window[eventClass](eventName, params);
                     } catch (ex) {
-                        event = document.createEvent('CustomEvent');
-                        event.initCustomEvent(eventType, options.bubbles, options.cancelable, detail);
+                        event = document.createEvent(eventClass);
+
+                        // Don't calculate the args unless we need them, but cache
+                        // them if we do.
+                        if (!args) {
+                            var jsList = A2(List.map, Basics.snd, options);
+                            args = [eventName].concat(NL.toArray(jsList));
+                        }
+
+                        event["init" + eventClass].apply(event, args);
                     }
 
                     callback(Task.succeed(event));

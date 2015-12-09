@@ -750,17 +750,17 @@ listenerTarget : Event -> Maybe Target
    Constructing and Dispatching
    ---------------------------- -}
 
-{-| Create an event with the given eventType and options. -}
-construct : String -> Options -> Task x Event
+{-| Create an event with the given selector and options. -}
+construct : Selector event -> Options event -> Task x event
 
-{-| Options for creating events. -}
-type alias Options =
-    { cancelable : Bool
-    , bubbles : Bool
-    }
+{-| Options for creating an event. -}
+type alias Options event
 
-{-| Default options, in which both are false. -}
-defaultOptions : Options
+{-| Specify options for constructing an `Event`. -}
+options : {cancelable : Bool, bubbles : Bool} -> Options Event
+
+{-| Default options, in which `cancelable` and `bubbles` are both false. -}
+defaultOptions : Options Event
 
 {-| A task which dispatches an event, and completes when all the event handlers
 have run. The task will complete with `True` if the default action should be
@@ -991,8 +991,8 @@ type CustomEvent
 {-| Data set when the `CustomEvent` was created. -}
 detail : CustomEvent -> Json.Decode.Value
 
-{-| Create a `CustomEvent` with the given eventType, detail and options. -}
-construct : String -> Json.Encode.Value -> Event.Options -> Task x CustomEvent
+{-| Specify options for creating a `CustomEvent` with the given detail. -}
+options : Json.Encode.Value -> Options Event -> Options CustomEvent
 
 {-| Select a `CustomEvent` with the given event type. -}
 select : String -> Selector CustomEvent

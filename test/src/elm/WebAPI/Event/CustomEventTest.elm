@@ -31,10 +31,13 @@ testListenerWithDetail =
             [ Event.send (Signal.message mbox.address (CustomEvent.detail event))
             , Event.remove
             ]
+
+        select =
+            CustomEvent.select "myownevent"
     
     in
-        Event.on (CustomEvent.select "myownevent") responder Window.target
-            |> andAlways (CustomEvent.construct "myownevent" (JE.int 17) Event.defaultOptions)
+        Event.on select responder Window.target
+            |> andAlways (Event.construct select (CustomEvent.options (JE.int 17) Event.defaultOptions))
             |> and (CustomEvent.toEvent >> Event.dispatch Window.target)
             |> andAlways (Task.sleep 5) 
             |> andAlways (sample mbox.signal)
@@ -45,7 +48,7 @@ testListenerWithDetail =
 
 testToEvent : Task x Test
 testToEvent =
-    CustomEvent.construct "anevent" (JE.int 17) Event.defaultOptions
+    Event.construct (CustomEvent.select "anevent") (CustomEvent.options (JE.int 17) Event.defaultOptions)
         |> Task.map (CustomEvent.toEvent >> Event.eventType)
         |> Task.map (assertEqual "anevent")
         |> Task.map (test "testToEvent")
@@ -53,7 +56,7 @@ testToEvent =
 
 testFromEventGood : Task x Test
 testFromEventGood =
-    CustomEvent.construct "anevent" (JE.int 17) Event.defaultOptions
+    Event.construct (CustomEvent.select "anevent") (CustomEvent.options (JE.int 17) Event.defaultOptions)
         |> Task.map (CustomEvent.toEvent >> CustomEvent.fromEvent)
         |> Task.map (Maybe.map (CustomEvent.detail >> (JD.decodeValue JD.int)))
         |> Task.map (assertEqual (Just (Result.Ok 17)))
@@ -62,7 +65,7 @@ testFromEventGood =
 
 testFromEventBad : Task x Test
 testFromEventBad =
-    Event.construct "anevent" Event.defaultOptions
+    Event.construct (Event.select "anevent") Event.defaultOptions
         |> Task.map (CustomEvent.fromEvent)
         |> Task.map (assertEqual Nothing)
         |> Task.map (test "testFromEventBad")
@@ -70,7 +73,7 @@ testFromEventBad =
 
 testDecoderGood : Task x Test
 testDecoderGood =
-    CustomEvent.construct "myownevent" (JE.int 17) Event.defaultOptions
+    Event.construct (CustomEvent.select "myownevent") (CustomEvent.options (JE.int 17) Event.defaultOptions)
         |> Task.map (JD.decodeValue CustomEvent.decoder << CustomEvent.encode)
         |> Task.map (\result -> case result of
                 Ok _ -> assert True
@@ -81,7 +84,7 @@ testDecoderGood =
 
 testEventDecoder : Task x Test
 testEventDecoder =
-    CustomEvent.construct "myownevent" (JE.int 17) Event.defaultOptions
+    Event.construct (CustomEvent.select "myownevent") (CustomEvent.options (JE.int 17) Event.defaultOptions)
         |> Task.map (JD.decodeValue Event.decoder << CustomEvent.encode)
         |> Task.map (\result -> case result of
                 Ok _ -> assert True

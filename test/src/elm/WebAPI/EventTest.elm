@@ -36,7 +36,7 @@ testAddListener =
     
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" Event.defaultOptions)
+            |> andAlways (Event.construct (Event.select "myownevent") Event.defaultOptions)
             |> and (Event.dispatch Window.target)
             |> andAlways (Task.sleep 5) 
             |> andAlways (sample mbox.signal)
@@ -58,13 +58,13 @@ testAddListenerThenRemove =
             [ Event.send (Signal.message mbox2.address 4) ]
     
         withListener listener =
-            Event.construct "myownevent" Event.defaultOptions
+            Event.construct (Event.select "myownevent") Event.defaultOptions
                 |> and (Event.dispatch Window.target)
-                |> andAlways (Event.construct "myownevent" Event.defaultOptions)
+                |> andAlways (Event.construct (Event.select "myownevent") Event.defaultOptions)
                 |> and (Event.dispatch Window.target)
                 |> andAlways (Task.sleep 5)
                 |> andAlways (Event.removeListener listener)
-                |> andAlways (Event.construct "myownevent" Event.defaultOptions)
+                |> andAlways (Event.construct (Event.select "myownevent") Event.defaultOptions)
                 |> and (Event.dispatch Window.target)
 
     in
@@ -95,9 +95,9 @@ testAddListenerOnce =
         -- before we test it.
         (Task.spawn (Event.addListenerOnce Event.Bubble (Event.select "myownevent") responder Window.target))
             |> andAlways (Task.sleep 5)
-            |> andAlways (Event.construct "myownevent" Event.defaultOptions)
+            |> andAlways (Event.construct (Event.select "myownevent") Event.defaultOptions)
             |> and (Event.dispatch Window.target)
-            |> andAlways (Event.construct "myownevent" Event.defaultOptions)
+            |> andAlways (Event.construct (Event.select "myownevent") Event.defaultOptions)
             |> and (Event.dispatch Window.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample count3)
@@ -133,7 +133,7 @@ testAddListenerOnceCompletesWithEvent =
     in
         (Task.spawn toSpawn)
             |> andAlways (Task.sleep 5)
-            |> andAlways (Event.construct "myownevent" Event.defaultOptions)
+            |> andAlways (Event.construct (Event.select "myownevent") Event.defaultOptions)
             |> and (Event.dispatch Window.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox4.signal)
@@ -144,7 +144,7 @@ testAddListenerOnceCompletesWithEvent =
 
 testEventType : Task x Test
 testEventType =
-    Event.construct "anevent" Event.defaultOptions
+    Event.construct (Event.select "anevent") Event.defaultOptions
         |> Task.map Event.eventType
         |> Task.map (assertEqual "anevent")
         |> Task.map (test "testEventType")
@@ -152,7 +152,7 @@ testEventType =
 
 testDefaultOptions : Task x Test
 testDefaultOptions =
-    Event.construct "anevent" Event.defaultOptions
+    Event.construct (Event.select "anevent") Event.defaultOptions
         |> Task.map (\event -> (Event.bubbles event, Event.cancelable event))
         |> Task.map (assertEqual (False, False))
         |> Task.map (test "testDefaultOptions")
@@ -160,7 +160,7 @@ testDefaultOptions =
 
 testBubbles : Task x Test
 testBubbles =
-    Event.construct "anevent" { bubbles = True, cancelable = False }
+    Event.construct (Event.select "anevent") (Event.options { bubbles = True, cancelable = False })
         |> Task.map (\event -> (Event.bubbles event, Event.cancelable event))
         |> Task.map (assertEqual (True, False))
         |> Task.map (test "testBubbles")
@@ -168,7 +168,7 @@ testBubbles =
 
 testCancelable : Task x Test
 testCancelable =
-    Event.construct "anevent" { bubbles = False, cancelable = True }
+    Event.construct (Event.select "anevent") (Event.options { bubbles = False, cancelable = True })
         |> Task.map (\event -> (Event.bubbles event, Event.cancelable event))
         |> Task.map (assertEqual (False, True))
         |> Task.map (test "testCancelable")
@@ -178,7 +178,7 @@ testTimestamp : Task x Test
 testTimestamp =
     let
         eventTask =
-            Event.construct "anevent" Event.defaultOptions
+            Event.construct (Event.select "anevent") Event.defaultOptions
 
         timeTask =
             WebAPI.Date.now
@@ -192,7 +192,7 @@ testTimestamp =
 
 testPhaseNone : Task x Test
 testPhaseNone =
-    Event.construct "anevent" Event.defaultOptions
+    Event.construct (Event.select "anevent") Event.defaultOptions
         |> Task.map Event.eventPhase
         -- Note that most browsers give NoPhase for an undispatched event, but
         -- Opera gives AtTarget
@@ -212,7 +212,7 @@ testPhaseCapturing =
 
     in
         Event.addListener Event.Capture (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = False})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = False}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -233,7 +233,7 @@ testPhaseAtTarget =
 
     in
         Event.addListener Event.Capture (Event.select "myownevent") responder Document.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = False})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = False}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -254,7 +254,7 @@ testPhaseBubbling =
 
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = False})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = False}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -265,7 +265,7 @@ testPhaseBubbling =
 
 testDefaultPreventedFresh : Task x Test
 testDefaultPreventedFresh =
-    Event.construct "anevent" { bubbles = False, cancelable = True }
+    Event.construct (Event.select "anevent") (Event.options { bubbles = False, cancelable = True })
         |> Task.map Event.defaultPrevented
         |> Task.map (assertEqual False)
         |> Task.map (test "testDefaultPreventedFresh")
@@ -289,7 +289,7 @@ testDefaultPreventedTrue =
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
             |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -315,7 +315,7 @@ testDefaultPreventedFalse =
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
             |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -326,7 +326,7 @@ testDefaultPreventedFalse =
 
 testEventTargetNothing : Task x Test
 testEventTargetNothing =
-    Event.construct "anevent" Event.defaultOptions
+    Event.construct (Event.select "anevent") Event.defaultOptions
         |> Task.map Event.eventTarget
         |> Task.map (\target -> assert (target == Nothing))
         |> Task.map (test "testEventTargetNothing")
@@ -349,7 +349,7 @@ testEventTarget =
 
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -375,7 +375,7 @@ testListenerTarget =
 
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -393,7 +393,7 @@ testDispatchReturnTrue =
     
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Window.target)
             |> Task.map assert
             |> recover (Task.succeed << assertEqual "no error")
@@ -410,7 +410,7 @@ testDispatchReturnFalse =
     
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder Window.target
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Window.target)
             |> Task.map (assert << not)
             |> recover (Task.succeed << assertEqual "no error")
@@ -440,7 +440,7 @@ testListenerTypeInResponder =
     
     in
         Event.addListener Event.Bubble (Event.select "someevent") responder Window.target
-            |> andAlways (Event.construct "someevent" Event.defaultOptions)
+            |> andAlways (Event.construct (Event.select "someevent") Event.defaultOptions)
             |> and (Event.dispatch Window.target)
             |> andAlways (Task.sleep 5) 
             |> andAlways (sample mbox.signal)
@@ -485,7 +485,7 @@ testSet =
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
             |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -513,7 +513,7 @@ testStopPropagation =
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
             |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Window.target)
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -541,7 +541,7 @@ testStopImmediatePropagation =
     in
         Event.addListener Event.Bubble (Event.select "myownevent") responder1 Document.target
             |> andAlways (Event.addListener Event.Bubble (Event.select "myownevent") responder2 Document.target)
-            |> andAlways (Event.construct "myownevent" {bubbles = True, cancelable = True})
+            |> andAlways (Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True}))
             |> and (Event.dispatch Document.target)
             |> andAlways (Task.sleep 5)
             |> andAlways (sample mbox.signal)
@@ -552,7 +552,7 @@ testStopImmediatePropagation =
 
 testDecoderGood : Task x Test
 testDecoderGood =
-    Event.construct "myownevent" {bubbles = True, cancelable = True}
+    Event.construct (Event.select "myownevent") (Event.options {bubbles = True, cancelable = True})
         |> Task.map (JD.decodeValue Event.decoder << Event.encode)
         |> Task.map (\result -> case result of
                 Ok _ -> assert True

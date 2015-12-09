@@ -1,5 +1,6 @@
 module WebAPI.Event.Internal
     ( Selector (Selector)
+    , Options (Options)
     , decoder
     ) where
 
@@ -14,6 +15,7 @@ in elm-package.json.
 -}
 
 import Json.Decode
+import Json.Encode
 
 import Native.WebAPI.Event
 
@@ -23,6 +25,13 @@ allow the creation of selectors that bind the appropriate event names with the
 appropriate event types.
 -}
 type Selector event = Selector String
+
+
+{-| Represents an object to be used to construct an event. The first value is a
+list of parameters, in the order that init... expects them. The second value is
+the Javascript class name.
+-}
+type Options event = Options (List (String, Json.Encode.Value)) String
 
 
 {-| Decode an event with the given type. -}

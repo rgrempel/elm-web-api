@@ -2,7 +2,7 @@ module WebAPI.Event
     ( Event, eventType, bubbles, cancelable, timestamp
     , EventPhase(NoPhase, Capturing, AtTarget, Bubbling), eventPhase
     , defaultPrevented, eventTarget, listenerTarget
-    , Options, defaultOptions, construct, dispatch
+    , Options, options, defaultOptions, construct, dispatch
     , Target, addListener, on, addListenerOnce, once
     , Selector, select
     , Listener, listenerType, target, removeListener
@@ -45,7 +45,7 @@ helpful.
 
 ## Constructing and Dispatching
 
-@docs construct, Options, defaultOptions, dispatch
+@docs Options, options, defaultOptions, construct, dispatch
 
 ## Listening
 
@@ -160,21 +160,44 @@ listenerTarget = Native.WebAPI.Event.currentTarget
    ---------------------------- -}
 
 
-{-| Create an event with the given eventType and options. -}
-construct : String -> Options -> Task x Event
-construct = Native.WebAPI.Event.event
+{-| Create an event with the given selector and options. -}
+construct : Selector event -> Options event -> Task x event
+construct
+    (WebAPI.Event.Internal.Selector eventName)
+    (WebAPI.Event.Internal.Options options className)
+        = nativeConstruct className eventName options
 
 
-{-| Options for creating events. -}
-type alias Options =
-    { cancelable : Bool
-    , bubbles : Bool
-    }
+{- The first param is the Javascript className. The second param
+is the event name. The third is a list of parameters, in the order
+in which initEvent etc. will want them.
+-}
+nativeConstruct : String -> String -> List (String, Json.Encode.Value) -> Task x event
+nativeConstruct = Native.WebAPI.Event.construct
 
 
-{-| Default options, in which both are false. -}
-defaultOptions : Options
-defaultOptions = Options False False
+{-| Options for creating an event. -}
+type alias Options event = WebAPI.Event.Internal.Options event
+
+
+{-| Specify options for constructing an `Event`. -}
+options : {cancelable : Bool, bubbles : Bool} -> Options Event
+options options =
+    -- Note that these must be in order according to what initEvent is going to want.
+    WebAPI.Event.Internal.Options
+        [ ("bubbles", Json.Encode.bool options.bubbles)
+        , ("cancelable", Json.Encode.bool options.cancelable)
+        ]
+        "Event"
+
+
+{-| Default options, in which `cancelable` and `bubbles` are both false. -}
+defaultOptions : Options Event
+defaultOptions =
+    options
+        { cancelable = False
+        , bubbles = False
+        }
 
 
 {-| A task which dispatches an event, and completes when all the event handlers
