@@ -71,7 +71,8 @@ However, you can still install it and use it via the following steps:
     *   You can clone from git, and then possibly checkout a specific tag:
 
             git clone https://github.com/rgrempel/elm-web-api.git
-            git checkout 1.0     # If you want a specific release
+            cd elm-web-api
+            git checkout 2.1.0     # If you want a specific release
 
     *   Or, you might use git submodules, if you're adept at that. (I wouldn't
         suggest trying it if you've never heard of them before).
