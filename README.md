@@ -110,8 +110,7 @@ Now, doing this would have several implications which you should be aware of.
     or in part), or it may make it easier or harder to implement or install.
 
 *   If you're using this as part of a module you'd like to publish yourself,
-    then you'll now also need approval before becoming available on the Elm
-    package repository.
+    then you will also be unable to publish your module in the package repository.
 
 
 ## APIs
