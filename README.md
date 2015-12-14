@@ -54,11 +54,9 @@ Let me know if you think I should try out some older verions as well.
 
 ## Installation
 
-Because elm-web-api uses "native" modules, it requires approval before it can
-be included in the
-[Elm package repository](http://package.elm-lang.org/packages). For a variety of
-reasons, it's unlikely to get such approval. Thus, you cannot install
-it using `elm-package`.
+Because elm-web-api uses 'native' modules, it cannot be included in the
+[Elm package repository](http://package.elm-lang.org/packages). Thus, you cannot
+install it using `elm-package`.
 
 However, you can still install it and use it via the following steps:
 
@@ -103,11 +101,13 @@ Now, doing this would have several implications which you should be aware of.
     that the native code in this module is of high quality and will not cause
     run-time errors or other problems.
 
-*   You would be relying on me to update that code when the mechanism for using
-    'native' modules in Elm changes, or when certain other internal details of Elm's
-    implementation change. Furthermore, you'd have to check here whenever the Elm
-    compiler's version changes, or the Elm core library's version changes, to see
-    whether an update is required.
+*   It is predictable that this module will need some changes when a new
+    version of Elm is released. Therefore, you would need to remember to check
+    here for such changes when that happens.
+
+*   It has been said that Elm 0.17 will include additional support for bindings
+    to Javascript platform APIs. This may make this module redundant (in whole
+    or in part), or it may make it easier or harder to implement or install.
 
 *   If you're using this as part of a module you'd like to publish yourself,
     then you'll now also need approval before becoming available on the Elm
