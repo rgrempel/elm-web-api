@@ -1259,7 +1259,7 @@ WebAPI.Function.encode : Function -> Json.Encode.Value
 See the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Location).
 
 Note that there is a `Signal`-oriented library for location-related things at
-[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+[elm-community/elm-history](http://package.elm-lang.org/packages/elm-community/elm-history/latest).
 
 ```elm
 module WebAPI.Location where
@@ -1293,9 +1293,6 @@ or provides an error message upon failure.
 
 Note that only Firefox appears to reliably report an error -- other browsers
 silently fail if an invalid URL is provided.
-
-Also consider using `setPath` from
-[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
 -}
 assign : String -> Task String ()
 
@@ -1304,9 +1301,6 @@ current page in the browser's history.
 
 Note that only Firefox appears to reliably report an error -- other browsers
 silently fail if an invalid URL is provided.
-
-Also consider using `replacePath` from
-[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
 -}
 replace : String -> Task String ()
 ```
@@ -1894,7 +1888,7 @@ See `WebAPI.Function.javascript` for a limited form.
 **`history`**
 
 &nbsp; &nbsp; &nbsp; &nbsp;
-See [TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest)
+See [elm-community/elm-history](http://package.elm-lang.org/packages/elm-community/elm-history/latest)
 
 **`innerHeight`, `innerWidth`**
 
@@ -1924,7 +1918,7 @@ Use [`WebAPI.Storage.localStorage`](#webapistorage)
 
 &nbsp; &nbsp; &nbsp; &nbsp;
 For a `Signal`-oriented approach to things you might do with `window.location`, see
-[TheSeamau5/elm-history](http://package.elm-lang.org/packages/TheSeamau5/elm-history/latest).
+[elm-community/elm-history](http://package.elm-lang.org/packages/elm-community/elm-history/latest).
 For some additional `Task`-oriented approaches, see
 [`WebAPI.Location`](#webapilocation).
 
