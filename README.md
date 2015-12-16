@@ -697,6 +697,8 @@ I also found this
 [list of events](http://www.w3schools.com/jsref/dom_obj_event.asp)
 helpful.
 
+**Note:** I am currently working on the event-related APIs, so you should expect
+some API changes in future versions.
 
 ```elm
 module WebAPI.Event where
