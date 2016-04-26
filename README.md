@@ -41,7 +41,6 @@ but if it is useful to you, that would be great.
 
 ## Contents
 
-* [Supported browsers](#supportedbrowsers)
 * [Installation](#installation)
 * APIs
     * [WebAPI.AnimationFrame](#webapianimationframe)
@@ -59,13 +58,6 @@ but if it is useful to you, that would be great.
     * [WebAPI.Screen](#webapiscreen)
     * [WebAPI.Storage](#webapistorage)
     * [WebAPI.Window](#webapiwindow)
-
-
-## Supported browsers
-
-I have set up testing via Travis and SauceLabs -- you can see at the top
-of this page a graphic that indicates which browsers I'm testing against.
-Let me know if you think I should try out some older verions as well.
 
 
 ## Installation
