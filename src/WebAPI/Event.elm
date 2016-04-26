@@ -4,7 +4,8 @@ module WebAPI.Event
     , defaultPrevented, eventTarget, listenerTarget
     , Options, options, defaultOptions, construct, dispatch
     , Target, addListener, on, addListenerOnce, once
-    , Selector, select
+    , Selector, other
+    , change, scroll, select, submit, unload, input 
     , Listener, listenerType, target, removeListener
     , ListenerPhase(Capture, Bubble), listenerPhase
     , Responder, noResponse
@@ -35,7 +36,8 @@ See Mozilla documentation for the
 and for [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event).
 I also found this
 [list of events](http://www.w3schools.com/jsref/dom_obj_event.asp)
-helpful.
+helpful, as well as
+[this list](http://help.dottoro.com/larrqqck.php).
 
 ## Events
 
@@ -50,7 +52,8 @@ helpful.
 ## Listening
 
 @docs Target, addListener, on, addListenerOnce, once
-@docs Selector, select
+@docs Selector, other
+@docs change, scroll, select, submit, unload, input
 @docs Listener, listenerType, target, ListenerPhase, listenerPhase, removeListener
 
 ## Responding
@@ -217,6 +220,69 @@ dispatch = Native.WebAPI.Event.dispatch
 
 
 {- ---------
+   Selecting
+   --------- -}
+
+
+-- This is basically here so that we can re-export it. We don't want to expose
+-- it from the internal module, since we don't want clients to construct it
+-- directly. But we can export it from here without the tag.
+{-| Opaque type representing an event name which uses an event type. -}
+type alias Selector event = WebAPI.Event.Internal.Selector event
+
+
+{-| Select an arbitrary event name.
+
+You can handle any event name with the `Event` type if you like, but often
+you should use a more specific event type. For instance, for 'beforeunload`,
+you should use `WebAPI.Event.BeforeUnload.select`, so that you can use a
+`BeforeUnloadEvent` in your `Responder`.
+-}
+other : String -> Selector Event
+other = WebAPI.Event.Internal.Selector
+
+
+{-| Selects the 'change' event. -}
+change : Selector Event
+change = other "change"
+
+
+{-| Selects the 'scroll' event. -}
+scroll : Selector Event
+scroll = other "scroll"
+
+
+{-| Selects the 'select' event. -}
+select : Selector Event
+select = other "select"
+
+
+{-| Selects the 'submit' event. -}
+submit : Selector Event
+submit = other "submit"
+
+
+{-| Selects the 'unload' event. -}
+unload : Selector Event
+unload = other "unload"
+
+
+{-| Selects the 'input' event. -}
+input : Selector Event
+input = other "input"
+
+
+-- TODO:
+
+-- oncopy, onpaste, oncut
+-- online?
+-- error
+-- focus ... FocusEvent?
+-- focusin, DOMFocusin, 
+-- focusOut, DOMFocusOut, blur 
+-- activate, DOMActivate
+
+{- ---------
    Listening
    --------- -}
 
@@ -260,24 +326,6 @@ addListenerOnce = Native.WebAPI.Listener.addOnce
 once : Selector event -> Target -> Task x event
 once string target =
     addListenerOnce Bubble string noResponse target
-
-
--- This is basically here so that we can re-export it. We don't want to expose
--- it from the internal module, since we don't want clients to construct it
--- directly. But we can export it from here without the tag.
-{-| Opaque type representing an event name which uses an event type. -}
-type alias Selector event = WebAPI.Event.Internal.Selector event
-
-
-{-| Select an event name using the `Event` type.
-
-You can handle any event name with the `Event` type if you like, but often
-you should use a more specific event type. For instance, for 'beforeunload`,
-you should use `WebAPI.Event.BeforeUnload.select`, so that you can use a
-`BeforeUnloadEvent` in your `Responder`.
--}
-select : String -> Selector Event
-select = WebAPI.Event.Internal.Selector
 
 
 {-| Opaque type representing an event handler. -}

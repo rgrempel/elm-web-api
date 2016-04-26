@@ -1,5 +1,5 @@
 module WebAPI.Event.BeforeUnload
-    ( BeforeUnloadEvent, prompt, select
+    ( BeforeUnloadEvent, prompt, beforeUnload
     , toEvent, fromEvent
     , encode, decoder
     ) where
@@ -12,7 +12,7 @@ See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Bef
 See `WebAPI.Window.beforeUnload` and `WebAPI.Window.confirmUnload` for a
 higher-level, more convenient API.
 
-@docs BeforeUnloadEvent, prompt, select
+@docs BeforeUnloadEvent, prompt, beforeUnload
 @docs toEvent, fromEvent
 @docs encode, decoder
 -}
@@ -37,8 +37,8 @@ type BeforeUnloadEvent = BeforeUnloadEvent
 
 
 {-| Select the 'beforeunload' event. -}
-select : Selector BeforeUnloadEvent
-select = Selector "beforeunload"
+beforeUnload : Selector BeforeUnloadEvent
+beforeUnload = Selector "beforeunload"
 
 
 {- ----------

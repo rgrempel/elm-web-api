@@ -1,5 +1,5 @@
 module WebAPI.Event.Custom
-    ( CustomEvent, detail, select, options
+    ( CustomEvent, detail, other, options
     , toEvent, fromEvent
     , encode, decoder
     ) where
@@ -10,7 +10,7 @@ module WebAPI.Event.Custom
 See [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
 
 @docs CustomEvent, detail
-@docs options, select
+@docs options, other
 @docs toEvent, fromEvent
 @docs encode, decoder
 -}
@@ -58,8 +58,8 @@ options value (Options list _) =
 
 
 {-| Select a `CustomEvent` with the given event type. -}
-select : String -> Selector CustomEvent
-select = Selector
+other : String -> Selector CustomEvent
+other = Selector
 
 
 {- ----------
