@@ -1,6 +1,26 @@
-[![Build Status](https://travis-ci.org/rgrempel/elm-web-api.svg)](https://travis-ci.org/rgrempel/elm-web-api)
+# Deprecation Notice
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/elm-web-api.svg)](https://saucelabs.com/u/elm-web-api)
+As previously noted below (under [Installation](#installation)), this package
+was, from the beginning, outside the mainstream Elm ecosystem, since it could
+not be installed via the Elm package manager (due to the native package block).
+It was also apparent that the changes planned for Elm 0.17 would have a
+significant impact on this package.
+
+Now that more information is available about Elm 0.17, the following things
+seem clear:
+
+* As expected, a variety of changes would be required for this package to work
+  with Elm 0.17.
+
+* The policy of @elm-lang will be that @elm-lang should own all packages which
+  access Web APIs. For this reason, it will continue to be impossible to
+  install this package via Elm's package manager.
+
+* @elm-lang will provide as much access to Web APIs as @elm-lang considers
+  should be available in Elm, via packages owned by @elm-lang.
+
+Reflecting on this, I find that my preference is not to continue work on this package.
+If anyone else should want to do something with this code, be my guest.
 
 # elm-web-api
 
@@ -17,10 +37,6 @@ Those pages document the various facilities available in a Javascript web
 environment. In order for Elm to use such facilities, it is necessary to write
 "native" code. So, I'm plugging away at it -- this is a work in progress,
 but if it is useful to you, that would be great.
-
-If there is some particular Javascript API that you'd like to see exposed here,
-feel free to create an issue (or, for that matter, a pull request). Otherwise,
-I'll continue my semi-random walk.
 
 
 ## Contents
@@ -101,16 +117,11 @@ Now, doing this would have several implications which you should be aware of.
     that the native code in this module is of high quality and will not cause
     run-time errors or other problems.
 
-*   It is predictable that this module will need some changes when a new
-    version of Elm is released. Therefore, you would need to remember to check
-    here for such changes when that happens.
+*   This module will not work with Elm 0.17 without changes, and I am not planning
+    to make those changes (see the deprecation notice above).
 
-*   It has been said that Elm 0.17 will include additional support for bindings
-    to Javascript platform APIs. This may make this module redundant (in whole
-    or in part), or it may make it easier or harder to implement or install.
-
-*   If you're using this as part of a module you'd like to publish yourself,
-    then you will also be unable to publish your module in the package repository.
+*   @elm-lang is planning to provide as much access to web APIs as @elm-lang
+    considers appropriate, using packages owned by @elm-lang.
 
 
 ## APIs
