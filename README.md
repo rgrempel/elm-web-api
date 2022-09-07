@@ -32,6 +32,7 @@ relied on the following sources:
 * https://developer.mozilla.org/en-US/docs/WebAPI
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 * https://developers.whatwg.org/
+* https://www.interviewbit.com/web-api-interview-questions/
 
 Those pages document the various facilities available in a Javascript web
 environment. In order for Elm to use such facilities, it is necessary to write
